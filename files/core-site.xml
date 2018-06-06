@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+   Copyright (C) 2018 Expedia Inc.
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+<property>
+  <name>fs.s3.impl</name>
+  <value>com.amazon.ws.emr.hadoop.fs.EmrFileSystem</value>
+</property>
+
+<property>
+  <name>fs.s3n.impl</name>
+  <value>com.amazon.ws.emr.hadoop.fs.EmrFileSystem</value>
+</property>
+
+<property>
+  <name>fs.AbstractFileSystem.s3.impl</name>
+  <value>org.apache.hadoop.fs.s3.EMRFSDelegate</value>
+</property>
+
+<property>
+  <name>fs.s3bfs.impl</name>
+  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
+</property>
+
+</configuration>
