@@ -12,6 +12,7 @@ RUN yum -y install emrfs
 RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*"' >> /etc/hadoop/conf/hadoop-env.sh
 RUN yum -y install mysql wget unzip
 RUN cd /tmp && wget -qN https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip && unzip -q -o vault_0.8.3_linux_amd64.zip -d /usr/local/bin/ && rm -f vault_0.8.3_linux_amd64.zip
+RUN mkdir -p /opt/hive-metastore-metrics/metrics
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
