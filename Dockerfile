@@ -15,6 +15,7 @@ RUN cd /tmp && wget -qN https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_l
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
+sed -i 's/export HADOOP_CLIENT_OPTS= " -Dproc_metastore \$HADOOP_CLIENT_OPTS "/export HADOOP_CLIENT_OPTS=" -Dproc_metastore \$HADOOP_CLIENT_OPTS "/' /usr/lib/hive/bin/ext/metastore.sh
 EXPOSE 9083
 COPY files/startup.sh /startup.sh
 CMD /startup.sh
