@@ -10,12 +10,12 @@ RUN yum -y install hive-metastore mariadb-connector-java
 RUN ln -s /usr/share/java/mariadb-connector-java.jar /usr/lib/hive/lib/mariadb-connector-java.jar
 RUN yum -y install emrfs
 RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*"' >> /etc/hadoop/conf/hadoop-env.sh
-RUN yum -y install mysql wget unzip
+RUN yum -y install mysql wget unzip jq
 RUN cd /tmp && wget -qN https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip && unzip -q -o vault_0.8.3_linux_amd64.zip -d /usr/local/bin/ && rm -f vault_0.8.3_linux_amd64.zip
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
-sed -i 's/export HADOOP_CLIENT_OPTS= " -Dproc_metastore \$HADOOP_CLIENT_OPTS "/export HADOOP_CLIENT_OPTS=" -Dproc_metastore \$HADOOP_CLIENT_OPTS "/' /usr/lib/hive/bin/ext/metastore.sh
+RUN sed -i 's/export HADOOP_CLIENT_OPTS= " -Dproc_metastore \$HADOOP_CLIENT_OPTS "/export HADOOP_CLIENT_OPTS=" -Dproc_metastore \$HADOOP_CLIENT_OPTS "/' /usr/lib/hive/bin/ext/metastore.sh
 EXPOSE 9083
 COPY files/startup.sh /startup.sh
 CMD /startup.sh
