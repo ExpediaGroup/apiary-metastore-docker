@@ -23,7 +23,7 @@ if [ x"$schema_version" != x"2.3.0" ]; then
     cd /
 fi
 #create hive databases
-if [ ! -z HIVE_DBS ]; then
+if [ ! -z $HIVE_DBS ]; then
     for HIVE_DB in `echo $HIVE_DBS|tr "," "\n"`
     do
         echo "creating hive database $HIVE_DB"
