@@ -37,4 +37,7 @@ fi
 
 [[ -z $loglevel ]] && loglevel="INFO"
 
+[[ -z ${METASTORE_LISTENERS} ]] && export METASTORE_LISTENERS="ApiarySNSListener"
+sed "s/METASTORE_LISTENERS/${METASTORE_LISTENERS}/" -i /etc/hive/conf/hive-site.xml
+
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName=${dbuser} --hiveconf javax.jdo.option.ConnectionPassword=${dbpass}"
