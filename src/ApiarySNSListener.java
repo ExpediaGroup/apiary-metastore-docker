@@ -47,21 +47,25 @@ public class ApiarySNSListener extends MetaStoreEventListener  {
 
     @Override
     public void onCreateTable(CreateTableEvent event) throws MetaException {
+	if(event.getStatus() == false) return;
 	publishEvent("CREATE_TABLE",event.getTable(),null,null,null);
     }
 
     @Override
     public void onDropTable(DropTableEvent event) throws MetaException {
+	if(event.getStatus() == false) return;
 	publishEvent("DROP_TABLE",event.getTable(),null,null,null);
     }
 
     @Override
     public void onAlterTable(AlterTableEvent event) throws MetaException {
+	if(event.getStatus() == false) return;
 	publishEvent("ALTER_TABLE",event.getNewTable(),event.getOldTable(),null,null);
     }
 
     @Override
     public void onAddPartition(AddPartitionEvent event) throws MetaException {
+	if(event.getStatus() == false) return;
 	Iterator<Partition> partitions = event.getPartitionIterator();
         while(partitions.hasNext())
         {
@@ -71,6 +75,7 @@ public class ApiarySNSListener extends MetaStoreEventListener  {
 
     @Override
     public void onDropPartition(DropPartitionEvent event) throws MetaException {
+	if(event.getStatus() == false) return;
 	Iterator<Partition> partitions = event.getPartitionIterator();
         while(partitions.hasNext())
         {
@@ -80,6 +85,7 @@ public class ApiarySNSListener extends MetaStoreEventListener  {
 
     @Override
     public void onAlterPartition(AlterPartitionEvent event) throws MetaException {
+	if(event.getStatus() == false) return;
 	publishEvent("ALTER_PARTITION",event.getTable(),null,event.getNewPartition(),event.getOldPartition());
     }
 

@@ -38,4 +38,9 @@
   <value>METASTORE_LISTENERS</value>
 </property>
 
+<property>
+  <name>hive.metastore.pre.event.listeners</name>
+  <value>METASTORE_PRELISTENERS</value>
+</property>
+
 </configuration>

@@ -31,6 +31,12 @@ if [ ! -z $HIVE_DBS ]; then
         AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
         BUCKET_NAME="${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"
         echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
+        #create glue database
+        if [ ! -z $ENABLE_GLUESYNC ]; then
+            echo "creating glue database $HIVE_DB"
+            aws --region=us-west-2 glue create-database --database-input Name=${GLUEDB_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
+            aws --region=us-west-2 glue update-database --name=${GLUEDB_PREFIX}${HIVE_DB} --database-input "Name=${GLUEDB_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
+        fi
     done    
 fi
 fi
@@ -38,6 +44,11 @@ fi
 [[ -z $loglevel ]] && loglevel="INFO"
 
 [[ -z ${METASTORE_LISTENERS} ]] && export METASTORE_LISTENERS="ApiarySNSListener"
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},ApiaryGlueSync"
 sed "s/METASTORE_LISTENERS/${METASTORE_LISTENERS}/" -i /etc/hive/conf/hive-site.xml
 
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="ApiaryGluePreEventListener"
+sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive-site.xml
+
+export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/share/aws/aws-java-sdk/*"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName=${dbuser} --hiveconf javax.jdo.option.ConnectionPassword=${dbpass}"
