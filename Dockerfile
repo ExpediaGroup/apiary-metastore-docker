@@ -12,6 +12,10 @@ RUN yum -y install emrfs
 RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*"' >> /etc/hadoop/conf/hadoop-env.sh
 RUN yum -y install mysql wget unzip jq
 RUN cd /tmp && wget -qN https://releases.hashicorp.com/vault/0.8.3/vault_0.8.3_linux_amd64.zip && unzip -q -o vault_0.8.3_linux_amd64.zip -d /usr/local/bin/ && rm -f vault_0.8.3_linux_amd64.zip
+RUN yum -y install java-1.8.0-openjdk-devel.x86_64
+COPY src/ApiarySNSListener.java /ApiarySNSListener.java
+RUN javac -cp "/usr/lib/hadoop/*:/usr/lib/hive/lib/*:/usr/share/aws/aws-java-sdk/*" ApiarySNSListener.java && jar cf /usr/lib/hive/lib/ApiarySNSListener.jar ApiarySNSListener.class && rm -f ApiarySNSListener.class
+RUN ln -s /usr/share/aws/aws-java-sdk/aws-java-sdk-sns-*.jar /usr/lib/hive/lib/aws-java-sdk-sns.jar
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml

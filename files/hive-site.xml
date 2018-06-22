@@ -33,4 +33,9 @@
   <value>thrift://localhost:9083</value>
 </property>
 
+<property>
+  <name>hive.metastore.event.listeners</name>
+  <value>METASTORE_LISTENERS</value>
+</property>
+
 </configuration>
