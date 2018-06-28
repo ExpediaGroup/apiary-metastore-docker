@@ -27,32 +27,24 @@ import org.apache.hadoop.hive.metastore.events.*;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 /**
- * A MetaStorePreEventListener that prevents actions not compatible with glue catalog.
+ * A MetaStorePreEventListener to disable database creation.
  */
 
-public class ApiaryGluePreEventListener extends MetaStorePreEventListener {
+public class ApiaryDBPreEventListener extends MetaStorePreEventListener {
 
-  public ApiaryGluePreEventListener(Configuration config) throws HiveException {
+  public ApiaryDBPreEventListener(Configuration config) throws HiveException {
     super(config);
-    System.out.println(" ApiaryGluePreEventListener created ");
+    System.out.println(" ApiaryDBPreEventListener created ");
   }
 
   @Override
   public void onEvent(PreEventContext context) throws MetaException, NoSuchObjectException, InvalidOperationException {
 
     switch (context.getEventType()) {
-    case ALTER_TABLE:
-      PreAlterTableEvent event = (PreAlterTableEvent)context;
-      if(event.getOldTable() != event.getNewTable())
-          throw new InvalidOperationException("Rename Table is not allowed when glue sync is enabled");
-      break;
-    case ALTER_PARTITION:
-      PreAlterPartitionEvent event2 = (PreAlterPartitionEvent)context;
-      List<String> oldPartValues = event2.getOldPartVals();
-      List<String> newPartValues = event2.getNewPartition().getValues();
-      if(!(newPartValues.equals(oldPartValues)))
-          throw new InvalidOperationException("Rename Partition is not allowed when glue sync is enabled");
-      break;
+    case CREATE_DATABASE:
+      throw new InvalidOperationException("Create Database is disabled.");
+    case DROP_DATABASE:
+      throw new InvalidOperationException("Drop Database is disabled.");
     default:
       break;
     }
