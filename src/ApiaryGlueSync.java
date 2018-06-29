@@ -44,8 +44,7 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
     public ApiaryGlueSync(Configuration config) {
         super(config);
         System.out.println(" ApiaryGlueSync created ");
-	glueClient = AWSGlueClientBuilder.standard().withRegion(System.getenv("AWS_REGION")).build();
-
+        glueClient = AWSGlueClientBuilder.standard().withRegion(System.getenv("AWS_REGION")).build();
     }
 
     @Override
@@ -54,7 +53,7 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
         Table table = event.getTable();
         CreateTableRequest createTableRequest = new CreateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
         glueClient.createTable(createTableRequest);
-	System.out.println(table + " table created in glue catalog.");
+        System.out.println(table + " table created in glue catalog.");
     }
 
     @Override
@@ -63,7 +62,7 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
         Table table = event.getTable();
         DeleteTableRequest deleteTableRequest = new DeleteTableRequest().withName(table.getTableName()).withDatabaseName(glueDbName(table));
         glueClient.deleteTable(deleteTableRequest);
-	System.out.println(table + " table deleted from glue catalog.");
+        System.out.println(table + " table deleted from glue catalog.");
     }
 
     @Override
@@ -72,7 +71,7 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
 	Table table = event.getNewTable();
         UpdateTableRequest updateTableRequest = new UpdateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
         glueClient.updateTable(updateTableRequest);
-	System.out.println(table + " table updated in glue catalog.");
+        System.out.println(table + " table updated in glue catalog.");
     }
 
     @Override

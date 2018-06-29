@@ -43,11 +43,15 @@ fi
 
 [[ -z $loglevel ]] && loglevel="INFO"
 
-[[ -z ${METASTORE_LISTENERS} ]] && export METASTORE_LISTENERS="ApiarySNSListener"
+[[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},ApiarySNSListener"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},ApiaryGlueSync"
+#remove leading , when external METASTORE_LISTENERS are not defined
+export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
 sed "s/METASTORE_LISTENERS/${METASTORE_LISTENERS}/" -i /etc/hive/conf/hive-site.xml
 
-[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="ApiaryGluePreEventListener"
+[[ ! -z $DISABLE_DBMGMT ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},ApiaryDBPreEventListener"
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},ApiaryGluePreEventListener"
+export METASTORE_PRELISTENERS=$(echo $METASTORE_PRELISTENERS|sed 's/^,//')
 sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive-site.xml
 
 export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/share/aws/aws-java-sdk/*"
