@@ -34,8 +34,8 @@ if [ ! -z $HIVE_DBS ]; then
         #create glue database
         if [ ! -z $ENABLE_GLUESYNC ]; then
             echo "creating glue database $HIVE_DB"
-            aws --region=us-west-2 glue create-database --database-input Name=${GLUEDB_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
-            aws --region=us-west-2 glue update-database --name=${GLUEDB_PREFIX}${HIVE_DB} --database-input "Name=${GLUEDB_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
+            aws --region=us-west-2 glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
+            aws --region=us-west-2 glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
         fi
     done    
 fi
