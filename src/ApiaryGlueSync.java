@@ -106,7 +106,8 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
                 glueClient.createPartition(createPartitionRequest);
             } catch ( AlreadyExistsException e ) {
                 UpdatePartitionRequest updatePartitionRequest = new UpdatePartitionRequest()
-                    .withPartitionInput(transformPartition(partition)).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+                    .withPartitionValueList(transformPartition(partition).getValues()).withPartitionInput(transformPartition(partition))
+                    .withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
                 glueClient.updatePartition(updatePartitionRequest);
             }
         }
@@ -136,7 +137,8 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
         Partition partition = event.getNewPartition();
         try{
             UpdatePartitionRequest updatePartitionRequest = new UpdatePartitionRequest()
-                .withPartitionInput(transformPartition(partition)).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+                .withPartitionValueList(transformPartition(partition).getValues()).withPartitionInput(transformPartition(partition))
+                .withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
             glueClient.updatePartition(updatePartitionRequest);
         } catch( EntityNotFoundException e ){
             CreatePartitionRequest createPartitionRequest = new CreatePartitionRequest()
