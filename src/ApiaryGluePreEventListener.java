@@ -50,7 +50,7 @@ public class ApiaryGluePreEventListener extends MetaStorePreEventListener {
       PreAlterPartitionEvent event2 = (PreAlterPartitionEvent)context;
       List<String> oldPartValues = event2.getOldPartVals();
       List<String> newPartValues = event2.getNewPartition().getValues();
-      if(!(newPartValues.equals(oldPartValues)))
+      if(oldPartValues!=null && !(newPartValues.equals(oldPartValues)))
           throw new InvalidOperationException("Rename Partition is not allowed when glue sync is enabled");
       break;
     default:
