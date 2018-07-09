@@ -43,14 +43,14 @@ public class ApiaryGluePreEventListener extends MetaStorePreEventListener {
     switch (context.getEventType()) {
     case ALTER_TABLE:
       PreAlterTableEvent event = (PreAlterTableEvent)context;
-      if(event.getOldTable() != event.getNewTable())
+      if(!(event.getOldTable().getTableName().equals(event.getNewTable().getTableName())))
           throw new InvalidOperationException("Rename Table is not allowed when glue sync is enabled");
       break;
     case ALTER_PARTITION:
       PreAlterPartitionEvent event2 = (PreAlterPartitionEvent)context;
       List<String> oldPartValues = event2.getOldPartVals();
       List<String> newPartValues = event2.getNewPartition().getValues();
-      if(!(newPartValues.equals(oldPartValues)))
+      if(oldPartValues!=null && !(newPartValues.equals(oldPartValues)))
           throw new InvalidOperationException("Rename Partition is not allowed when glue sync is enabled");
       break;
     default:

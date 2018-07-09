@@ -49,66 +49,102 @@ public class ApiaryGlueSync extends MetaStoreEventListener  {
 
     @Override
     public void onCreateTable(CreateTableEvent event) throws MetaException {
-	if(event.getStatus() == false) return;
+        if(event.getStatus() == false) return;
         Table table = event.getTable();
-        CreateTableRequest createTableRequest = new CreateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
-        glueClient.createTable(createTableRequest);
-        System.out.println(table + " table created in glue catalog.");
+        try {
+            CreateTableRequest createTableRequest = new CreateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
+            glueClient.createTable(createTableRequest);
+            System.out.println(table + " table created in glue catalog.");
+        } catch ( AlreadyExistsException e ) {
+            System.out.println(table + " table already exists in glue, updating....");
+            UpdateTableRequest updateTableRequest = new UpdateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
+            glueClient.updateTable(updateTableRequest);
+            System.out.println(table + " table updated in glue catalog.");
+        }
     }
 
     @Override
     public void onDropTable(DropTableEvent event) throws MetaException {
-	if(event.getStatus() == false) return;
+        if(event.getStatus() == false) return;
         Table table = event.getTable();
-        DeleteTableRequest deleteTableRequest = new DeleteTableRequest().withName(table.getTableName()).withDatabaseName(glueDbName(table));
-        glueClient.deleteTable(deleteTableRequest);
-        System.out.println(table + " table deleted from glue catalog.");
+        try {
+            DeleteTableRequest deleteTableRequest = new DeleteTableRequest().withName(table.getTableName()).withDatabaseName(glueDbName(table));
+            glueClient.deleteTable(deleteTableRequest);
+            System.out.println(table + " table deleted from glue catalog.");
+        } catch( EntityNotFoundException e ){
+            System.out.println(table + " table doesn't exist in glue catalog.");
+        }
     }
 
     @Override
     public void onAlterTable(AlterTableEvent event) throws MetaException {
-	if(event.getStatus() == false) return;
-	Table table = event.getNewTable();
-        UpdateTableRequest updateTableRequest = new UpdateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
-        glueClient.updateTable(updateTableRequest);
-        System.out.println(table + " table updated in glue catalog.");
+        if(event.getStatus() == false) return;
+        Table table = event.getNewTable();
+        try {
+            UpdateTableRequest updateTableRequest = new UpdateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
+            glueClient.updateTable(updateTableRequest);
+            System.out.println(table + " table updated in glue catalog.");
+        } catch( EntityNotFoundException e ){
+            System.out.println(table + " table doesn't exist in glue, creating....");
+            CreateTableRequest createTableRequest = new CreateTableRequest().withTableInput(transformTable(table)).withDatabaseName(glueDbName(table));
+            glueClient.createTable(createTableRequest);
+            System.out.println(table + " table created in glue catalog.");
+        }
     }
 
     @Override
     public void onAddPartition(AddPartitionEvent event) throws MetaException {
-	if(event.getStatus() == false) return;
-	Table table = event.getTable();
-	Iterator<Partition> partitions = event.getPartitionIterator();
+        if(event.getStatus() == false) return;
+        Table table = event.getTable();
+        Iterator<Partition> partitions = event.getPartitionIterator();
         while(partitions.hasNext())
         {
             Partition partition = partitions.next();
-            CreatePartitionRequest createPartitionRequest = new CreatePartitionRequest()
-                       .withPartitionInput(transformPartition(partition)).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
-            glueClient.createPartition(createPartitionRequest);
+            try{
+                CreatePartitionRequest createPartitionRequest = new CreatePartitionRequest()
+                    .withPartitionInput(transformPartition(partition)).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+                glueClient.createPartition(createPartitionRequest);
+            } catch ( AlreadyExistsException e ) {
+                UpdatePartitionRequest updatePartitionRequest = new UpdatePartitionRequest()
+                    .withPartitionValueList(transformPartition(partition).getValues()).withPartitionInput(transformPartition(partition))
+                    .withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+                glueClient.updatePartition(updatePartitionRequest);
+            }
         }
     }
 
     @Override
     public void onDropPartition(DropPartitionEvent event) throws MetaException {
-	if(event.getStatus() == false) return;
-	Table table = event.getTable();
-	Iterator<Partition> partitions = event.getPartitionIterator();
+        if(event.getStatus() == false) return;
+        Table table = event.getTable();
+        Iterator<Partition> partitions = event.getPartitionIterator();
         while(partitions.hasNext())
         {
             Partition partition = partitions.next();
-            DeletePartitionRequest deletePartitionRequest = new DeletePartitionRequest()
-                       .withPartitionValues(transformPartition(partition).getValues()).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
-            glueClient.deletePartition(deletePartitionRequest);
+            try{
+                DeletePartitionRequest deletePartitionRequest = new DeletePartitionRequest()
+                    .withPartitionValues(transformPartition(partition).getValues()).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+                glueClient.deletePartition(deletePartitionRequest);
+            } catch( EntityNotFoundException e ){
+            }
         }
     }
 
     @Override
     public void onAlterPartition(AlterPartitionEvent event) throws MetaException {
-	if(event.getStatus() == false) return;
+        if(event.getStatus() == false) return;
         Table table = event.getTable();
         Partition partition = event.getNewPartition();
-        UpdatePartitionRequest updatePartitionRequest = new UpdatePartitionRequest().withPartitionInput(transformPartition(partition)).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
-        glueClient.updatePartition(updatePartitionRequest);
+        try{
+            UpdatePartitionRequest updatePartitionRequest = new UpdatePartitionRequest()
+                .withPartitionValueList(transformPartition(partition).getValues()).withPartitionInput(transformPartition(partition))
+                .withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+            glueClient.updatePartition(updatePartitionRequest);
+        } catch( EntityNotFoundException e ){
+            CreatePartitionRequest createPartitionRequest = new CreatePartitionRequest()
+                .withPartitionInput(transformPartition(partition)).withDatabaseName(glueDbName(table)).withTableName(table.getTableName());
+            glueClient.createPartition(createPartitionRequest);
+        }
     }
 
     TableInput transformTable(final Table tableName) {
