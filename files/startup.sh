@@ -3,7 +3,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 
 export VAULT_SKIP_VERIFY=true
-export VAULT_TOKEN=`vault auth -method=aws -no-store|grep token:|awk '{ print $NF }'`
+export VAULT_TOKEN=`vault login -method=aws -token-only`
 
 if [ x"$instance_type" = x"readwrite" ]; then
     dbuser=`vault read -field=username ${vault_path}/hive_rwuser`
