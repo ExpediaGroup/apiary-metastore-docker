@@ -14,41 +14,53 @@
  * limitations under the License.
  */
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.Date;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.hive.shims.Utils;
 import com.google.common.collect.Sets;
 
-import org.apache.hadoop.conf.Configuration;
+
 import org.apache.hadoop.hive.metastore.MetaStorePreEventListener;
-import org.apache.hadoop.hive.metastore.api.*;
-import org.apache.hadoop.hive.metastore.events.*;
+
+import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.api.NoSuchObjectException;
+import org.apache.hadoop.hive.metastore.api.InvalidOperationException;
+
+import org.apache.hadoop.hive.metastore.events.PreEventContext;
+import org.apache.hadoop.hive.metastore.events.PreCreateTableEvent;
+import org.apache.hadoop.hive.metastore.events.PreDropTableEvent;
+import org.apache.hadoop.hive.metastore.events.PreAlterTableEvent;
+import org.apache.hadoop.hive.metastore.events.PreReadTableEvent;
+import org.apache.hadoop.hive.metastore.events.PreAddPartitionEvent;
+import org.apache.hadoop.hive.metastore.events.PreDropPartitionEvent;
+import org.apache.hadoop.hive.metastore.events.PreAlterPartitionEvent;
+import org.apache.hadoop.hive.metastore.events.PreAddIndexEvent;
+import org.apache.hadoop.hive.metastore.events.PreDropIndexEvent;
+import org.apache.hadoop.hive.metastore.events.PreAlterIndexEvent;
+import org.apache.hadoop.hive.metastore.events.PreReadDatabaseEvent;
+import org.apache.hadoop.hive.metastore.events.PreCreateDatabaseEvent;
+import org.apache.hadoop.hive.metastore.events.PreDropDatabaseEvent;
 
 import org.apache.hadoop.hive.ql.metadata.HiveException;
-
-import org.apache.hadoop.hive.metastore.IHMSHandler;
-import org.apache.thrift.TException;
-import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.ql.session.SessionState;
-import java.util.Properties;
-import java.util.Map.Entry;
+import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType;
 
 import org.apache.ranger.plugin.service.RangerBasePlugin;
 import org.apache.ranger.plugin.audit.RangerDefaultAuditHandler;
+import org.apache.ranger.plugin.policyengine.RangerAccessResourceImpl;
+import org.apache.ranger.plugin.policyengine.RangerAccessRequestImpl;
+import org.apache.ranger.plugin.policyengine.RangerAccessResult;
 
-import org.apache.ranger.plugin.policyengine.*;
-
-import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType;
 
 enum HiveAccessType { NONE, CREATE, ALTER, DROP, INDEX, LOCK, SELECT, UPDATE, USE, READ, WRITE, ALL, ADMIN };
 
 
 /**
- * A MetaStorePreEventListener to authorizie using ranger.
+ * A MetaStorePreEventListener to authorize using ranger.
  */
 
 public class ApiaryRangerAuthPreEventListener extends MetaStorePreEventListener {
@@ -78,12 +90,11 @@ public class ApiaryRangerAuthPreEventListener extends MetaStorePreEventListener 
     catch(Exception ex)
     {
         ex.printStackTrace();
-        System.out.println(ex);
         throw new InvalidOperationException("unable to read username.");
     }
 
-    String hoptName = null;
-    HiveAccessType hact = null;
+    String operationName = null;
+    HiveAccessType accessType = null;
     Table table = null;
     Database db = null;
     String databaseName = null;
@@ -91,106 +102,106 @@ public class ApiaryRangerAuthPreEventListener extends MetaStorePreEventListener 
     RangerAccessResourceImpl resource = new RangerAccessResourceImpl();
 
     switch (context.getEventType()) {
-    case CREATE_TABLE:
-      table = ((PreCreateTableEvent) context).getTable();
-      hoptName = HiveOperationType.CREATETABLE.name();
-      hact = HiveAccessType.CREATE;
-      resource.setValue("database",table.getDbName());
-      resource.setValue("table",table.getTableName());
-      break;
-    case DROP_TABLE:
-      table = ((PreDropTableEvent) context).getTable();
-      hoptName = HiveOperationType.DROPTABLE.name();
-      hact = HiveAccessType.DROP;
-      resource.setValue("database",table.getDbName());
-      resource.setValue("table",table.getTableName());
-      break;
-    case ALTER_TABLE:
-      table = ((PreAlterTableEvent) context).getOldTable();
-      hoptName = "ALTERTABLE";
-      hact = HiveAccessType.ALTER;
-      resource.setValue("database",table.getDbName());
-      resource.setValue("table",table.getTableName());
-      break;
-    case READ_TABLE:
-      table = ((PreReadTableEvent) context).getTable();
-      hoptName = HiveOperationType.QUERY.name();
-      hact = HiveAccessType.SELECT;
-      resource.setValue("database",table.getDbName());
-      resource.setValue("table",table.getTableName());
-      break;
-    case ADD_PARTITION:
-      table = ((PreAddPartitionEvent) context).getTable();
-      hoptName = "ADDPARTITION";
-      hact = HiveAccessType.ALTER;
-      resource.setValue("database",table.getDbName());
-      resource.setValue("table",table.getTableName());
-      break;
-    case DROP_PARTITION:
-      table = ((PreDropPartitionEvent) context).getTable();
-      hoptName = "DROPPARTITION";
-      hact = HiveAccessType.ALTER;
-      resource.setValue("database",table.getDbName());
-      resource.setValue("table",table.getTableName());
-      break;
-    case ALTER_PARTITION:
-      databaseName = ((PreAlterPartitionEvent) context).getDbName();
-      tableName = ((PreAlterPartitionEvent) context).getTableName();
-      hact = HiveAccessType.ALTER;
-      hoptName = "ALTERPARTITION";
-      resource.setValue("database",databaseName);
-      resource.setValue("table",tableName);
-      break;
-    case ADD_INDEX:
-      databaseName = ((PreAddIndexEvent) context).getIndex().getDbName();
-      tableName = ((PreAddIndexEvent) context).getIndex().getOrigTableName();
-      hoptName = "ADDINDEX";
-      hact = HiveAccessType.CREATE;
-      resource.setValue("database",databaseName);
-      resource.setValue("table",tableName);
-      break;
-    case DROP_INDEX:
-      hoptName = "DROPINDEX";
-      hact = HiveAccessType.DROP;
-      databaseName = ((PreDropIndexEvent) context).getIndex().getDbName();
-      tableName = ((PreDropIndexEvent) context).getIndex().getOrigTableName();
-      resource.setValue("database",databaseName);
-      resource.setValue("table",tableName);
-      break;
-    case ALTER_INDEX:
-      hoptName = "ALTERINDEX";
-      hact = HiveAccessType.ALTER;
-      databaseName = ((PreAlterIndexEvent) context).getOldIndex().getDbName();
-      tableName = ((PreAlterIndexEvent) context).getOldIndex().getOrigTableName();
-      resource.setValue("database",databaseName);
-      resource.setValue("table",tableName);
-      break;
-    case READ_DATABASE:
-      db = ((PreReadDatabaseEvent) context).getDatabase();
-      hoptName = HiveOperationType.QUERY.name();
-      hact = HiveAccessType.SELECT;
-      resource.setValue("database",db.getName());
-      break;
-    case CREATE_DATABASE:
-      db = ((PreCreateDatabaseEvent) context).getDatabase();
-      hoptName = HiveOperationType.CREATEDATABASE.name();
-      hact = HiveAccessType.CREATE;
-      resource.setValue("database",db.getName());
-      break;
-    case DROP_DATABASE:
-      db = ((PreDropDatabaseEvent) context).getDatabase();
-      hoptName = HiveOperationType.DROPDATABASE.name();
-      hact = HiveAccessType.DROP;
-      resource.setValue("database",db.getName());
-      break;
-    default:
-      return;
+        case CREATE_TABLE:
+            table = ((PreCreateTableEvent) context).getTable();
+            operationName = HiveOperationType.CREATETABLE.name();
+            accessType = HiveAccessType.CREATE;
+            resource.setValue("database",table.getDbName());
+            resource.setValue("table",table.getTableName());
+            break;
+        case DROP_TABLE:
+            table = ((PreDropTableEvent) context).getTable();
+            operationName = HiveOperationType.DROPTABLE.name();
+            accessType = HiveAccessType.DROP;
+            resource.setValue("database",table.getDbName());
+            resource.setValue("table",table.getTableName());
+            break;
+        case ALTER_TABLE:
+            table = ((PreAlterTableEvent) context).getOldTable();
+            operationName = "ALTERTABLE";
+            accessType = HiveAccessType.ALTER;
+            resource.setValue("database",table.getDbName());
+            resource.setValue("table",table.getTableName());
+            break;
+        case READ_TABLE:
+            table = ((PreReadTableEvent) context).getTable();
+            operationName = HiveOperationType.QUERY.name();
+            accessType = HiveAccessType.SELECT;
+            resource.setValue("database",table.getDbName());
+            resource.setValue("table",table.getTableName());
+            break;
+        case ADD_PARTITION:
+            table = ((PreAddPartitionEvent) context).getTable();
+            operationName = "ADDPARTITION";
+            accessType = HiveAccessType.ALTER;
+            resource.setValue("database",table.getDbName());
+            resource.setValue("table",table.getTableName());
+            break;
+        case DROP_PARTITION:
+            table = ((PreDropPartitionEvent) context).getTable();
+            operationName = "DROPPARTITION";
+            accessType = HiveAccessType.ALTER;
+            resource.setValue("database",table.getDbName());
+            resource.setValue("table",table.getTableName());
+            break;
+        case ALTER_PARTITION:
+            databaseName = ((PreAlterPartitionEvent) context).getDbName();
+            tableName = ((PreAlterPartitionEvent) context).getTableName();
+            accessType = HiveAccessType.ALTER;
+            operationName = "ALTERPARTITION";
+            resource.setValue("database",databaseName);
+            resource.setValue("table",tableName);
+            break;
+        case ADD_INDEX:
+            databaseName = ((PreAddIndexEvent) context).getIndex().getDbName();
+            tableName = ((PreAddIndexEvent) context).getIndex().getOrigTableName();
+            operationName = "ADDINDEX";
+            accessType = HiveAccessType.CREATE;
+            resource.setValue("database",databaseName);
+            resource.setValue("table",tableName);
+            break;
+        case DROP_INDEX:
+            operationName = "DROPINDEX";
+            accessType = HiveAccessType.DROP;
+            databaseName = ((PreDropIndexEvent) context).getIndex().getDbName();
+            tableName = ((PreDropIndexEvent) context).getIndex().getOrigTableName();
+            resource.setValue("database",databaseName);
+            resource.setValue("table",tableName);
+            break;
+        case ALTER_INDEX:
+            operationName = "ALTERINDEX";
+            accessType = HiveAccessType.ALTER;
+            databaseName = ((PreAlterIndexEvent) context).getOldIndex().getDbName();
+            tableName = ((PreAlterIndexEvent) context).getOldIndex().getOrigTableName();
+            resource.setValue("database",databaseName);
+            resource.setValue("table",tableName);
+            break;
+        case READ_DATABASE:
+            db = ((PreReadDatabaseEvent) context).getDatabase();
+            operationName = HiveOperationType.QUERY.name();
+            accessType = HiveAccessType.SELECT;
+            resource.setValue("database",db.getName());
+            break;
+        case CREATE_DATABASE:
+            db = ((PreCreateDatabaseEvent) context).getDatabase();
+            operationName = HiveOperationType.CREATEDATABASE.name();
+            accessType = HiveAccessType.CREATE;
+            resource.setValue("database",db.getName());
+            break;
+        case DROP_DATABASE:
+            db = ((PreDropDatabaseEvent) context).getDatabase();
+            operationName = HiveOperationType.DROPDATABASE.name();
+            accessType = HiveAccessType.DROP;
+            resource.setValue("database",db.getName());
+            break;
+        default:
+            return;
     }
 
     resource.setServiceDef(plugin.getServiceDef());
-    RangerAccessRequestImpl request = new RangerAccessRequestImpl(resource,hact.name().toLowerCase(),user,groups);
+    RangerAccessRequestImpl request = new RangerAccessRequestImpl(resource,accessType.name().toLowerCase(),user,groups);
     request.setAccessTime(new Date());
-    request.setAction(hoptName);
+    request.setAction(operationName);
     request.setClusterName(System.getenv("RANGER_SERVICE_NAME"));
 
     RangerAccessResult result = plugin.isAccessAllowed(request);
@@ -200,7 +211,7 @@ public class ApiaryRangerAuthPreEventListener extends MetaStorePreEventListener 
     }
     if (!result.getIsAllowed()) {
          String path = resource.getAsString();
-         throw new InvalidOperationException(String.format("Permission denied: user [%s] does not have [%s] privilege on [%s]", user, hact.name().toLowerCase(), path));
+         throw new InvalidOperationException(String.format("Permission denied: user [%s] does not have [%s] privilege on [%s]", user, accessType.name().toLowerCase(), path));
     }
 
   }
