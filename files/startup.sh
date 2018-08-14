@@ -36,6 +36,13 @@ if [[ -n $AUDIT_SOLR_URL ]]; then
     sed -e '/xasecure.audit.is.enabled/ { n; s/false/true/ }' -e '/xasecure.audit.solr.is.enabled/ { n; s/false/true/ }' -i /etc/hive/conf/ranger-hive-audit.xml
     sed "s/AUDIT_SOLR_URL/${AUDIT_SOLR_URL}/" -i /etc/hive/conf/ranger-hive-audit.xml
 fi
+#enable ranger db auditing
+if [[ -n $AUDIT_DB_URL ]]; then
+    sed -e '/xasecure.audit.is.enabled/ { n; s/false/true/ }' -e '/xasecure.audit.db.is.enabled/ { n; s/false/true/ }' -i /etc/hive/conf/ranger-hive-audit.xml
+    sed "s/AUDIT_DB_URL/${AUDIT_DB_URL}/" -i /etc/hive/conf/ranger-hive-audit.xml
+    sed "s/AUDIT_DB_USER/$(vault read -field=username ${vault_path}/audit_db_user)/" -i /etc/hive/conf/ranger-hive-audit.xml
+    sed "s/AUDIT_DB_PASSWORD/$(vault read -field=password ${vault_path}/audit_db_user)/" -i /etc/hive/conf/ranger-hive-audit.xml
+fi
 
 #check if database is initialized, test only from rw instances
 if [ x"$instance_type" = x"readwrite" ]; then

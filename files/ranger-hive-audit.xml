@@ -52,22 +52,22 @@
 	<!--  Properties whose name begin with "xasecure.audit.jpa." are used to configure JPA -->
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.url</name>
-		<value>jdbc:mysql://localhost:3306/ranger_audit</value>
+		<value>AUDIT_DB_URL</value>
 	</property>
 
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.user</name>
-		<value>rangerlogger</value>
+		<value>AUDIT_DB_USER</value>
 	</property>
 
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.password</name>
-		<value>none</value>
+		<value>AUDIT_DB_PASSWORD</value>
 	</property>
 
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.driver</name>
-		<value>com.mysql.jdbc.Driver</value>
+		<value>org.mariadb.jdbc.Driver</value>
 	</property>
 
     <property>
