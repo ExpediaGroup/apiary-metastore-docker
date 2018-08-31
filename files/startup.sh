@@ -46,10 +46,10 @@ if [[ -n $AUDIT_DB_URL ]]; then
 fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
-if [ x"$instance_type" = x"readwrite" ]; then
+if [ -z $EXTERNAL_DATABASE ] && [ x"$instance_type" = x"readwrite" ]; then
 MYSQL_OPTIONS="-h$dbhost -u$dbuser -p$dbpass $dbname -N"
 schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
-if [ -z $EXTERNAL_DATABASE ] && [ x"$schema_version" != x"2.3.0" ]; then
+if [ x"$schema_version" != x"2.3.0" ]; then
     cd /usr/lib/hive/scripts/metastore/upgrade/mysql
     cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
     cd /
