@@ -23,6 +23,7 @@ if [[ -n $LDAP_URL ]] ; then
     #configure local ca certificate to connect o ldap/ad
     vault read -field=cacert ${vault_path}/ldap_user > /etc/pki/ca-trust/source/anchors/ldapca.crt
     update-ca-trust
+    update-ca-trust enable
 fi
 
 #configure ranger authorization
@@ -44,8 +45,8 @@ if [[ -n $AUDIT_DB_URL ]]; then
     sed "s/AUDIT_DB_PASSWORD/$(vault read -field=password ${vault_path}/audit_db_user)/" -i /etc/hive/conf/ranger-hive-audit.xml
 fi
 
-#check if database is initialized, test only from rw instances
-if [ x"$instance_type" = x"readwrite" ]; then
+#check if database is initialized, test only from rw instances and only if DB is managed by apiary
+if [ -z $EXTERNAL_DATABASE ] && [ x"$instance_type" = x"readwrite" ]; then
 MYSQL_OPTIONS="-h$dbhost -u$dbuser -p$dbpass $dbname -N"
 schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
 if [ x"$schema_version" != x"2.3.0" ]; then
@@ -53,6 +54,7 @@ if [ x"$schema_version" != x"2.3.0" ]; then
     cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
     cd /
 fi
+
 #create hive databases
 if [ ! -z $HIVE_DBS ]; then
     for HIVE_DB in `echo $HIVE_DBS|tr "," "\n"`
