@@ -5,7 +5,7 @@ from amazonlinux:latest
 
 ENV VAULT_VERSION 0.10.3
 ENV RANGER_VERSION 1.1.0
-ENV APIARY_LISTENER_VERSION 0.0.1
+ENV APIARY_METASTORE_LISTENER_VERSION 0.0.1
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
@@ -19,7 +19,7 @@ RUN yum -y install emrfs
 RUN wget -qN https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip && unzip -q -o vault_${VAULT_VERSION}_linux_amd64.zip -d /usr/local/bin/ && rm -f vault_${VAULT_VERSION}_linux_amd64.zip
 
 RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-listener/${APIARY_LISTENER_VERSION}/apiary-metastore-listener-${APIARY_LISTENER_VERSION}-all.jar -O apiary-metastore-listener-${APIARY_LISTENER_VERSION}-all.jar
+wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-listener/${APIARY_METASTORE_LISTENER_VERSION}/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar -O apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar
 
 RUN cd /usr/lib/hive/lib/ && \
 wget -qN http://search.maven.org/remotecontent?filepath=org/apache/ranger/ranger-plugins-audit/${RANGER_VERSION}/ranger-plugins-audit-${RANGER_VERSION}.jar && \

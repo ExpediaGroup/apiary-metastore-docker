@@ -90,5 +90,5 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 #required to debug ranger plugin, todo: send apache common logs to cloudwatch
 #export HADOOP_OPTS="$HADOOP_OPTS -Dorg.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"
 
-export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/lib/apiary/apiary-metastore-listener-${APIARY_LISTENER_VERSION}-all.jar:/usr/share/aws/aws-java-sdk/*"
+export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar:/usr/share/aws/aws-java-sdk/*"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName=${dbuser} --hiveconf javax.jdo.option.ConnectionPassword=${dbpass}"
