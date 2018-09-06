@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [Unreleased]
 
 ### Changed
-- deploy SNS Listener from [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-metastore-listener)
+- Deploy SNS Listener from [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-metastore-listener).
 - Additional check to support external MySQL database for Hive Metastore, required to implement [#48](https://github.com/ExpediaInc/apiary-metastore/issues/48).
 
 ### Fixed
