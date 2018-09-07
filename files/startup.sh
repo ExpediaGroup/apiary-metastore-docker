@@ -76,7 +76,7 @@ fi
 
 [[ -z $loglevel ]] && loglevel="INFO"
 
-[[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},ApiarySNSListener"
+[[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.metastore.listener.ApiarySnsListener"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},ApiaryGlueSync"
 #remove leading , when external METASTORE_LISTENERS are not defined
 export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
@@ -90,5 +90,5 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 #required to debug ranger plugin, todo: send apache common logs to cloudwatch
 #export HADOOP_OPTS="$HADOOP_OPTS -Dorg.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"
 
-export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/share/aws/aws-java-sdk/*"
+export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar:/usr/share/aws/aws-java-sdk/*"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName=${dbuser} --hiveconf javax.jdo.option.ConnectionPassword=${dbpass}"
