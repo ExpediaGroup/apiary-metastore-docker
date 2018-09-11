@@ -5,7 +5,7 @@ from amazonlinux:latest
 
 ENV VAULT_VERSION 0.10.3
 ENV RANGER_VERSION 1.1.0
-ENV APIARY_METASTORE_LISTENER_VERSION 0.0.1
+ENV APIARY_METASTORE_LISTENER_VERSION 0.1.0
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
