@@ -3,7 +3,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 
 export VAULT_SKIP_VERIFY=true
-export VAULT_TOKEN=`vault login -method=aws -token-only`
+export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
 
 if [ x"$instance_type" = x"readwrite" ]; then
     dbuser=`vault read -field=username ${vault_path}/hive_rwuser`
@@ -70,7 +70,7 @@ if [ ! -z $HIVE_DBS ]; then
             aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
             aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
         fi
-    done    
+    done
 fi
 fi
 
