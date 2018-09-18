@@ -11,10 +11,17 @@ COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
 COPY files/emr-platform.repo /etc/yum.repos.d/emr-platform.repo
 
-RUN yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel.x86_64
-RUN yum -y install hive-metastore mariadb-connector-java
-RUN yum -y install mysql wget unzip jq
-RUN yum -y install emrfs
+RUN yum -y install java-1.8.0-openjdk \
+  java-1.8.0-openjdk-devel.x86_64 \
+  hive-metastore \
+  mariadb-connector-java \
+  mysql \
+  wget \
+  unzip \
+  jq \
+  emrfs \
+  && yum clean all \
+  && rm -rf /var/cache/yum
 
 RUN wget -qN https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip && unzip -q -o vault_${VAULT_VERSION}_linux_amd64.zip -d /usr/local/bin/ && rm -f vault_${VAULT_VERSION}_linux_amd64.zip
 
