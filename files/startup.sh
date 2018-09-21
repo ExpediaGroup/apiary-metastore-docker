@@ -6,11 +6,9 @@ export VAULT_SKIP_VERIFY=true
 export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
 
 if [ x"$instance_type" = x"readwrite" ]; then
-    dbuser=`vault read -field=username ${vault_path}/hive_rwuser`
-    dbpass=`vault read -field=password ${vault_path}/hive_rwuser`
+    dbuser="iamrw"
 else
-    dbuser=`vault read -field=username ${vault_path}/hive_rouser`
-    dbpass=`vault read -field=password ${vault_path}/hive_rouser`
+    dbuser="iamro"
 fi
 
 #configure LDAP group mapping, required for ranger authorization
@@ -47,7 +45,8 @@ fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ x"$instance_type" = x"readwrite" ]; then
-MYSQL_OPTIONS="-h$dbhost -u$dbuser -p$dbpass $dbname -N"
+TOKEN=$(aws rds generate-db-auth-token --hostname $dbhost --port 3306 --region $AWS_REGION --username $dbuser)
+MYSQL_OPTIONS="-h$dbhost --ssl-ca=/etc/pki/ca-trust/source/anchors/rds-ca-2015-root.pem -u$dbuser -p$TOKEN $dbname -N"
 schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
 if [ x"$schema_version" != x"2.3.0" ]; then
     cd /usr/lib/hive/scripts/metastore/upgrade/mysql
@@ -91,4 +90,4 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 #export HADOOP_OPTS="$HADOOP_OPTS -Dorg.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"
 
 export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar:/usr/share/aws/aws-java-sdk/*"
-su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName='${dbuser}' --hiveconf javax.jdo.option.ConnectionPassword='${dbpass}'"
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysqliam://${dbhost}:3306/${dbname}?useSSL=true\&requireSSL=true --hiveconf javax.jdo.option.ConnectionUserName=${dbuser}"

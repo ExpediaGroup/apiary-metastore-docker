@@ -6,6 +6,7 @@ from amazonlinux:latest
 ENV VAULT_VERSION 0.10.3
 ENV RANGER_VERSION 1.1.0
 ENV APIARY_METASTORE_LISTENER_VERSION 0.1.0
+ENV IAM_JDBC_VERSION 1.1.0
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
@@ -20,6 +21,7 @@ RUN yum -y install java-1.8.0-openjdk \
   unzip \
   jq \
   emrfs \
+  maven \
   && yum clean all \
   && rm -rf /var/cache/yum
 
@@ -40,6 +42,17 @@ wget -qN https://search.maven.org/remotecontent?filepath=org/eclipse/persistence
 
 COPY src /src
 RUN cd src && javac -cp "/usr/lib/hadoop/*:/usr/lib/hive/lib/*:/usr/share/aws/aws-java-sdk/*" *.java && jar cf /usr/lib/hive/lib/MetastoreListeners.jar *.class && rm -f *.class
+
+RUN wget -q -O - https://github.com/rikturnbull/iam-jdbc-driver/archive/v${IAM_JDBC_VERSION}.tar.gz|tar -C /tmp -xzf - && \
+cd /tmp/iam-jdbc-driver-${IAM_JDBC_VERSION} && \
+sed 's/com.mysql.jdbc.Driver/org.mariadb.jdbc.Driver/' -i src/main/java/uk/co/controlz/aws/IAMJDBCDriver.java && \
+sed 's/properties.getProperty(PROPERTY_AWS_REGION)/System.getenv("AWS_REGION")/' -i src/main/java/uk/co/controlz/aws/IAMJDBCDriver.java && \
+sed 's/<dependencies>/<dependencies>\n<dependency>\n<groupId>org.mariadb.jdbc<\/groupId>\n<artifactId>mariadb-java-client<\/artifactId>\n<version>2.3.0<\/version>\n<\/dependency>\n/g' -i pom.xml && \
+mvn package  && cp -a target/iam-jdbc-driver-${IAM_JDBC_VERSION}.jar /usr/lib/hive/lib/ && \
+rm -rf /root/.m2 && rm -rf /tmp/iam-jdbc-driver-${IAM_JDBC_VERSION}
+
+#RDS CA certificate, required to use jdbc with ssl
+RUN wget -q https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem -O /etc/pki/ca-trust/source/anchors/rds-ca-2015-root.pem && update-ca-trust && update-ca-trust enable
 
 RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*"' >> /etc/hadoop/conf/hadoop-env.sh
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml

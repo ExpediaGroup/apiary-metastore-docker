@@ -20,7 +20,7 @@
 
 <property>
     <name>javax.jdo.option.ConnectionDriverName</name>
-    <value>org.mariadb.jdbc.Driver</value>
+    <value>uk.co.controlz.aws.IAMJDBCDriver</value>
 </property>
 
 <property>
