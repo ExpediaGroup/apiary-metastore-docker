@@ -2,8 +2,10 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-export VAULT_SKIP_VERIFY=true
-export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
+if [[ -n $VAULT_ADDR ]]; then
+    export VAULT_SKIP_VERIFY=true
+    export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
+fi
 
 if [ x"$instance_type" = x"readwrite" ]; then
     dbuser="iamrw"
