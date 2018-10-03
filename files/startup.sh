@@ -28,7 +28,7 @@ fi
 
 #configure ranger authorization
 if [[ -n $POLICY_MGR_URL ]]; then
-    export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},ApiaryRangerAuthPreEventListener"
+    export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expedia.apiary.extensions.rangerauth.listener.ApiaryRangerAuthPreEventListener"
     sed "s/POLICY_MGR_URL/${POLICY_MGR_URL}/" -i /etc/hive/conf/ranger-hive-security.xml
     sed "s/RANGER_SERVICE_NAME/${RANGER_SERVICE_NAME}/" -i /etc/hive/conf/ranger-hive-security.xml
 fi
@@ -92,5 +92,6 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 
 export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar:/usr/share/aws/aws-java-sdk/*"
 [[ ! -z $ENABLE_GLUESYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
+[[ ! -z $POLICY_MGR_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
 
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName='${dbuser}' --hiveconf javax.jdo.option.ConnectionPassword='${dbpass}'"
