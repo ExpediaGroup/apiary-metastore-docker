@@ -82,7 +82,6 @@ fi
 export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
 sed "s/METASTORE_LISTENERS/${METASTORE_LISTENERS}/" -i /etc/hive/conf/hive-site.xml
 
-[[ ! -z $DISABLE_DBMGMT ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},ApiaryDBPreEventListener"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expedia.apiary.extensions.gluesync.listener.ApiaryGluePreEventListener"
 export METASTORE_PRELISTENERS=$(echo $METASTORE_PRELISTENERS|sed 's/^,//')
 sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive-site.xml

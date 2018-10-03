@@ -32,9 +32,6 @@ wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiar
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar
 
-COPY src /src
-RUN cd src && javac -cp "/usr/lib/hadoop/*:/usr/lib/hive/lib/*:/usr/share/aws/aws-java-sdk/*" *.java && jar cf /usr/lib/hive/lib/MetastoreListeners.jar *.class && rm -f *.class
-
 RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*"' >> /etc/hadoop/conf/hadoop-env.sh
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
