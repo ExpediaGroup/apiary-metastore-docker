@@ -43,4 +43,14 @@
   <value>METASTORE_PRELISTENERS</value>
 </property>
 
+<property>
+  <name>hive.service.metrics.class</name>
+  <value>com.expedia.apiary.extensions.metastore.metrics.CodahaleMetrics</value>
+</property>
+
+<property>
+  <name>hive.metastore.metrics.enabled</name>
+  <value>false</value>
+</property>
+
 </configuration>

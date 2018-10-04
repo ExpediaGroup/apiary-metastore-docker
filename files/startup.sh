@@ -45,6 +45,12 @@ if [[ -n $AUDIT_DB_URL ]]; then
     sed "s/AUDIT_DB_PASSWORD/$(vault read -field=password ${vault_path}/audit_db_user)/" -i /etc/hive/conf/ranger-hive-audit.xml
 fi
 
+if [ ! -z $ENABLE_METRICS ]; then
+    export ECS_TASK_ID=$(wget -q -O - http://169.254.170.2/v2/metadata|jq -r .TaskARN|awk -F/ '{ print $NF }')
+    export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
+    sed -e '/hive.metastore.metrics.enabled/ { n; s/false/true/ }' -i /etc/hive/conf/hive-site.xml
+fi
+
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ x"$instance_type" = x"readwrite" ]; then
 MYSQL_OPTIONS="-h$dbhost -u$dbuser -p$dbpass $dbname -N"
@@ -93,5 +99,6 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $SNS_ARN ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar"
 [[ ! -z $ENABLE_GLUESYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
 [[ ! -z $POLICY_MGR_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
+[[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName='${dbuser}' --hiveconf javax.jdo.option.ConnectionPassword='${dbpass}'"
