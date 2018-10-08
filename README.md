@@ -14,9 +14,9 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |SNS_ARN|No|The SNS topic ARN to which metadata updates will be sent.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
 |GLUE_PREFIX|No|Prefix added to Glue databases to handle database name collisions when synchronizing multiple Hive Metastores to the Glue catalog.|
-|POLICY_MGR_URL|No|Ranger Admin URL from where policies will be downloaded.|
-|RANGER_SERVICE_NAME|No|Ranger service name used to configure the plugin.|
-|AUDIT_DB_URL|No|Ranger audit DB JDBC URL.|
+|POLICY_MGR_URL|No|Ranger admin URL from where policies will be downloaded.|
+|RANGER_SERVICE_NAME|No|Ranger service name used to configure RangerAuth plugin.|
+|AUDIT_DB_URL|No|Ranger audit database JDBC URL.|
 |LDAP_URL|No|Active Directory URL to enable group mapping in metastore.|
 |LDAP_BASE|No|LDAP base dn used to search for user groups.|
 |instance_type|No|Hive Metastore instance type, applicable values are: readwrite, readonly|
