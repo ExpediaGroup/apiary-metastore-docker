@@ -52,17 +52,17 @@
 	<!--  Properties whose name begin with "xasecure.audit.jpa." are used to configure JPA -->
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.url</name>
-		<value>AUDIT_DB_URL</value>
+		<value></value>
 	</property>
 
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.user</name>
-		<value>AUDIT_DB_USER</value>
+		<value></value>
 	</property>
 
 	<property>
 		<name>xasecure.audit.jpa.javax.persistence.jdbc.password</name>
-		<value>AUDIT_DB_PASSWORD</value>
+		<value></value>
 	</property>
 
 	<property>
@@ -264,7 +264,7 @@
 	
 	<property>
 		<name>xasecure.audit.solr.solr_url</name>
-		<value>AUDIT_SOLR_URL</value>
+		<value></value>
 	</property>	
 	
 </configuration>

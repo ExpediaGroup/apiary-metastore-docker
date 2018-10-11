@@ -42,5 +42,6 @@ COPY files/ranger-hive-security.xml /etc/hive/conf/ranger-hive-security.xml
 COPY files/ranger-hive-audit.xml /etc/hive/conf/ranger-hive-audit.xml
 
 EXPOSE 9083
+COPY files/update_property.py /bin/update_property.py
 COPY files/startup.sh /startup.sh
 CMD /startup.sh
