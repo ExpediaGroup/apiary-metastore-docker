@@ -14,12 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-/* This script is based on
- *
- * https://github.com/apache/ranger/blob/master/security-admin/scripts/update_property.py
- *
- * See the NOTICE file distributed with this work for additional information regarding copyright ownership.
-*/
+# This script is based on
+#
+# https://github.com/apache/ranger/blob/master/security-admin/scripts/update_property.py
+#
+# See the NOTICE file distributed with this work for additional information regarding copyright ownership.
 
 import sys
 import os
