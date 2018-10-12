@@ -15,11 +15,11 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |RANGER_POLICY_MANAGER_URL|No|Ranger admin URL from where policies will be downloaded.|
 |RANGER_SERVICE_NAME|No|Ranger service name used to configure RangerAuth plugin.|
 |RANGER_AUDIT_DB_URL|No|Ranger audit database JDBC URL.|
-|RANGER_AUDIT_SOLR_URL|No|Ranger SOLR audit URL.|
+|RANGER_AUDIT_SOLR_URL|No|Ranger Solr audit URL.|
 |LDAP_URL|No|Active Directory URL to enable group mapping in metastore.|
 |LDAP_BASE|No|LDAP base DN used to search for user groups.|
 |HIVE_METASTORE_ACCESS_MODE|No|Hive Metastore access mode, applicable values are: readwrite, readonly|
-|HIVE_DB_NAMES|No|comma separated list of hive database names, when specified hive databases will be created and mapped to corresponding S3 buckets.|
+|HIVE_DB_NAMES|No|comma separated list of Hive database names, when specified Hive databases will be created and mapped to corresponding S3 buckets.|
 |HIVE_METASTORE_LOG_LEVEL|No|Hive Metastore service Log4j log level.|
 |INSTANCE_NAME|Yes|Apiary instance name, will be used as prefix on most AWS resources to allow multiple Apiary instance deployments.|
 |MYSQL_DB_HOST|Yes|Hive Metastore MySQL database hostname.|
