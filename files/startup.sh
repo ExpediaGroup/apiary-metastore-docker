@@ -5,55 +5,57 @@
 export VAULT_SKIP_VERIFY=true
 export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
 
-if [ x"$instance_type" = x"readwrite" ]; then
-    dbuser=`vault read -field=username ${vault_path}/hive_rwuser`
-    dbpass=`vault read -field=password ${vault_path}/hive_rwuser`
+if [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
+    MYSQL_DB_USERNAME=`vault read -field=username ${VAULT_PATH}/hive_rwuser`
+    MYSQL_DB_PASSWORD=`vault read -field=password ${VAULT_PATH}/hive_rwuser`
 else
-    dbuser=`vault read -field=username ${vault_path}/hive_rouser`
-    dbpass=`vault read -field=password ${vault_path}/hive_rouser`
+    MYSQL_DB_USERNAME=`vault read -field=username ${VAULT_PATH}/hive_rouser`
+    MYSQL_DB_PASSWORD=`vault read -field=password ${VAULT_PATH}/hive_rouser`
 fi
 
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
-    sed "s/LDAP_BIND_USER/$(vault read -field=bind_user ${vault_path}/ldap_user)/" -i /etc/hadoop/conf/core-site.xml
-    vault read -field=bind_password ${vault_path}/ldap_user > /etc/hadoop/conf/ldap-password.txt
-    sed 's/org.apache.hadoop.security.JniBasedUnixGroupsMappingWithFallback/org.apache.hadoop.security.LdapGroupsMapping/' -i /etc/hadoop/conf/core-site.xml
-    sed "s/LDAP_URL/${LDAP_URL}/" -i /etc/hadoop/conf/core-site.xml
-    sed "s/LDAP_BASE/${LDAP_BASE}/" -i /etc/hadoop/conf/core-site.xml
+    update_property.py hadoop.security.group.mapping.ldap.bind.user "$(vault read -field=bind_user ${VAULT_PATH}/ldap_user)" /etc/hadoop/conf/core-site.xml
+    vault read -field=bind_password ${VAULT_PATH}/ldap_user > /etc/hadoop/conf/ldap-password.txt
+    update_property.py hadoop.security.group.mapping org.apache.hadoop.security.LdapGroupsMapping /etc/hadoop/conf/core-site.xml
+    update_property.py hadoop.security.group.mapping.ldap.url "${LDAP_URL}" /etc/hadoop/conf/core-site.xml
+    update_property.py hadoop.security.group.mapping.ldap.base "${LDAP_BASE}" /etc/hadoop/conf/core-site.xml
     #configure local ca certificate to connect o ldap/ad
-    vault read -field=cacert ${vault_path}/ldap_user > /etc/pki/ca-trust/source/anchors/ldapca.crt
+    vault read -field=cacert ${VAULT_PATH}/ldap_user > /etc/pki/ca-trust/source/anchors/ldapca.crt
     update-ca-trust
     update-ca-trust enable
 fi
 
 #configure ranger authorization
-if [[ -n $POLICY_MGR_URL ]]; then
+if [[ -n $RANGER_POLICY_MANAGER_URL ]]; then
     export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expedia.apiary.extensions.rangerauth.listener.ApiaryRangerAuthPreEventListener"
-    sed "s/POLICY_MGR_URL/${POLICY_MGR_URL}/" -i /etc/hive/conf/ranger-hive-security.xml
-    sed "s/RANGER_SERVICE_NAME/${RANGER_SERVICE_NAME}/" -i /etc/hive/conf/ranger-hive-security.xml
+    update_property.py ranger.plugin.hive.policy.rest.url ${RANGER_POLICY_MANAGER_URL} /etc/hive/conf/ranger-hive-security.xml
+    update_property.py ranger.plugin.hive.service.name ${RANGER_SERVICE_NAME} /etc/hive/conf/ranger-hive-security.xml
 fi
 #enable ranger auditing
-if [[ -n $AUDIT_SOLR_URL ]]; then
-    sed -e '/xasecure.audit.is.enabled/ { n; s/false/true/ }' -e '/xasecure.audit.solr.is.enabled/ { n; s/false/true/ }' -i /etc/hive/conf/ranger-hive-audit.xml
-    sed "s/AUDIT_SOLR_URL/${AUDIT_SOLR_URL}/" -i /etc/hive/conf/ranger-hive-audit.xml
+if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
+    update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
 fi
 #enable ranger db auditing
-if [[ -n $AUDIT_DB_URL ]]; then
-    sed -e '/xasecure.audit.is.enabled/ { n; s/false/true/ }' -e '/xasecure.audit.db.is.enabled/ { n; s/false/true/ }' -i /etc/hive/conf/ranger-hive-audit.xml
-    sed "s/AUDIT_DB_URL/${AUDIT_DB_URL}/" -i /etc/hive/conf/ranger-hive-audit.xml
-    sed "s/AUDIT_DB_USER/$(vault read -field=username ${vault_path}/audit_db_user)/" -i /etc/hive/conf/ranger-hive-audit.xml
-    sed "s/AUDIT_DB_PASSWORD/$(vault read -field=password ${vault_path}/audit_db_user)/" -i /etc/hive/conf/ranger-hive-audit.xml
+if [[ -n $RANGER_AUDIT_DB_URL ]]; then
+    update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.db.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.url ${RANGER_AUDIT_DB_URL} /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(vault read -field=username ${VAULT_PATH}/audit_db_user)" /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(vault read -field=password ${VAULT_PATH}/audit_db_user)" /etc/hive/conf/ranger-hive-audit.xml
 fi
 
 if [ ! -z $ENABLE_METRICS ]; then
     export ECS_TASK_ID=$(wget -q -O - http://169.254.170.2/v2/metadata|jq -r .TaskARN|awk -F/ '{ print $NF }')
     export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
-    sed -e '/hive.metastore.metrics.enabled/ { n; s/false/true/ }' -i /etc/hive/conf/hive-site.xml
+    update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
 fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
-if [ -z $EXTERNAL_DATABASE ] && [ x"$instance_type" = x"readwrite" ]; then
-MYSQL_OPTIONS="-h$dbhost -u$dbuser -p$dbpass $dbname -N"
+if [ -z $EXTERNAL_DATABASE ] && [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
+MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
 schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
 if [ x"$schema_version" != x"2.3.0" ]; then
     cd /usr/lib/hive/scripts/metastore/upgrade/mysql
@@ -62,8 +64,8 @@ if [ x"$schema_version" != x"2.3.0" ]; then
 fi
 
 #create hive databases
-if [ ! -z $HIVE_DBS ]; then
-    for HIVE_DB in `echo $HIVE_DBS|tr "," "\n"`
+if [ ! -z $HIVE_DB_NAMES ]; then
+    for HIVE_DB in `echo $HIVE_DB_NAMES|tr "," "\n"`
     do
         echo "creating hive database $HIVE_DB"
         DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
@@ -80,7 +82,7 @@ if [ ! -z $HIVE_DBS ]; then
 fi
 fi
 
-[[ -z $loglevel ]] && loglevel="INFO"
+[[ -z $HIVE_METASTORE_LOG_LEVEL ]] && HIVE_METASTORE_LOG_LEVEL="INFO"
 
 [[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.metastore.listener.ApiarySnsListener"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.gluesync.listener.ApiaryGlueSync"
@@ -98,7 +100,7 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $SNS_ARN ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar"
 [[ ! -z $ENABLE_GLUESYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
-[[ ! -z $POLICY_MGR_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
+[[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 
-su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${loglevel},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${dbhost}:3306/${dbname} --hiveconf javax.jdo.option.ConnectionUserName='${dbuser}' --hiveconf javax.jdo.option.ConnectionPassword='${dbpass}'"
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${HIVE_METASTORE_LOG_LEVEL},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
