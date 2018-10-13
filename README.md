@@ -18,6 +18,8 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |RANGER_AUDIT_SOLR_URL|No|Ranger Solr audit URL.|
 |LDAP_URL|No|Active Directory URL to enable group mapping in metastore.|
 |LDAP_BASE|No|LDAP base DN used to search for user groups.|
+|LDAP_SECRET_ARN|Yes|LDAP bind DN SecretsManager secret ARN.|
+|LDAP_CA_CERT|Base64 encoded Certificate Authority Bundle to validate LDAP SSL connection.|
 |HIVE_METASTORE_ACCESS_MODE|No|Hive Metastore access mode, applicable values are: readwrite, readonly|
 |HIVE_DB_NAMES|No|comma separated list of Hive database names, when specified Hive databases will be created and mapped to corresponding S3 buckets.|
 |HIVE_METASTORE_LOG_LEVEL|No|Hive Metastore service Log4j log level.|
