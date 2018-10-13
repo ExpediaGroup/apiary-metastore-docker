@@ -40,8 +40,8 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.db.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.url ${RANGER_AUDIT_DB_URL} /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(vault read -field=username ${VAULT_PATH}/audit_db_user)" /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(vault read -field=password ${VAULT_PATH}/audit_db_user)" /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .password -r)" /etc/hive/conf/ranger-hive-audit.xml
 fi
 
 if [ ! -z $ENABLE_METRICS ]; then
