@@ -3,7 +3,6 @@
 
 from amazonlinux:latest
 
-ENV VAULT_VERSION 0.10.3
 ENV RANGER_VERSION 1.1.0
 ENV APIARY_METASTORE_LISTENER_VERSION 0.2.0
 ENV APIARY_GLUESYNC_LISTENER_VERSION 0.2.0
@@ -25,8 +24,6 @@ RUN yum -y install java-1.8.0-openjdk \
   emrfs \
   && yum clean all \
   && rm -rf /var/cache/yum
-
-RUN wget -qN https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip && unzip -q -o vault_${VAULT_VERSION}_linux_amd64.zip -d /usr/local/bin/ && rm -f vault_${VAULT_VERSION}_linux_amd64.zip
 
 RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-listener/${APIARY_METASTORE_LISTENER_VERSION}/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar -O apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar && \

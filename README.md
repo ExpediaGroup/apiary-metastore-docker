@@ -29,9 +29,6 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |MYSQL_DB_NAME|Yes|Hive Metastore MySQL database name.|
 |MYSQL_SECRET_ARN|Yes|Hive Metastore MySQL SecretsManager secret ARN.|
 |SNS_ARN|No|The SNS topic ARN to which metadata updates will be sent.|
-|VAULT_ADDR|Yes|Address of Vault server for secrets.|
-|VAULT_LOGIN_PATH|No|Alternative login path on Vault server.|
-|VAULT_PATH|Yes|Vault path to read secrets from.|
 
 # Contact
 
