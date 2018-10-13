@@ -2,16 +2,13 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-export VAULT_SKIP_VERIFY=true
-export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
-
-if [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
-    MYSQL_DB_USERNAME=`vault read -field=username ${VAULT_PATH}/hive_rwuser`
-    MYSQL_DB_PASSWORD=`vault read -field=password ${VAULT_PATH}/hive_rwuser`
-else
-    MYSQL_DB_USERNAME=`vault read -field=username ${VAULT_PATH}/hive_rouser`
-    MYSQL_DB_PASSWORD=`vault read -field=password ${VAULT_PATH}/hive_rouser`
+if [[ -n $VAULT_ADDR ]]; then
+    export VAULT_SKIP_VERIFY=true
+    export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
 fi
+
+MYSQL_DB_USERNAME=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r`
+MYSQL_DB_PASSWORD=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r`
 
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
