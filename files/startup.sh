@@ -2,26 +2,18 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-export VAULT_SKIP_VERIFY=true
-export VAULT_TOKEN=`vault login -method=aws -path=${VAULT_LOGIN_PATH} -token-only`
-
-if [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
-    MYSQL_DB_USERNAME=`vault read -field=username ${VAULT_PATH}/hive_rwuser`
-    MYSQL_DB_PASSWORD=`vault read -field=password ${VAULT_PATH}/hive_rwuser`
-else
-    MYSQL_DB_USERNAME=`vault read -field=username ${VAULT_PATH}/hive_rouser`
-    MYSQL_DB_PASSWORD=`vault read -field=password ${VAULT_PATH}/hive_rouser`
-fi
+MYSQL_DB_USERNAME=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r`
+MYSQL_DB_PASSWORD=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r`
 
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
-    update_property.py hadoop.security.group.mapping.ldap.bind.user "$(vault read -field=bind_user ${VAULT_PATH}/ldap_user)" /etc/hadoop/conf/core-site.xml
-    vault read -field=bind_password ${VAULT_PATH}/ldap_user > /etc/hadoop/conf/ldap-password.txt
+    update_property.py hadoop.security.group.mapping.ldap.bind.user "$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hadoop/conf/core-site.xml
+    aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .password -r > /etc/hadoop/conf/ldap-password.txt
     update_property.py hadoop.security.group.mapping org.apache.hadoop.security.LdapGroupsMapping /etc/hadoop/conf/core-site.xml
     update_property.py hadoop.security.group.mapping.ldap.url "${LDAP_URL}" /etc/hadoop/conf/core-site.xml
     update_property.py hadoop.security.group.mapping.ldap.base "${LDAP_BASE}" /etc/hadoop/conf/core-site.xml
     #configure local ca certificate to connect o ldap/ad
-    vault read -field=cacert ${VAULT_PATH}/ldap_user > /etc/pki/ca-trust/source/anchors/ldapca.crt
+    echo ${LDAP_CA_CERT}|base64 -d > /etc/pki/ca-trust/source/anchors/ldapca.crt
     update-ca-trust
     update-ca-trust enable
 fi
@@ -43,8 +35,8 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.db.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.url ${RANGER_AUDIT_DB_URL} /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(vault read -field=username ${VAULT_PATH}/audit_db_user)" /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(vault read -field=password ${VAULT_PATH}/audit_db_user)" /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .password -r)" /etc/hive/conf/ranger-hive-audit.xml
 fi
 
 if [ ! -z $ENABLE_METRICS ]; then
