@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Option to send metastore metrics to CloudWatch - see [#4](https://github.com/ExpediaInc/apiary-metastore-docker/issues/4).
 - Refactor Environment variable names.
 - Migrate secrets from Hashicorp Vault to AWS SecretsManager.
+- Update startup script to configure Log4j, to fix sending Hive Metastore logs to CloudWatch.
 
 ### Changed
 - Deploy RangerAuth Pre Event Listener from [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-ranger-metastore-plugin).

@@ -75,6 +75,7 @@ fi
 fi
 
 [[ -z $HIVE_METASTORE_LOG_LEVEL ]] && HIVE_METASTORE_LOG_LEVEL="INFO"
+sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
 
 [[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.metastore.listener.ApiarySnsListener"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.gluesync.listener.ApiaryGlueSync"
@@ -95,4 +96,4 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 
-su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf hive.root.logger=${HIVE_METASTORE_LOG_LEVEL},console --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"

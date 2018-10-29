@@ -35,6 +35,7 @@ RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/co
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
+COPY files/hive-log4j2.properties /etc/hive/conf/hive-log4j2.properties
 COPY files/ranger-hive-security.xml /etc/hive/conf/ranger-hive-security.xml
 COPY files/ranger-hive-audit.xml /etc/hive/conf/ranger-hive-audit.xml
 
