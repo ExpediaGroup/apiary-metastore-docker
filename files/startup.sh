@@ -62,7 +62,12 @@ if [ ! -z $HIVE_DB_NAMES ]; then
         echo "creating hive database $HIVE_DB"
         DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
         AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
+
         BUCKET_NAME="${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"
+
+        #Replace "-" with "_" for HIVE_DB - https://github.com/ExpediaInc/apiary/issues/5
+        HIVE_DB=$(echo $HIVE_DB | tr '-' '_')
+
         echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
         #create glue database
         if [ ! -z $ENABLE_GLUESYNC ]; then
