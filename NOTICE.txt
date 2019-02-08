@@ -1,4 +1,4 @@
 Apiary Metastore Docker
-Copyright 2018 Expedia Inc.
+Copyright 2018-2019 Expedia Inc.
 
 This product includes software developed at The Apache Software Foundation (http://www.apache.org/).

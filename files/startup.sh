@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2018 Expedia Inc.
+# Copyright (C) 2018-2019 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
 MYSQL_DB_USERNAME=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r`
@@ -96,4 +96,5 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 
+export HADOOP_OPTS="-server -XshowSettings:vm"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
