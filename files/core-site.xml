@@ -51,11 +51,6 @@
 </property>
 
 <property>
-  <name>fs.s3bfs.impl</name>
-  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
-</property>
-
-<property>
   <name>fs.s3a.connection.ssl.enabled</name>
   <value>true</value>
 </property>
