@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Added
+- Auto configure Hive metastore heapsize when running on ECS.
+
 ### Changed
-- Replace EMRFS with hadoop-aws S3A libraries
+- Replace EMRFS with hadoop-aws S3A libraries.
 
 ## [1.0.0] - 2018-10-31
 
