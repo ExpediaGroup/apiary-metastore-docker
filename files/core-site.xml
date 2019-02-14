@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
-   Copyright (C) 2018 Expedia Inc.
+   Copyright (C) 2018-2019 Expedia Inc.
   
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -22,22 +22,47 @@
 
 <property>
   <name>fs.s3.impl</name>
-  <value>com.amazon.ws.emr.hadoop.fs.EmrFileSystem</value>
+  <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
 </property>
 
 <property>
   <name>fs.s3n.impl</name>
-  <value>com.amazon.ws.emr.hadoop.fs.EmrFileSystem</value>
+  <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+</property>
+
+<property>
+  <name>fs.s3a.impl</name>
+  <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
 </property>
 
 <property>
   <name>fs.AbstractFileSystem.s3.impl</name>
-  <value>org.apache.hadoop.fs.s3.EMRFSDelegate</value>
+  <value>org.apache.hadoop.fs.s3a.S3A</value>
 </property>
 
 <property>
-  <name>fs.s3bfs.impl</name>
-  <value>org.apache.hadoop.fs.s3.S3FileSystem</value>
+  <name>fs.AbstractFileSystem.s3n.impl</name>
+  <value>org.apache.hadoop.fs.s3a.S3A</value>
+</property>
+
+<property>
+  <name>fs.AbstractFileSystem.s3a.impl</name>
+  <value>org.apache.hadoop.fs.s3a.S3A</value>
+</property>
+
+<property>
+  <name>fs.s3a.connection.ssl.enabled</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>fs.s3a.server-side-encryption-algorithm</name>
+  <value>AES256</value>
+</property>
+
+<property>
+  <name>fs.s3a.aws.credentials.provider</name>
+  <value>com.amazonaws.auth.ContainerCredentialsProvider</value>
 </property>
 
 <property>

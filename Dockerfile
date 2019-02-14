@@ -21,7 +21,6 @@ RUN yum -y install java-1.8.0-openjdk \
   wget \
   unzip \
   jq \
-  emrfs \
   && yum clean all \
   && rm -rf /var/cache/yum
 
@@ -31,9 +30,7 @@ wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiar
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar
 
-RUN echo 'export HADOOP_CLASSPATH="$HADOOP_CLASSPATH:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*"' >> /etc/hadoop/conf/hadoop-env.sh
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
-COPY files/emrfs-site.xml /usr/share/aws/emr/emrfs/conf/emrfs-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
 COPY files/hive-log4j2.properties /etc/hive/conf/hive-log4j2.properties
 COPY files/ranger-hive-security.xml /etc/hive/conf/ranger-hive-security.xml
