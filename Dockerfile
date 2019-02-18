@@ -4,10 +4,11 @@
 from amazonlinux:latest
 
 ENV RANGER_VERSION 1.1.0
-ENV APIARY_METASTORE_LISTENER_VERSION 1.0.0
-ENV APIARY_GLUESYNC_LISTENER_VERSION 1.0.0
-ENV APIARY_RANGER_PLUGIN_VERSION 1.0.0
-ENV APIARY_METASTORE_METRICS_VERSION 1.0.0
+ENV APIARY_METASTORE_LISTENER_VERSION 1.1.0
+ENV APIARY_GLUESYNC_LISTENER_VERSION 1.1.0
+ENV APIARY_RANGER_PLUGIN_VERSION 1.1.0
+ENV APIARY_METASTORE_METRICS_VERSION 1.1.0
+ENV APIARY_METASTORE_AUTH_VERSION 1.1.0
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
@@ -28,7 +29,8 @@ RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-listener/${APIARY_METASTORE_LISTENER_VERSION}/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar -O apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar
+wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=com/expedia/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar
 
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
