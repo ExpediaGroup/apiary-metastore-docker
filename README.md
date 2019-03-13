@@ -29,6 +29,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |MYSQL_DB_NAME|Yes|Hive Metastore MySQL database name.|
 |MYSQL_SECRET_ARN|Yes|Hive Metastore MySQL SecretsManager secret ARN.|
 |SNS_ARN|No|The SNS topic ARN to which metadata updates will be sent.|
+|TABLE_PARAM_FILTER|No|A regular expression for selecting necessary table parameters. If the value isn't set, then no table parameters are selected.|
 
 # Contact
 
