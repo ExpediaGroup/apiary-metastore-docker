@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - ReadOnlyAuth Pre Event Listener to manage hive database whitelist in read-only metastores [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-metastore-auth).
 
 ### Changed
-- Updated apiary-metastore-listener to 1.2.0 (was 1.1.0).
+- Updated apiary-metastore-listener to 1.3.0 (was 1.1.0).
 
 ## [1.0.1] - 2019-02-15
 
