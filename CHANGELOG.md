@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [Unreleased]
 
 ### Added
-- ReadOnlyAuth Pre Event Listener to manage hive database whitelist in read-only metastores [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-metastore-auth).
+- ReadOnlyAuth Pre Event Listener to manage hive database whitelist in read-only metastores [apiary-metastore-extensions](https://github.com/ExpediaGroup/apiary-extensions/tree/master/apiary-metastore-auth).
 
 ### Changed
 - Updated apiary-metastore-listener to 1.3.2 (was 1.1.0).
@@ -21,16 +21,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.0.0] - 2018-10-31
 
 ### Added
-- Option to send metastore metrics to CloudWatch - see [#4](https://github.com/ExpediaInc/apiary-metastore-docker/issues/4).
+- Option to send metastore metrics to CloudWatch - see [#4](https://github.com/ExpediaGroup/apiary-metastore-docker/issues/4).
 - Refactor Environment variable names.
 - Migrate secrets from Hashicorp Vault to AWS SecretsManager.
 - Update startup script to configure Log4j, to fix sending Hive Metastore logs to CloudWatch.
 
 ### Changed
-- Deploy RangerAuth Pre Event Listener from [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-ranger-metastore-plugin).
-- Deploy GlueSync Listener from [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-gluesync-listener).
-- Deploy SNS Listener from [apiary-metastore-extensions](https://github.com/ExpediaInc/apiary-extensions/tree/master/apiary-metastore-listener).
-- Additional check to support external MySQL database for Hive Metastore, required to implement [#48](https://github.com/ExpediaInc/apiary-metastore/issues/48).
+- Deploy RangerAuth Pre Event Listener from [apiary-metastore-extensions](https://github.com/ExpediaGroup/apiary-extensions/tree/master/apiary-ranger-metastore-plugin).
+- Deploy GlueSync Listener from [apiary-metastore-extensions](https://github.com/ExpediaGroup/apiary-extensions/tree/master/apiary-gluesync-listener).
+- Deploy SNS Listener from [apiary-metastore-extensions](https://github.com/ExpediaGroup/apiary-extensions/tree/master/apiary-metastore-listener).
+- Additional check to support external MySQL database for Hive Metastore, required to implement [#48](https://github.com/ExpediaGroup/apiary-metastore/issues/48).
 
 ### Fixed
 - Fix to update cacerts for Java.
