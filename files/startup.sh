@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (C) 2018-2019 Expedia Inc.
+# Copyright (C) 2018-2019 Expedia, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
 MYSQL_DB_USERNAME=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r`
@@ -20,7 +20,7 @@ fi
 
 #configure ranger authorization
 if [[ -n $RANGER_POLICY_MANAGER_URL ]]; then
-    export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expedia.apiary.extensions.rangerauth.listener.ApiaryRangerAuthPreEventListener"
+    export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.rangerauth.listener.ApiaryRangerAuthPreEventListener"
     update_property.py ranger.plugin.hive.policy.rest.url ${RANGER_POLICY_MANAGER_URL} /etc/hive/conf/ranger-hive-security.xml
     update_property.py ranger.plugin.hive.service.name ${RANGER_SERVICE_NAME} /etc/hive/conf/ranger-hive-security.xml
 fi
@@ -74,18 +74,18 @@ if [ ! -z $HIVE_DB_NAMES ]; then
 fi
 fi
 #pre event listener to restrict hive database access in read-only metastores
-[[ ! -z $HIVE_DB_WHITELIST ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expedia.apiary.extensions.readonlyauth.listener.ApiaryReadOnlyAuthPreEventListener"
+[[ ! -z $HIVE_DB_WHITELIST ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.readonlyauth.listener.ApiaryReadOnlyAuthPreEventListener"
 
 [[ -z $HIVE_METASTORE_LOG_LEVEL ]] && HIVE_METASTORE_LOG_LEVEL="INFO"
 sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
 
-[[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.metastore.listener.ApiarySnsListener"
-[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expedia.apiary.extensions.gluesync.listener.ApiaryGlueSync"
+[[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.metastore.listener.ApiarySnsListener"
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGlueSync"
 #remove leading , when external METASTORE_LISTENERS are not defined
 export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
 sed "s/METASTORE_LISTENERS/${METASTORE_LISTENERS}/" -i /etc/hive/conf/hive-site.xml
 
-[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expedia.apiary.extensions.gluesync.listener.ApiaryGluePreEventListener"
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGluePreEventListener"
 export METASTORE_PRELISTENERS=$(echo $METASTORE_PRELISTENERS|sed 's/^,//')
 sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive-site.xml
 

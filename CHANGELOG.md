@@ -5,11 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.1.0] - TBD
 
 ### Added
-- ReadOnlyAuth Pre Event Listener to manage hive database whitelist in read-only metastores [apiary-metastore-extensions](https://github.com/ExpediaGroup/apiary-extensions/tree/master/apiary-metastore-auth).
+- ReadOnlyAuth Pre Event Listener to manage Hive database whitelist in read-only metastores [apiary-metastore-extensions](https://github.com/ExpediaGroup/apiary-extensions/tree/master/apiary-metastore-auth).
 - Support for `_` in `HIVE_DB_NAMES` variable. Fixes [#5] (https://github.com/ExpediaGroup/apiary/issues/5).
 
 ### Changed
-- Updated apiary-metastore-listener to 1.3.2 (was 1.1.0).
+- Updated apiary-metastore-listener to 3.0.0 (was 1.1.0).
+- Updated apiary-gluesync-listener to 3.0.0 (was 1.1.0).
+- Updated apiary-ranger-plugin to 3.0.0 (was 1.1.0).
+- Updated apiary-metastore-metrics to 3.0.0 (was 1.1.0).
+- Updated apiary-metastore-auth to 3.0.0 (was 1.1.0).
 
 ## [1.0.1] - 2019-02-15
 
