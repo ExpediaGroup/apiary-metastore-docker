@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Support for `_` in `HIVE_DB_NAMES` variable. Fixes [#5] (https://github.com/ExpediaGroup/apiary/issues/5).
 
 ### Changed
+- Updated apiary-metastore-listener package name references
 - Updated apiary-metastore-listener to 3.0.0 (was 1.1.0).
 - Updated apiary-gluesync-listener to 3.0.0 (was 1.1.0).
 - Updated apiary-ranger-plugin to 3.0.0 (was 1.1.0).
