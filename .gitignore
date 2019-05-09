@@ -29,3 +29,6 @@ target/
 
 # AWS credentials
 *.pem
+
+# PyDev project files
+/.pydevproject
