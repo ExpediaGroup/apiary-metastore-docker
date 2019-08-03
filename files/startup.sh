@@ -37,6 +37,11 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.url ${RANGER_AUDIT_DB_URL} /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .password -r)" /etc/hive/conf/ranger-hive-audit.xml
+    if [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
+        update_property.py ranger.plugin.hive.policy.source.impl "org.apache.ranger.admin.client.RangerAdminRESTClient" /etc/hive/conf/ranger-hive-security.xml
+    elif [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readonly" ]; then
+        update_property.py ranger.plugin.hive.policy.source.impl "com.expediagroup.apiary.extensions.rangerauth.policyproviders.ApiaryRangerAuthAllAccessPolicyProvider" /etc/hive/conf/ranger-hive-security.xml
+    fi
 fi
 
 if [ ! -z $ENABLE_METRICS ]; then
