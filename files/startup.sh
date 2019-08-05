@@ -37,9 +37,9 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.url ${RANGER_AUDIT_DB_URL} /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.user "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.jpa.javax.persistence.jdbc.password "$(aws secretsmanager get-secret-value --secret-id ${RANGER_AUDIT_SECRET_ARN}|jq .SecretString -r|jq .password -r)" /etc/hive/conf/ranger-hive-audit.xml
-    if [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
+    if [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
         update_property.py ranger.plugin.hive.policy.source.impl "org.apache.ranger.admin.client.RangerAdminRESTClient" /etc/hive/conf/ranger-hive-security.xml
-    elif [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readonly" ]; then
+    elif [ "$HIVE_METASTORE_ACCESS_MODE" = "readonly" ]; then
         update_property.py ranger.plugin.hive.policy.source.impl "com.expediagroup.apiary.extensions.rangerauth.policyproviders.ApiaryRangerAuthAllAccessPolicyProvider" /etc/hive/conf/ranger-hive-security.xml
     fi
 fi
@@ -51,10 +51,10 @@ if [ ! -z $ENABLE_METRICS ]; then
 fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
-if [ -z $EXTERNAL_DATABASE ] && [ x"$HIVE_METASTORE_ACCESS_MODE" = x"readwrite" ]; then
+if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
 MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
 schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
-if [ x"$schema_version" != x"2.3.0" ]; then
+if [ "$schema_version" != "2.3.0" ]; then
     cd /usr/lib/hive/scripts/metastore/upgrade/mysql
     cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
     cd /
