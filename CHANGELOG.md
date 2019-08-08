@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2019-08-08
+
+### Added
+- If Ranger is configured on the metastore, the read-only instance of
+  the metastore will be configured for audit-only by using
+  `ApiaryRangerAuthAllAccessPolicyProvider` in
+  [apiary-metastore-ranger-plugin](https://github.com/ExpediaGroup/apiary-extensions/blob/master/apiary-ranger-metastore-plugin/src/main/java/com/expediagroup/apiary/extensions/rangerauth/policyproviders/ApiaryRangerAuthAllAccessPolicyProvider.java)
+
 ## [1.1.0] - 2019-05-09
 
 ### Added
