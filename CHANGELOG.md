@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2019-09-09
+
+### Changed
+- Updated `emr-apps.repo` to 5.24.0.
+- Updated `emr-platform.repo` to 1.17.0
+
+### Fixed
+- Upgrade Hive to 2.3.4 in order to fix
+  https://issues.apache.org/jira/browse/HIVE-18767 - see [#59](https://github.com/ExpediaGroup/apiary-metastore-docker/issues/59)
+
 ## [1.2.0] - 2019-08-08
 
 ### Added
