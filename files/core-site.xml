@@ -62,7 +62,7 @@
 
 <property>
   <name>fs.s3a.aws.credentials.provider</name>
-  <value>com.amazonaws.auth.ContainerCredentialsProvider</value>
+  <value>com.amazonaws.auth.DefaultAWSCredentialsProviderChain</value>
 </property>
 
 <property>

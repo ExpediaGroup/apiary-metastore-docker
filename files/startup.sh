@@ -105,6 +105,11 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 [[ ! -z $ATLAS_HIVE_SYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-2.0.0.jar"
 
+#configure container credentials provider when running in ECS
+if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
+    update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.ContainerCredentialsProvider /etc/hadoop/conf/core-site.xml
+fi
+
 #auto configure heapsize
 if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
     export MEM_LIMIT=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .Limits.Memory)
