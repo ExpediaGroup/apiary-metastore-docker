@@ -46,6 +46,7 @@ RUN cd /tmp && \
     cd apache-atlas-sources-${ATLAS_VERSION}/ && \
     patch  -p1 < /tmp/atlas-2.0.0-hive-2.3.3.patch && \
     cd notification && mvn package && cp -a target/atlas-notification-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
+    cd ../intg && mvn package && cp -a target/atlas-intg-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
     cd ../addons/hive-bridge && mvn package -Dhive.version=2.3.3 && cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
     cd /tmp && rm -rf /root/.m2 && rm -rf /tmp/apache-atlas-sources-${ATLAS_VERSION}/ && rm -f /tmp/apache-atlas-${ATLAS_VERSION}-sources.tar.gz
 
