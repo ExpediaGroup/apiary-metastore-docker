@@ -41,13 +41,12 @@ RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/bi
 
 COPY files/atlas-2.0.0-hive-2.3.3.patch /tmp/atlas-2.0.0-hive-2.3.3.patch
 RUN cd /tmp && \
-    wget https://www-us.apache.org/dist/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
-    tar xvfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
+    wget -q https://www-us.apache.org/dist/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
+    tar xfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
     cd apache-atlas-sources-${ATLAS_VERSION}/ && \
     patch  -p1 < /tmp/atlas-2.0.0-hive-2.3.3.patch && \
-    cd addons/hive-bridge && \
-    mvn package -Dhive.version=2.3.3 && \
-    cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
+    cd notification && mvn package && cp -a target/atlas-notification-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
+    cd ../addons/hive-bridge && mvn package -Dhive.version=2.3.3 && cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
     cd /tmp && rm -rf /root/.m2 && rm -rf /tmp/apache-atlas-sources-${ATLAS_VERSION}/ && rm -f /tmp/apache-atlas-${ATLAS_VERSION}-sources.tar.gz
 
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
