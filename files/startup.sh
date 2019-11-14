@@ -84,7 +84,7 @@ fi
 sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
 
 [[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.listener.ApiarySnsListener"
-[[ ! -z $ATLAS_HIVE_SYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
+[[ ! -z $ENABLE_ATLAS_HIVE_SYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGlueSync"
 #remove leading , when external METASTORE_LISTENERS are not defined
 export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
@@ -103,7 +103,7 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
 [[ ! -z $HIVE_DB_WHITELIST ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
-[[ ! -z $ATLAS_HIVE_SYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
+[[ ! -z $ENABLE_ATLAS_HIVE_SYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
 
 #configure container credentials provider when running in ECS
 if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
