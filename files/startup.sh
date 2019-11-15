@@ -29,6 +29,16 @@ if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
     update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
 fi
+if [[ -n $ZOOKEEPER_URL ]]; then
+    update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
+fi
+if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
+    update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
+fi
 #enable ranger db auditing
 if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
@@ -48,6 +58,13 @@ if [ ! -z $ENABLE_METRICS ]; then
     export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
 fi
+# Update zookeeper URL
+[[ -z $ZOOKEEPER_URL ]]
+sed "s/ZOOKEEPER_URL/$ZOOKEEPER_URL/" -i /etc/hive/conf/atlas-application.properties
+
+# Update kafka URL
+[[ -z $KAFKA_URL ]]
+sed "s/KAFKA_URL/$KAFKA_URL/" -i /etc/hive/conf/atlas-application.properties
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
