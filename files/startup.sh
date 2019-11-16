@@ -4,6 +4,7 @@
 
 MYSQL_DB_USERNAME=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r`
 MYSQL_DB_PASSWORD=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r`
+
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
     update_property.py hadoop.security.group.mapping.ldap.bind.user "$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hadoop/conf/core-site.xml
@@ -29,16 +30,6 @@ if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
     update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
 fi
-if [[ -n $ZOOKEEPER_URL ]]; then
-    update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
-fi
-if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
-    update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
-fi
 #enable ranger db auditing
 if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
@@ -58,13 +49,9 @@ if [ ! -z $ENABLE_METRICS ]; then
     export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
 fi
-# Update zookeeper URL
-[[ -z $ZOOKEEPER_URL ]]
-sed "s/ZOOKEEPER_URL/$ZOOKEEPER_URL/" -i /etc/hive/conf/atlas-application.properties
 
 # Update kafka URL
-[[ -z $KAFKA_URL ]]
-sed "s/KAFKA_URL/$KAFKA_URL/" -i /etc/hive/conf/atlas-application.properties
+[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && sed "s/ATLAS_KAFKA_BOOTSTRAP_SERVERS/$ATLAS_KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/atlas-application.properties
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
@@ -101,7 +88,7 @@ fi
 sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
 
 [[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.listener.ApiarySnsListener"
-[[ ! -z $ENABLE_ATLAS_HIVE_SYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
+[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGlueSync"
 #remove leading , when external METASTORE_LISTENERS are not defined
 export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
@@ -120,7 +107,7 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
 [[ ! -z $HIVE_DB_WHITELIST ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
-[[ ! -z $ENABLE_ATLAS_HIVE_SYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
+[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
 
 #configure container credentials provider when running in ECS
 if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
