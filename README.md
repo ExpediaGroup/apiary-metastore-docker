@@ -7,6 +7,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |Environment Variable|Required|Description|
 |----|----|----|
 |AWS_REGION|Yes|AWS region to configure various AWS clients.|
+|ATLAS_KAFKA_BOOTSTRAP_SERVERS|No|Atlas hive-bridge kafka bootstrap servers.|
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
 |EXTERNAL_DATABASE|No|Option to enable external database mode, when specified it disables managing Hive Metastore MySQL database schema.|

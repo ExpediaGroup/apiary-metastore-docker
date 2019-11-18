@@ -9,6 +9,8 @@ ENV APIARY_GLUESYNC_LISTENER_VERSION 4.2.0
 ENV APIARY_RANGER_PLUGIN_VERSION 4.2.0
 ENV APIARY_METASTORE_METRICS_VERSION 4.2.0
 ENV APIARY_METASTORE_AUTH_VERSION 4.2.0
+ENV ATLAS_VERSION 2.0.0
+ENV KAFKA_VERSION 2.3.1
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
@@ -22,6 +24,7 @@ RUN yum -y install java-1.8.0-openjdk \
   wget \
   unzip \
   jq \
+  tar \
   && yum clean all \
   && rm -rf /var/cache/yum
 
@@ -30,13 +33,33 @@ wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar
+wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=org/apache/atlas/atlas-notification/${ATLAS_VERSION}/atlas-notification-${ATLAS_VERSION}.jar -O atlas-notification-${ATLAS_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=org/apache/atlas/atlas-intg/${ATLAS_VERSION}/atlas-intg-${ATLAS_VERSION}.jar -O atlas-intg-${ATLAS_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=org/apache/atlas/atlas-common/${ATLAS_VERSION}/atlas-common-${ATLAS_VERSION}.jar -O atlas-common-${ATLAS_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar
+
+ENV MAVEN_VERSION 3.5.4
+
+RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
+    ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
+
+COPY files/atlas-${ATLAS_VERSION}-hive-2.3.3.patch /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch
+RUN cd /tmp && \
+    wget -q https://www-us.apache.org/dist/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
+    tar xfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
+    cd apache-atlas-sources-${ATLAS_VERSION}/ && \
+    patch  -p1 < /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch && \
+    cd addons/hive-bridge && mvn package -Dhive.version=2.3.3 && cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
+    cd /tmp && rm -rf /root/.m2 && rm -rf /tmp/apache-atlas-sources-${ATLAS_VERSION}/ && rm -f /tmp/apache-atlas-${ATLAS_VERSION}-sources.tar.gz
 
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
 COPY files/hive-log4j2.properties /etc/hive/conf/hive-log4j2.properties
 COPY files/ranger-hive-security.xml /etc/hive/conf/ranger-hive-security.xml
 COPY files/ranger-hive-audit.xml /etc/hive/conf/ranger-hive-audit.xml
+COPY files/atlas-application.properties /etc/hive/conf/atlas-application.properties
+
 
 EXPOSE 9083
 COPY files/update_property.py /bin/update_property.py
