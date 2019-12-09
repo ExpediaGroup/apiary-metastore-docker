@@ -23,12 +23,20 @@ if [[ -n $RANGER_POLICY_MANAGER_URL ]]; then
     export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.rangerauth.listener.ApiaryRangerAuthPreEventListener"
     update_property.py ranger.plugin.hive.policy.rest.url ${RANGER_POLICY_MANAGER_URL} /etc/hive/conf/ranger-hive-security.xml
     update_property.py ranger.plugin.hive.service.name ${RANGER_SERVICE_NAME} /etc/hive/conf/ranger-hive-security.xml
+
+    # Update Atlas cluster name if we are using both Ranger and Atlas
+    [[ ! -z ${ATLAS_KAFKA_BOOTSTRAP_SERVERS} ]] && sed "s/APIARY_INSTANCE_NAME/${INSTANCE_NAME}/g" -i /etc/hive/conf/atlas-application.properties
 fi
 #enable ranger auditing
 if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
     update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
     update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
+    if [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
+        update_property.py ranger.plugin.hive.policy.source.impl "org.apache.ranger.admin.client.RangerAdminRESTClient" /etc/hive/conf/ranger-hive-security.xml
+    elif [ "$HIVE_METASTORE_ACCESS_MODE" = "readonly" ]; then
+        update_property.py ranger.plugin.hive.policy.source.impl "com.expediagroup.apiary.extensions.rangerauth.policyproviders.ApiaryRangerAuthAllAccessPolicyProvider" /etc/hive/conf/ranger-hive-security.xml
+    fi
 fi
 #enable ranger db auditing
 if [[ -n $RANGER_AUDIT_DB_URL ]]; then
@@ -104,7 +112,7 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $SNS_ARN ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar"
 [[ ! -z $ENABLE_GLUESYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
-[[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar"
+[[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar:/usr/lib/apiary/commons-codec-${COMMONS_CODEC_VERSION}.jar:/usr/lib/apiary/gethostname4j-${GETHOSTNAME4J_VERSION}.jar:/usr/lib/apiary/jna-${JNA_VERSION}.jar"
 [[ ! -z $HIVE_DB_WHITELIST ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 [[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"

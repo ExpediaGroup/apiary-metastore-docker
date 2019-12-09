@@ -3,14 +3,18 @@
 
 from amazonlinux:latest
 
-ENV RANGER_VERSION 1.1.0
+ENV RANGER_VERSION 2.0.0
 ENV APIARY_METASTORE_LISTENER_VERSION 4.2.0
 ENV APIARY_GLUESYNC_LISTENER_VERSION 4.2.0
-ENV APIARY_RANGER_PLUGIN_VERSION 4.2.0
+ENV APIARY_RANGER_PLUGIN_VERSION 5.0.0
 ENV APIARY_METASTORE_METRICS_VERSION 4.2.0
 ENV APIARY_METASTORE_AUTH_VERSION 4.2.0
 ENV ATLAS_VERSION 2.0.0
 ENV KAFKA_VERSION 2.3.1
+ENV COMMONS_CODEC_VERSION 1.12
+ENV GETHOSTNAME4J_VERSION 0.0.3
+ENV JNA_VERSION 3.0.9
+
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
@@ -37,7 +41,10 @@ wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/
 wget -q https://search.maven.org/remotecontent?filepath=org/apache/atlas/atlas-notification/${ATLAS_VERSION}/atlas-notification-${ATLAS_VERSION}.jar -O atlas-notification-${ATLAS_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=org/apache/atlas/atlas-intg/${ATLAS_VERSION}/atlas-intg-${ATLAS_VERSION}.jar -O atlas-intg-${ATLAS_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=org/apache/atlas/atlas-common/${ATLAS_VERSION}/atlas-common-${ATLAS_VERSION}.jar -O atlas-common-${ATLAS_VERSION}.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar
+wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-codec/${COMMONS_CODEC_VERSION}/commons-codec-${COMMONS_CODEC_VERSION}.jar -O commons-codec-${COMMONS_CODEC_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar
 
 ENV MAVEN_VERSION 3.5.4
 
