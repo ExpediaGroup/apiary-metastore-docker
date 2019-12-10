@@ -6,13 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.5.0] - 2019-12-10
 
 ### Added
-- Atlas cluster name is set to Apiary `INSTANCE_NAME` variable when
-  using Atlas plugin.
+- Atlas cluster name is set to Apiary `INSTANCE_NAME` variable when using Atlas plugin.
   
 ### Changed
+- Update Ranger version from to `2.0.0` (was `1.1.0`).
 - Update Ranger metastore plugin to `5.0.0` (was `4.2.0`).
-- Support Ranger audit-only mode for read-only HMS endpoint when audit
-  destination is SOLR.
+- Support Ranger audit-only mode for read-only HMS endpoint when audit destination is SOLR.
   
 ## [1.4.0] - 2019-11-18
 
