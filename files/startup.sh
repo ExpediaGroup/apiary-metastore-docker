@@ -23,9 +23,6 @@ if [[ -n $RANGER_POLICY_MANAGER_URL ]]; then
     export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.rangerauth.listener.ApiaryRangerAuthPreEventListener"
     update_property.py ranger.plugin.hive.policy.rest.url ${RANGER_POLICY_MANAGER_URL} /etc/hive/conf/ranger-hive-security.xml
     update_property.py ranger.plugin.hive.service.name ${RANGER_SERVICE_NAME} /etc/hive/conf/ranger-hive-security.xml
-
-    # Update Atlas cluster name if we are using both Ranger and Atlas
-    [[ ! -z ${ATLAS_KAFKA_BOOTSTRAP_SERVERS} ]] && sed "s/APIARY_INSTANCE_NAME/${INSTANCE_NAME}/g" -i /etc/hive/conf/atlas-application.properties
 fi
 #enable ranger auditing
 if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
@@ -58,8 +55,16 @@ if [ ! -z $ENABLE_METRICS ]; then
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
 fi
 
-# Update kafka URL
-[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && sed "s/ATLAS_KAFKA_BOOTSTRAP_SERVERS/$ATLAS_KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/atlas-application.properties
+# If Atlas metastore plugin is being used, set Atlas config properties
+if [[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]]
+then
+    # Update Atlas kafka URL
+    sed "s/ATLAS_KAFKA_BOOTSTRAP_SERVERS/$ATLAS_KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/atlas-application.properties
+    # Update Atlas cluster name
+    # For backward compatability, if ATLAS_CLUSTER_NAME env var is not set, use INSTANCE_NAME
+    [[ -z ${ATLAS_CLUSTER_NAME} ]] && ATLAS_CLUSTER_NAME=${INSTANCE_NAME}
+    sed "s/ATLAS_CLUSTER_NAME/${ATLAS_CLUSTER_NAME}/g" -i /etc/hive/conf/atlas-application.properties
+fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
