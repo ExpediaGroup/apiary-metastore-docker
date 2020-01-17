@@ -46,7 +46,7 @@ wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-co
 wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar
 
-ENV MAVEN_VERSION 3.6.1
+ENV MAVEN_VERSION 3.6.3
 
 RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
