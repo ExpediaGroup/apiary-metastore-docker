@@ -57,6 +57,7 @@ RUN cd /tmp && \
     tar xfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
     cd apache-atlas-sources-${ATLAS_VERSION}/ && \
     patch  -p1 < /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch && \
+    sed -s 's#http://repo1.maven.org#https://repo1.maven.org#' -i pom.xml && \
     cd addons/hive-bridge && mvn package -Dhive.version=2.3.3 && cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
     cd /tmp && rm -rf /root/.m2 && rm -rf /tmp/apache-atlas-sources-${ATLAS_VERSION}/ && rm -f /tmp/apache-atlas-${ATLAS_VERSION}-sources.tar.gz
 
