@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.6.0] -
 
 ### Added
-- Set EKS hostname to ECS_TASK_ID required for enabling metatsore metrics.
+- Set EKS hostname to ECS_TASK_ID required for enabling metastore metrics.
 
 ### Changed
 - Update using https for maven central repository as it no longer supports insecure communication over plain HTTP.
