@@ -52,7 +52,7 @@ fi
 if [ ! -z $ENABLE_METRICS ]; then
     export ECS_TASK_ID=$(wget -q -O - http://169.254.170.2/v2/metadata|jq -r .TaskARN|awk -F/ '{ print $NF }')
     # Set ECS_TASK_ID to K8 Hostname for EKS
-    export ECS_TASK_ID=${ECS_TASK_ID:-${HOST_NAME}}
+    [[ -z $ECS_TASK_ID ]] && export ECS_TASK_ID="$HOSTNAME"
     export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
 fi
