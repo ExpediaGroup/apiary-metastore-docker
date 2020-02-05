@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.6.1] - 2020-02-05
 
 ### Changed
-- Update Metastore Listener Version from `apiary-extensions` version update to `5.0.2` (was `4.2.0`)
+- Updated `apiary-metastore-listener` version to `5.0.2` (was `4.2.0`). 
 
 ## [1.6.0] - 2020-02-04
 
