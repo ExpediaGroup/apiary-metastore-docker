@@ -3,10 +3,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.5.2] - 2020-02-05
+## [1.6.1] - 2020-02-05
 
 ### Changed
 - Update Metastore Listener Version from `apiary-extensions` version update to `5.0.2` (was `4.2.0`)
+
+## [1.6.0] - 2020-02-04
+
+### Added
+- Set EKS hostname to ECS_TASK_ID required for enabling metastore metrics.
+
+### Changed
+- Update using https for maven central repository as it no longer supports insecure communication over plain HTTP.
 
 ## [1.5.1] - 2020-01-10
 
