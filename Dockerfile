@@ -46,7 +46,7 @@ wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-co
 wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar
 
-ENV MAVEN_VERSION 3.5.4
+ENV MAVEN_VERSION 3.6.3
 
 RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
@@ -57,6 +57,7 @@ RUN cd /tmp && \
     tar xfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
     cd apache-atlas-sources-${ATLAS_VERSION}/ && \
     patch  -p1 < /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch && \
+    sed -s 's#http://repo1.maven.org#https://repo1.maven.org#' -i pom.xml && \
     cd addons/hive-bridge && mvn package -Dhive.version=2.3.3 && cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
     cd /tmp && rm -rf /root/.m2 && rm -rf /tmp/apache-atlas-sources-${ATLAS_VERSION}/ && rm -f /tmp/apache-atlas-${ATLAS_VERSION}-sources.tar.gz
 

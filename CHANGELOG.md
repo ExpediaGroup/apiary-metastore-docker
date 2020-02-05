@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2020-02-04
+
+### Added
+- Set EKS hostname to ECS_TASK_ID required for enabling metastore metrics.
+
+### Changed
+- Update using https for maven central repository as it no longer supports insecure communication over plain HTTP.
+
 ## [1.5.1] - 2020-01-10
 
 ### Changed
@@ -12,12 +20,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ### Added
 - Atlas cluster name is set to Apiary `ATLAS_CLUSTER_NAME` env variable when using Atlas plugin. If not set, will default to `INSTANCE_NAME` var.
-  
+
 ### Changed
 - Update Ranger version from to `2.0.0` (was `1.1.0`).
 - Update Ranger metastore plugin to `5.0.0` (was `4.2.0`).
 - Support Ranger audit-only mode for read-only HMS endpoint when audit destination is SOLR.
-  
+
 ## [1.4.0] - 2019-11-18
 
 ### Added
