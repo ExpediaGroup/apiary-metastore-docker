@@ -72,8 +72,9 @@ then
 fi
 
 #configure kafka metastore listener
-if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]
-  echo "test"
+if [[ ! -z $KAFKA_BOOTSTRAP_URL ]]
+    sed "s/KAFKA_BOOTSTRAP_URL/$KAFKA_BOOTSTRAP_URL/" -i /etc/hive/conf/hive-site.xml
+    sed "s/KAFKA_TOPIC_NAME/$KAFKA_TOPIC_NAME/" -i /etc/hive/conf/hive-site.xml
 fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
@@ -111,7 +112,7 @@ fi
 sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
 
 [[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.listener.ApiarySnsListener"
-[[ ! -z $KAFKA_BOOTSTRAP_URL ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.listener.ApiaryKafkaListener"
+[[ ! -z $KAFKA_BOOTSTRAP_URL ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.kafka.listener.KafkaMetaStoreEventListener"
 [[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGlueSync"
 #remove leading , when external METASTORE_LISTENERS are not defined
