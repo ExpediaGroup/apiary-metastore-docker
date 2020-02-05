@@ -72,7 +72,7 @@ then
 fi
 
 #configure kafka metastore listener
-if [[ ! -z $KAFKA_BOOTSTRAP_URL ]]
+if [[ ! -z $KAFKA_BOOTSTRAP_URL ]]; then
     sed "s/KAFKA_BOOTSTRAP_URL/$KAFKA_BOOTSTRAP_URL/" -i /etc/hive/conf/hive-site.xml
     sed "s/KAFKA_TOPIC_NAME/$KAFKA_TOPIC_NAME/" -i /etc/hive/conf/hive-site.xml
 fi
