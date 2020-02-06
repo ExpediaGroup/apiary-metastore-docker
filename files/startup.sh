@@ -75,6 +75,7 @@ fi
 if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     sed "s/KAFKA_BOOTSTRAP_SERVERS/$KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/hive-site.xml
     sed "s/KAFKA_TOPIC_NAME/$KAFKA_TOPIC_NAME/" -i /etc/hive/conf/hive-site.xml
+    sed "s/KAFKA_CLIENT_ID/$HOSTNAME/" -i /etc/hive/conf/hive-site.xml
 fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary

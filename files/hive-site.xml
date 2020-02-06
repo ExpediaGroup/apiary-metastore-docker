@@ -63,4 +63,9 @@
   <value>KAFKA_TOPIC_NAME</value>
 </property>
 
+<property>
+  <name>com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.client.id</name>
+  <value>KAFKA_CLIENT_ID</value>
+</property>
+
 </configuration>
