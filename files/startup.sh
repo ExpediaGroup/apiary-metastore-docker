@@ -72,8 +72,8 @@ then
 fi
 
 #configure kafka metastore listener
-if [[ ! -z $KAFKA_BOOTSTRAP_URL ]]; then
-    sed "s/KAFKA_BOOTSTRAP_URL/$KAFKA_BOOTSTRAP_URL/" -i /etc/hive/conf/hive-site.xml
+if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
+    sed "s/KAFKA_BOOTSTRAP_SERVERS/$KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/hive-site.xml
     sed "s/KAFKA_TOPIC_NAME/$KAFKA_TOPIC_NAME/" -i /etc/hive/conf/hive-site.xml
 fi
 
@@ -112,7 +112,7 @@ fi
 sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
 
 [[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.listener.ApiarySnsListener"
-[[ ! -z $KAFKA_BOOTSTRAP_URL ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.kafka.listener.KafkaMetaStoreEventListener"
+[[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.kafka.listener.KafkaMetaStoreEventListener"
 [[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
 [[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGlueSync"
 #remove leading , when external METASTORE_LISTENERS are not defined
@@ -128,7 +128,7 @@ sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive
 
 export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $SNS_ARN ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar"
-[[ ! -z $KAFKA_BOOTSTRAP_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/kafka-metastore-listener-${KAFKA_METASTORE_LISTENER_VERSION}-all.jar"
+[[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/kafka-metastore-listener-${KAFKA_METASTORE_LISTENER_VERSION}-all.jar"
 [[ ! -z $ENABLE_GLUESYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
 [[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar:/usr/lib/apiary/commons-codec-${COMMONS_CODEC_VERSION}.jar:/usr/lib/apiary/gethostname4j-${GETHOSTNAME4J_VERSION}.jar:/usr/lib/apiary/jna-${JNA_VERSION}.jar"
 [[ ! -z $HIVE_DB_WHITELIST ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
