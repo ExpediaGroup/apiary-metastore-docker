@@ -50,12 +50,8 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
 fi
 
 if [ ! -z $ENABLE_METRICS ]; then
-    if [ -z $KUBERNETES_SERVICE_HOST ]; then
-        export ECS_TASK_ID=$(wget -q -O - http://169.254.170.2/v2/metadata|jq -r .TaskARN|awk -F/ '{ print $NF }')
-    else
-        # Set ECS_TASK_ID to K8 Hostname for EKS
-        export ECS_TASK_ID="$HOSTNAME"
-    fi
+    [[ -n $ECS_CONTAINER_METADATA_URI ]] && export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
+    [[ -n $KUBERNETES_SERVICE_HOST ]] && export ECS_TASK_ID="$HOSTNAME"
     export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
 fi
@@ -75,7 +71,9 @@ fi
 if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     sed "s/KAFKA_BOOTSTRAP_SERVERS/$KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/hive-site.xml
     sed "s/KAFKA_TOPIC_NAME/$KAFKA_TOPIC_NAME/" -i /etc/hive/conf/hive-site.xml
-    sed "s/KAFKA_CLIENT_ID/$HOSTNAME/" -i /etc/hive/conf/hive-site.xml
+    [[ -n $ECS_CONTAINER_METADATA_URI ]] && export KAFKA_CLIENT_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
+    [[ -n $KUBERNETES_SERVICE_HOST ]] && export KAFKA_CLIENT_ID="$HOSTNAME"
+    [[ -n $KAFKA_CLIENT_ID ]] && sed "s/KAFKA_CLIENT_ID/$KAFKA_CLIENT_ID/" -i /etc/hive/conf/hive-site.xml
 fi
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
