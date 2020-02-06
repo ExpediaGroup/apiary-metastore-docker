@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [1.8.0] - 2020-02-06
 
 ### Changed
-- Add Apiary Kafka metastore listener, to send Hive metadata events to Kafka.
+- Add optional Apiary Kafka metastore listener, to send Hive metadata events to Kafka.
 
 ## [1.7.0] - 2020-02-05
 
