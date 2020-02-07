@@ -5,6 +5,7 @@ from amazonlinux:latest
 
 ENV RANGER_VERSION 2.0.0
 ENV APIARY_METASTORE_LISTENER_VERSION 5.0.2
+ENV KAFKA_METASTORE_LISTENER_VERSION 5.0.2
 ENV APIARY_GLUESYNC_LISTENER_VERSION 4.2.0
 ENV APIARY_RANGER_PLUGIN_VERSION 5.0.1
 ENV APIARY_METASTORE_METRICS_VERSION 4.2.0
@@ -34,6 +35,7 @@ RUN yum -y install java-1.8.0-openjdk \
 
 RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-listener/${APIARY_METASTORE_LISTENER_VERSION}/apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar -O apiary-metastore-listener-${APIARY_METASTORE_LISTENER_VERSION}-all.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/kafka-metastore-listener/${KAFKA_METASTORE_LISTENER_VERSION}/kafka-metastore-listener-${KAFKA_METASTORE_LISTENER_VERSION}-all.jar -O kafka-metastore-listener-${KAFKA_METASTORE_LISTENER_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar && \
