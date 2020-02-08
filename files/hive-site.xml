@@ -44,13 +44,18 @@
 </property>
 
 <property>
-  <name>hive.service.metrics.class</name>
-  <value>com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics</value>
+  <name>hive.metastore.metrics.enabled</name>
+  <value>false</value>
 </property>
 
 <property>
-  <name>hive.metastore.metrics.enabled</name>
-  <value>false</value>
+  <name>hive.service.metrics.class</name>
+  <value>org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics</value>
+</property>
+
+<property>
+  <name>hive.service.metrics.reporter</name>
+  <value>JMX</value>
 </property>
 
 <property>
