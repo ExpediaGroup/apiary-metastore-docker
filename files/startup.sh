@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (C) 2018-2019 Expedia, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-MYSQL_DB_USERNAME=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r`
-MYSQL_DB_PASSWORD=`aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r`
+[[ -z "$MYSQL_DB_USERNAME" ]] && export MYSQL_DB_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r)
+[[ -z "$MYSQL_DB_PASSWORD" ]] && export MYSQL_DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r)
 
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
@@ -49,11 +49,18 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     fi
 fi
 
-if [ ! -z $ENABLE_METRICS ]; then
-    [[ -n $ECS_CONTAINER_METADATA_URI ]] && export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
-    [[ -n $KUBERNETES_SERVICE_HOST ]] && export ECS_TASK_ID="$HOSTNAME"
-    export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
+if [ -n "$ENABLE_METRICS" ]; then
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
+    #configure to send metrics to cloudwatch when running on ECS
+    if [ -n "$ECS_CONTAINER_METADATA_URI" ]; then
+        export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
+        export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
+        update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
+    fi
+    #enable prometheus jmx agent when running on kubernetes
+    if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
+        export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
+    fi
 fi
 
 # If Atlas metastore plugin is being used, set Atlas config properties
@@ -146,5 +153,5 @@ if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
 fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
 
-export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m"
+export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
