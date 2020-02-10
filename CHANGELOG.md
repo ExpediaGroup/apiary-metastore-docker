@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.9.0] - 2020-02-10
 ### Added
-- Enable prometheus exporter when running on Kubernetes instead of sending metrics to CloudWatch.
+- Enable Prometheus exporter when running on Kubernetes instead of sending metrics to CloudWatch.
 
 ## [1.8.0] - 2020-02-06
 ### Added
