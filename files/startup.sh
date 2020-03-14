@@ -102,7 +102,7 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
         if [ ! -z $ENABLE_S3_INVENTORY ]; then
             HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES},${APIARY_S3_INVENTORY_SCHEMA}"
         else
-              HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES}"
+            HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES}"
         fi
 
         for HIVE_DB in `echo HIVE_APIARY_DB_NAMES|tr "," "\n"`
@@ -182,8 +182,8 @@ if [ ! -z $ENABLE_S3_INVENTORY -a "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
   chmod 777 /tmp/hive
 
   # Create and repair S3 inventory tables
-  APIARY_S3_INVENTORY_BUCKET=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${APIARY_S3_INVENTORY_SCHEMA}"|tr "_" "-")
   APIARY_S3_INVENTORY_TEMPLATE_FILE=s3inventory.tpl
+  APIARY_S3_INVENTORY_BUCKET=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${APIARY_S3_INVENTORY_SCHEMA}"|tr "_" "-")
   APIARY_S3_INVENTORY_TABLE_FORMAT=`echo $APIARY_S3_INVENTORY_TABLE_FORMAT | tr "[:upper:]" "[:lower:]"`
 
   if [ "${APIARY_S3_INVENTORY_TABLE_FORMAT}" = "parquet" ]; then
