@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - TBD
+### Added
+- If S3 Inventory is enabled in `apiary-data-lake`, create Hive tables on top of the S3 buckets and repair the tables.
+
 ## [1.9.0] - 2020-02-10
 ### Added
 - Enable Prometheus exporter when running on Kubernetes instead of sending metrics to CloudWatch.

@@ -6,10 +6,13 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 ## Environment Variables
 |Environment Variable|Required|Description|
 |----|----|----|
+|APIARY_S3_INVENTORY_PREFIX|No|Prefix used by S3 Inventory when creating data in the inventory bucket.|
+|APIARY_S3_INVENTORY_TABLE_FORMAT|No|Format of S3 inventory data - `ORC`, `Parquet`, or `CSV`|
 |AWS_REGION|Yes|AWS region to configure various AWS clients.|
 |ATLAS_KAFKA_BOOTSTRAP_SERVERS|No|Atlas hive-bridge kafka bootstrap servers.|
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
+|ENABLE_S3_INVENTORY|No|Option to create Hive tables on top of S3 inventory data if enabled in `apiary-data-lake`.|
 |EXTERNAL_DATABASE|No|Option to enable external database mode, when specified it disables managing Hive Metastore MySQL database schema.|
 |GLUE_PREFIX|No|Prefix added to Glue databases to handle database name collisions when synchronizing multiple Hive Metastores to the Glue catalog.|
 |HADOOP_HEAPSIZE|No|Hive Metastore Java process heapsize.|
