@@ -78,4 +78,5 @@ EXPOSE 9083
 COPY files/update_property.py /bin/update_property.py
 COPY files/s3inventory.tpl /s3inventory.tpl
 COPY files/startup.sh /startup.sh
+COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
 CMD /startup.sh

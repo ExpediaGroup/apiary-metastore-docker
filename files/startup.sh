@@ -1,8 +1,8 @@
 #!/bin/bash
-# Copyright (C) 2018-2019 Expedia, Inc.
+# Copyright (C) 2018-2020 Expedia, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
+set -x
 
 [[ -z "$MYSQL_DB_USERNAME" ]] && export MYSQL_DB_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r)
 [[ -z "$MYSQL_DB_PASSWORD" ]] && export MYSQL_DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r)
@@ -105,7 +105,8 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
             HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES}"
         fi
 
-        for HIVE_DB in `echo HIVE_APIARY_DB_NAMES|tr "," "\n"`
+        AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
+        for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
         do
             echo "creating hive database $HIVE_DB"
             DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
@@ -164,57 +165,4 @@ fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
-HIVECMD="/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
-
-if [ ! -z $ENABLE_S3_INVENTORY -a "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
-  #
-  # S3 Inventory is enabled - need to create and repair inventory tables on top of S3 inventory data that AWS wrote.
-  #
-
-  # Enable bash job control
-  set -m
-
-  # start metastore in background and wait until it is up
-  su hive -s/bin/bash -c "${HIVECMD}" &
-  sleep 90
-
-  # hive cli won't run unless /tmp/hive is writeable
-  chmod 777 /tmp/hive
-
-  # Create and repair S3 inventory tables
-  APIARY_S3_INVENTORY_TEMPLATE_FILE=s3inventory.tpl
-  APIARY_S3_INVENTORY_BUCKET=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${APIARY_S3_INVENTORY_SCHEMA}"|tr "_" "-")
-  APIARY_S3_INVENTORY_TABLE_FORMAT=`echo $APIARY_S3_INVENTORY_TABLE_FORMAT | tr "[:upper:]" "[:lower:]"`
-
-  if [ "${APIARY_S3_INVENTORY_TABLE_FORMAT}" = "parquet" ]; then
-    APIARY_S3_INVENTORY_TABLE_SERDE=org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
-  elif [ "${APIARY_S3_INVENTORY_TABLE_FORMAT}" = "csv" ] ; then
-    APIARY_S3_INVENTORY_TABLE_SERDE=org.apache.hadoop.hive.serde2.OpenCSVSerde
-  else
-    APIARY_S3_INVENTORY_TABLE_SERDE=org.apache.hadoop.hive.ql.io.orc.OrcSerde
-  fi
-  APIARY_S3_INVENTORY_TABLE_HQL_FILE="/CreateInventoryTables.hql"
-
-  > ${APIARY_S3_INVENTORY_TABLE_HQL_FILE}
-  for HIVE_DB in `echo $HIVE_DB_NAMES|tr "," "\n"`
-  do
-    echo "Writing S3 inventory table create/repair statements for schema: $HIVE_DB"
-    APIARY_SCHEMA_BUCKET=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
-    APIARY_S3_INVENTORY_TABLE=$(echo "${APIARY_SCHEMA_BUCKET}"|tr "-" "_")
-
-    # Format the template file with environment variable values defined above.  Unsetting IFS preserves newlines.
-    IFS= HQL_STMT=`eval "echo \"$(cat "${APIARY_S3_INVENTORY_TEMPLATE_FILE}")\""`
-
-    echo ${HQL_STMT} >> ${APIARY_S3_INVENTORY_TABLE_HQL_FILE}
-  done
-
-  # Run the create/repair statements that we wrote to the .hql file
-  echo "Creating and repairing S3 inventory tables..."
-  su hive -s/bin/bash -c "/usr/lib/hive/bin/hive -f ${APIARY_S3_INVENTORY_TABLE_HQL_FILE}"
-  echo "Done creating and repairing S3 inventory tables."
-
-  # bring the metastore back to the foreground
-  fg %1
-else
-  su hive -s/bin/bash -c "${HIVECMD}"
-fi
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
