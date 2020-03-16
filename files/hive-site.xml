@@ -64,7 +64,7 @@
 </property>
 
 <property>
-  <name>com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.topic</name>
+  <name>com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.topic.name</name>
   <value>KAFKA_TOPIC_NAME</value>
 </property>
 
