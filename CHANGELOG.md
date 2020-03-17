@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.11.0] - TBD
+## [1.11.0] - 2020-03-17
 ### Added
 - If S3 Inventory is enabled in `apiary-data-lake`, create Hive `s3_inventory` database on startup.
 - Add script `/s3_inventory_repair.sh` which can be used as the entrypoint of this Docker image to create and repair S3 
