@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.11.0] - TBD
 ### Added
-- If S3 Inventory is enabled in `apiary-data-lake`, create Hive `s3_inventory` database on startup
-- Add script `/s3_inventory_repair.sh` which can be used as the entrypoint of this docker image to create and repair S3 
-  inventory tables in the inventory database, if S3 inventory is enabled.  Intent is to run the image this way on a 
+- If S3 Inventory is enabled in `apiary-data-lake`, create Hive `s3_inventory` database on startup.
+- Add script `/s3_inventory_repair.sh` which can be used as the entrypoint of this Docker image to create and repair S3 
+  inventory tables in the inventory database (if S3 inventory is enabled). The intent is to run the image this way on a 
   scheduled basis in Kubernetes after AWS creates new inventory partition files in S3 each day. 
 
 ## [1.10.0] - 2020-03-16
