@@ -1,6 +1,8 @@
 #!/bin/bash
-# Copyright (C) 2018-2019 Expedia, Inc.
+# Copyright (C) 2018-2020 Expedia, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
+
+set -x
 
 [[ -z "$MYSQL_DB_USERNAME" ]] && export MYSQL_DB_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r)
 [[ -z "$MYSQL_DB_PASSWORD" ]] && export MYSQL_DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r)
@@ -83,34 +85,43 @@ if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     [[ -n $KAFKA_CLIENT_ID ]] && sed "s/KAFKA_CLIENT_ID/$KAFKA_CLIENT_ID/" -i /etc/hive/conf/hive-site.xml
 fi
 
+APIARY_S3_INVENTORY_SCHEMA=s3_inventory
+
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
-MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
-schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
-if [ "$schema_version" != "2.3.0" ]; then
-    cd /usr/lib/hive/scripts/metastore/upgrade/mysql
-    cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
-    cd /
+    MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
+    schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
+    if [ "$schema_version" != "2.3.0" ]; then
+        cd /usr/lib/hive/scripts/metastore/upgrade/mysql
+        cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
+        cd /
+    fi
+
+    #create hive databases
+    if [ ! -z $HIVE_DB_NAMES ]; then
+        if [ ! -z $ENABLE_S3_INVENTORY ]; then
+            HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES},${APIARY_S3_INVENTORY_SCHEMA}"
+        else
+            HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES}"
+        fi
+
+        AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
+        for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
+        do
+            echo "creating hive database $HIVE_DB"
+            DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
+            BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
+            echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
+            #create glue database
+            if [ ! -z $ENABLE_GLUESYNC ]; then
+                echo "creating glue database $HIVE_DB"
+                aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
+                aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
+            fi
+        done
+    fi
 fi
 
-#create hive databases
-if [ ! -z $HIVE_DB_NAMES ]; then
-    for HIVE_DB in `echo $HIVE_DB_NAMES|tr "," "\n"`
-    do
-        echo "creating hive database $HIVE_DB"
-        DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
-        AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
-        BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
-        echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
-        #create glue database
-        if [ ! -z $ENABLE_GLUESYNC ]; then
-            echo "creating glue database $HIVE_DB"
-            aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
-            aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
-        fi
-    done
-fi
-fi
 #pre event listener to restrict hive database access in read-only metastores
 [[ ! -z $HIVE_DB_WHITELIST ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.readonlyauth.listener.ApiaryReadOnlyAuthPreEventListener"
 
