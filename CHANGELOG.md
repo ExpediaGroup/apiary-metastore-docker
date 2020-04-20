@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2020-04-21
+### Added
+- If S3 access logs are enabled in `apiary-data-lake`, create Hive database `s3_logs_hive` on startup. Raw logs go to bucket `<prefix>-s3-logs` and Hive Parquet data to bucket `<prefix>-s3-logs-hive`.  This is pre-work to prepare for S3 access-log Hive tables in a future version of Apiary.
+
 ## [1.12.0] - 2020-04-02
 ### Changed
 - Updated `apiary-metastore-listener` version to `6.0.1` (was `6.0.0`).
