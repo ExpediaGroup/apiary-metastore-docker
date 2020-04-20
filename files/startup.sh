@@ -86,6 +86,7 @@ if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
 fi
 
 APIARY_S3_INVENTORY_SCHEMA=s3_inventory
+APIARY_S3_LOGS_SCHEMA=s3_logs_hive
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
@@ -103,6 +104,9 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
             HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES},${APIARY_S3_INVENTORY_SCHEMA}"
         else
             HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES}"
+        fi
+        if [ ! -z $ENABLE_S3_LOGS ]; then
+            HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_S3_LOGS_SCHEMA}"
         fi
 
         AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
