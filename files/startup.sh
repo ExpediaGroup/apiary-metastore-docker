@@ -7,6 +7,15 @@ set -x
 [[ -z "$MYSQL_DB_USERNAME" ]] && export MYSQL_DB_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r)
 [[ -z "$MYSQL_DB_PASSWORD" ]] && export MYSQL_DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r)
 
+
+#config Hive min/max thread pool size.  Terraform will set the env var based on size of memory
+if [[ -n ${HMS_MIN_THREADS} ]]; then
+  update_property.py hive.metastore.server.min.threads "${HMS_MIN_THREADS}" /etc/hive/conf/hive-site.xml
+fi
+if [[ -n ${HMS_MAX_THREADS} ]]; then
+  update_property.py hive.metastore.server.max.threads "${HMS_MAX_THREADS}" /etc/hive/conf/hive-site.xml
+fi
+
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
     update_property.py hadoop.security.group.mapping.ldap.bind.user "$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hadoop/conf/core-site.xml
