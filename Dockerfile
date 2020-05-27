@@ -79,6 +79,4 @@ COPY files/update_property.py /bin/update_property.py
 COPY files/s3inventory.tpl /s3inventory.tpl
 COPY files/startup.sh /startup.sh
 COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
-COPY files/ranger_logs_repair.sh /ranger_logs_repair.sh
-COPY rangerlogs.tpl /rangerlogs.tpl
 CMD /startup.sh
