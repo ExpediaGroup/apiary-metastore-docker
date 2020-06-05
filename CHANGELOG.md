@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.15.0] - 2020-06-03
+## [1.15.0] - TBD
 ### Added
 - If Ranger access logs are enabled in `apiary-data-lake`, create Hive database `ranger_access_logs` on startup. Hive Parquet data goes to bucket `<prefix>-s3-logs-hive/ranger-access-logs`.  This is pre-work to prepare for Ranger access-log Hive tables in a future version of Apiary.
 
