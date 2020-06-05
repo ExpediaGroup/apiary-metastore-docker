@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.15.0] - TBD
 ### Added
-- If Ranger access logs are enabled in `apiary-data-lake`, create Hive database `ranger_access_logs` on startup. Hive Parquet data goes to bucket `<prefix>-s3-logs-hive/ranger-access-logs`.  This is pre-work to prepare for Ranger access-log Hive tables in a future version of Apiary.
+- Create Hive database `system` on startup. Hive Parquet data goes to bucket `<prefix>-system/ranger-access-logs`.
+This is pre-work to prepare for Ranger access-log Hive tables in a future version of Apiary.
 
 ## [1.14.0] - 2020-05-11
 ### Added
