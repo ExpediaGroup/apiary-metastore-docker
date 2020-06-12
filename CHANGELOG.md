@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.15.0] - TBD
 ### Added
-Create Hive database `system` on startup. Data for Ranger access logs goes to bucket `<prefix>-system` in Parquet format.
+Create Hive database `apiary_system` on startup. Data for Ranger access logs goes to bucket `<prefix>-system` in Parquet format.
 This is pre-work to prepare for Ranger access-log Hive tables in a future version of Apiary.
 
 ## [1.14.0] - 2020-05-11
