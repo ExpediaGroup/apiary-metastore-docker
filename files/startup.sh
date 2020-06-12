@@ -118,7 +118,7 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
             HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_S3_LOGS_SCHEMA}"
         fi
 
-        HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_SYSTEM_SCHEMA}"
+        HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_SYSTEM_SCHEMA:-apiary_system}"
 
         AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
         for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
