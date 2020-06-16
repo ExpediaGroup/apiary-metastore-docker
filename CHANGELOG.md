@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.15.0] - 2020-06-16
+### Added
+Create Hive database `apiary_system` on startup. Data for Ranger access logs goes to bucket `<prefix>-apiary-system` in Parquet format.
+This is pre-work to prepare for Ranger access-log Hive tables in a future version of Apiary.
+
 ## [1.14.0] - 2020-05-11
 ### Added
 - Enable caller to set min and max size of the Hive metastore thread pool.  If not set, defaults to 200/1000 (Hive defaults).
