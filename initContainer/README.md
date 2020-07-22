@@ -15,7 +15,7 @@ The init docker container contains the same shell scripts which were previously 
 
 - Kubernetes
   - [Read-Only](https://github.com/ExpediaGroup/apiary-data-lake/blob/master/k8s-readonly.tf#L40)
-  - [Read-Write](https://github.com/ExpediaGroup/apiary-data-lake/blob/9881ef5b6fdb37bd22ca132542104f7eb026ce0c/k8s-readwrite.tf#L40)
+  - [Read-Write](https://github.com/ExpediaGroup/apiary-data-lake/blob/master/k8s-readwrite.tf#L40)
 - ECS
-  - [Read-Only](https://github.com/ExpediaGroup/apiary-data-lake/blob/9881ef5b6fdb37bd22ca132542104f7eb026ce0c/templates/apiary-hms-readonly.json#L2)
-  - [Read-Write](https://github.com/ExpediaGroup/apiary-data-lake/blob/9881ef5b6fdb37bd22ca132542104f7eb026ce0c/templates/apiary-hms-readwrite.json#L2)
+  - [Read-Only](https://github.com/ExpediaGroup/apiary-data-lake/blob/master/templates/apiary-hms-readonly.json#L2)
+  - [Read-Write](https://github.com/ExpediaGroup/apiary-data-lake/blob/master/templates/apiary-hms-readwrite.json#L2)
