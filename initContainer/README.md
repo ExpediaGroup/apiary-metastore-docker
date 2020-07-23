@@ -8,7 +8,7 @@ Previously, Apiary had a hard requirement that the location of where the terrafo
 This solution relies on either [Kubernetes Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) or [ECS Container dependencies](https://aws.amazon.com/about-aws/whats-new/2019/03/amazon-ecs-introduces-enhanced-container-dependency-management/), depending on your deployment target.
 
 
-The init docker container contains the same shell scripts which were previously ran as apart of the apiary terraform process.
+The init docker container contains the same shell scripts which were previously run as a part of the apiary terraform process.
 
 
 ## Terraform Usages
