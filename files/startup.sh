@@ -135,6 +135,28 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
             fi
         done
     fi
+
+    if [ ! -z $ENABLE_UNUSED_DB_DELETION ]; then
+        # Update Hive tables to enable cascading deletes
+        cd /usr/lib/hive/scripts/metastore/upgrade/mysql
+        echo "Creating cascading_deletes.sql"
+        /bin/create_cascade_alter_script.py hive-schema-2.3.0.mysql.sql > cascading_deletes.sql
+        echo "Applying cascading_deletes.sql to Hive schema"
+        cat cascading_deletes.sql | mysql $MYSQL_OPTIONS
+
+        if [ ! -z ${APIARY_DBS_TO_DELETE} ]; then
+            # Get the list of DBs in APIARY_DBS_TO_DELETE that is NOT in HIVE_APIARY_DB_NAMES as a safety
+            # check to make sure we don't delete something from a typo. To get list of DBs that are in both, I'm using:
+            #    https://stackoverflow.com/questions/2696055/intersection-of-two-lists-in-bash
+
+            DELETE_DBS=$(comm -13 <(echo $HIVE_APIARY_DB_NAMES | tr "," "\n" | sort -u) <(echo $APIARY_DBS_TO_DELETE | tr "," "\n" | sort -u))
+            for DB_TO_DELETE in `echo "${DELETE_DBS}"`
+            do
+              echo "Deleting Hive database $DB_TO_DELETE and all its tables/partitions/etc."
+              /bin/delete_hive_db $DB_TO_DELETE
+            done
+        fi
+    fi
 fi
 
 #pre event listener to restrict hive database access in read-only metastores
