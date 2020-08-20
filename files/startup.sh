@@ -136,7 +136,7 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
         done
     fi
 
-    if [[ ! -z ${ENABLE_UNUSED_DB_DELETION} ]] && [[ ! -z ${HIVE_DBS_TO_DELETE} ]]; then
+    if [[ ! -z ${ENABLE_SCHEMA_DELETION} ]] && [[ ! -z ${HIVE_DBS_TO_DELETE} ]]; then
         # Update Hive tables to enable cascading deletes
         cd /usr/lib/hive/scripts/metastore/upgrade/mysql
         echo "Creating cascading_deletes.sql and undo_cascadedeletes.sql"
