@@ -136,26 +136,30 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
         done
     fi
 
-    if [ ! -z ${ENABLE_UNUSED_DB_DELETION} ]; then
+    if [[ ! -z ${ENABLE_UNUSED_DB_DELETION} ]] && [[ ! -z ${HIVE_DBS_TO_DELETE} ]]; then
         # Update Hive tables to enable cascading deletes
         cd /usr/lib/hive/scripts/metastore/upgrade/mysql
-        echo "Creating cascading_deletes.sql"
-        /bin/create_cascade_alter_script.py hive-schema-2.3.0.mysql.sql > cascading_deletes.sql
+        echo "Creating cascading_deletes.sql and undo_cascadedeletes.sql"
+        /bin/create_cascade_alter_script.py hive-schema-2.3.0.mysql.sql
         echo "Applying cascading_deletes.sql to Hive schema"
         cat cascading_deletes.sql | mysql $MYSQL_OPTIONS
 
-        if [ ! -z ${HIVE_DBS_TO_DELETE} ]; then
-            # Get the list of DBs in HIVE_DBS_TO_DELETE that is NOT in HIVE_APIARY_DB_NAMES as a safety
-            # check to make sure we don't delete something from a typo. To get list of DBs that are in both, I'm using:
-            #    https://stackoverflow.com/questions/2696055/intersection-of-two-lists-in-bash
+        # Get the list of DBs in HIVE_DBS_TO_DELETE that is NOT in HIVE_APIARY_DB_NAMES as a safety
+        # check to make sure we don't delete something from a typo. To get list of DBs that are in both, I'm using:
+        #    https://stackoverflow.com/questions/2696055/intersection-of-two-lists-in-bash
 
-            DELETE_DBS=$(comm -13 <(echo $HIVE_APIARY_DB_NAMES | tr "," "\n" | sort -u) <(echo $HIVE_DBS_TO_DELETE | tr "," "\n" | sort -u))
-            for DB_TO_DELETE in `echo "${DELETE_DBS}"`
-            do
-              echo "Deleting Hive database $DB_TO_DELETE and all its tables, partitions, etc."
-              /bin/delete_hive_db.sh $DB_TO_DELETE
-            done
-        fi
+        DELETE_DBS=$(comm -13 <(echo $HIVE_APIARY_DB_NAMES | tr "," "\n" | sort -u) <(echo $HIVE_DBS_TO_DELETE | tr "," "\n" | sort -u))
+        for DB_TO_DELETE in `echo "${DELETE_DBS}"`
+        do
+          # Don't allow deleting the Hive "default" database
+          if [[ "${DB_TO_DELETE}" != "default" ]] ; then
+            echo "Deleting Hive database $DB_TO_DELETE and all its tables, partitions, etc."
+            /bin/delete_hive_db.sh $DB_TO_DELETE
+          fi
+        done
+
+        echo "Applying undo_cascading_deletes.sql to Hive schema"
+        cat undo_cascading_deletes.sql | mysql $MYSQL_OPTIONS
     fi
 fi
 

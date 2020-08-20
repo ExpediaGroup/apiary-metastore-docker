@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.16.0] - TBD
 ### Added
-Add the option of deleting certain Hive databases when the metastore starts up. Will also enable cascading-deletes on the MySQL tables for the Hive metastore. See variables `ENABLE_UNUSED_DB_DELETION` and `HIVE_DBS_TO_DELETE` in [README.md](README.md).
+Add the option of deleting certain Hive databases when the metastore starts up. Will also enable cascading-deletes on the MySQL tables before deleting, then will remove cascading-deletes. See variables `ENABLE_UNUSED_DB_DELETION` and `HIVE_DBS_TO_DELETE` in [README.md](README.md).
 
 ## [1.15.0] - 2020-06-16
 ### Added

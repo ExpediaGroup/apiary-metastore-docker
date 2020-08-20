@@ -23,7 +23,7 @@ FOREIGN_KEY_REGEX    = r'^\s*(CONSTRAINT\s+([^\s]+)\s*FOREIGN KEY\s+([^\s]+)\s+R
 CASCADE_DELETE_REGEX = r'.*ON DELETE CASCADE.*'
 SQL_STMT_END_REGEX   = r'.*;\s*$'
 
-def generate_alter_table_script(hive_schema_input_file):
+def generate_alter_table_scripts(hive_schema_input_file):
     regex_create  = re.compile(CREATE_REGEX, re.IGNORECASE)
     regex_fk      = re.compile(FOREIGN_KEY_REGEX, re.IGNORECASE)
     regex_cascade = re.compile(CASCADE_DELETE_REGEX, re.IGNORECASE)
@@ -32,34 +32,38 @@ def generate_alter_table_script(hive_schema_input_file):
     with open(hive_schema_input_file, 'r') as sql_file:
         lines = sql_file.readlines()
 
-    in_create_stmt = False
-    table_name = None
+    with open('cascadedeletes.sql', 'w') as f_cascade, open('undo_cascadedeletes.sql', 'w') as f_undo_cascade:
+        in_create_stmt = False
+        table_name = None
 
-    for line in lines:
-        create_match = regex_create.match(line)
-        if create_match is not None:
-            in_create_stmt = True
-            if len(create_match.groups()) == 1:
-                table_name = create_match.group(1)
-            pass
+        for line in lines:
+            create_match = regex_create.match(line)
+            if create_match is not None:
+                in_create_stmt = True
+                if len(create_match.groups()) == 1:
+                    table_name = create_match.group(1)
+                pass
 
-        fk_match = regex_fk.match(line)
-        if fk_match is not None:
-            # Check if it already specifies cascading deletes
-            cascade_match = regex_cascade.match(line)
-            if cascade_match is None:
-                grps = fk_match.groups()
-                if len(grps) == 3:
-                    constraint_stmt = grps[0]
-                    fk_name = grps[1]
-                    if in_create_stmt and table_name is not None:
-                        print('ALTER TABLE {} DROP FOREIGN KEY {};'.format(table_name, fk_name))
-                        print('ALTER TABLE {} ADD {} ON DELETE CASCADE;'.format(table_name, constraint_stmt))
+            fk_match = regex_fk.match(line)
+            if fk_match is not None:
+                # Check if it already specifies cascading deletes
+                cascade_match = regex_cascade.match(line)
+                if cascade_match is None:
+                    grps = fk_match.groups()
+                    if len(grps) == 3:
+                        constraint_stmt = grps[0]
+                        fk_name = grps[1]
+                        if in_create_stmt and table_name is not None:
+                            f_cascade.write('ALTER TABLE {} DROP FOREIGN KEY {};\n'.format(table_name, fk_name))
+                            f_cascade.write('ALTER TABLE {} ADD {} ON DELETE CASCADE;\n'.format(table_name, constraint_stmt))
 
-        end_stmt_match = regex_endstmt.match(line)
-        if end_stmt_match is not None:
-            in_create_stmt = False;
-            table_name = None
+                            f_undo_cascade.write('ALTER TABLE {} DROP FOREIGN KEY {};\n'.format(table_name, fk_name))
+                            f_undo_cascade.write('ALTER TABLE {} ADD {};\n'.format(table_name, constraint_stmt))
+
+            end_stmt_match = regex_endstmt.match(line)
+            if end_stmt_match is not None:
+                in_create_stmt = False;
+                table_name = None
 
 
 def main():
@@ -67,7 +71,7 @@ def main():
     parser.add_argument("hive_schema_input_file", help="Path to Hive Schema file used to create cascading delete updates")
     args = parser.parse_args()
 
-    generate_alter_table_script(args.hive_schema_input_file)
+    generate_alter_table_scripts(args.hive_schema_input_file)
 
 if __name__ == "__main__":
     main()
