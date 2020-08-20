@@ -152,8 +152,8 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
             DELETE_DBS=$(comm -13 <(echo $HIVE_APIARY_DB_NAMES | tr "," "\n" | sort -u) <(echo $APIARY_DBS_TO_DELETE | tr "," "\n" | sort -u))
             for DB_TO_DELETE in `echo "${DELETE_DBS}"`
             do
-              echo "Deleting Hive database $DB_TO_DELETE and all its tables/partitions/etc."
-              /bin/delete_hive_db $DB_TO_DELETE
+              echo "Deleting Hive database $DB_TO_DELETE and all its tables, partitions, etc."
+              /bin/delete_hive_db.sh $DB_TO_DELETE
             done
         fi
     fi
