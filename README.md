@@ -15,11 +15,13 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_S3_INVENTORY|No|Option to create Hive tables on top of S3 inventory data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
 |ENABLE_S3_LOGS|No|Option to create Hive tables on top of S3 access logs data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
+|ENABLE_UNUSED_DB_DELETION|No|Option to delete unused Hive databases from $HIVE_DBS_TO_DELETE on startup. Enabled if value is not null/empty. NOTE: This will also update the MySQL Hive schema to enable cascading-deletes on all tables.|
 |EXTERNAL_DATABASE|No|Option to enable external database mode, when specified it disables managing Hive Metastore MySQL database schema.|
 |GLUE_PREFIX|No|Prefix added to Glue databases to handle database name collisions when synchronizing multiple Hive Metastores to the Glue catalog.|
 |HADOOP_HEAPSIZE|No|Hive Metastore Java process heapsize.|
 |HIVE_METASTORE_ACCESS_MODE|No|Hive Metastore access mode, applicable values are: readwrite, readonly|
 |HIVE_DB_NAMES|No|comma separated list of Hive database names, when specified Hive databases will be created and mapped to corresponding S3 buckets.|
+|HIVE_DBS_TO_DELETE|No|comma separated list of Hive database names, when specified Hive databases will be deleted during startup. NOTE: deletion will only happen if ENABLE_UNUSED_DB_DELETION is set to a non-null value.|
 |HIVE_METASTORE_LOG_LEVEL|No|Hive Metastore service Log4j log level.|
 |HMS_MIN_THREADS|No (defaults to `200`)|Minimum size of the Hive metastore thread pool.|
 |HMS_MAX_THREADS|No (defaults to `1000`)|Maximum size of the Hive metastore thread pool.|

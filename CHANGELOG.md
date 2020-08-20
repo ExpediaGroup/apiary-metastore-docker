@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.16.0] - TBD
+### Added
+Add the option of deleting certain Hive databases when the metastore starts up. Will also enable cascading-deletes on the MySQL tables for the Hive metastore. See variables `ENABLE_UNUSED_DB_DELETION` and `HIVE_DBS_TO_DELETE` in [README.md](README.md).
+
 ## [1.15.0] - 2020-06-16
 ### Added
 Create Hive database `apiary_system` on startup. Data for Ranger access logs goes to bucket `<prefix>-apiary-system` in Parquet format.
