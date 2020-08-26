@@ -76,7 +76,7 @@ COPY files/jmx-exporter.yaml /etc/hive/conf/jmx-exporter.yaml
 
 EXPOSE 9083
 COPY files/update_property.py /bin/update_property.py
-COPY files/create_cascade_alter_script.py /bin/create_cascade_alter_script.py
+COPY files/hive_schema_delete_template.sql /hive_schema_delete_template.sql
 COPY files/delete_hive_db.sh /bin/delete_hive_db.sh
 COPY files/s3inventory.tpl /s3inventory.tpl
 COPY files/startup.sh /startup.sh

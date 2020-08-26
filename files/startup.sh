@@ -137,12 +137,6 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
     fi
 
     if [[ ! -z ${ENABLE_SCHEMA_DELETION} ]] && [[ ! -z ${HIVE_DBS_TO_DELETE} ]]; then
-        # Update Hive tables to enable cascading deletes
-        cd /usr/lib/hive/scripts/metastore/upgrade/mysql
-        echo "Creating cascadedeletes.sql and undo_cascadedeletes.sql"
-        /bin/create_cascade_alter_script.py hive-schema-2.3.0.mysql.sql
-        echo "Applying cascadedeletes.sql to Hive schema"
-        cat cascadedeletes.sql | mysql $MYSQL_OPTIONS
 
         # Get the list of DBs in HIVE_DBS_TO_DELETE that is NOT in HIVE_APIARY_DB_NAMES as a safety
         # check to make sure we don't delete something from a typo. To get list of DBs that are in both, I'm using:
@@ -157,9 +151,6 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
             /bin/delete_hive_db.sh $DB_TO_DELETE
           fi
         done
-
-        echo "Applying undo_cascadedeletes.sql to Hive schema"
-        cat undo_cascadedeletes.sql | mysql $MYSQL_OPTIONS
     fi
 fi
 

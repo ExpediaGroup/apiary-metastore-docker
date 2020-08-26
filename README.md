@@ -15,7 +15,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_S3_INVENTORY|No|Option to create Hive tables on top of S3 inventory data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
 |ENABLE_S3_LOGS|No|Option to create Hive tables on top of S3 access logs data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
-|ENABLE_SCHEMA_DELETION|No|Option to delete Hive databases from $HIVE_DBS_TO_DELETE on startup. Enabled if value is not null/empty. NOTE: This will only delete metadata from the HMS, not actual S3 data or buckets. This will also update the MySQL Hive schema to enable cascading-deletes before deleting, then will remove cascading-deletes.|
+|ENABLE_SCHEMA_DELETION|No|Option to delete Hive databases from $HIVE_DBS_TO_DELETE on startup. Enabled if value is not null/empty. NOTE: This will only delete metadata from the HMS, not actual S3 data or buckets.|
 |EXTERNAL_DATABASE|No|Option to enable external database mode, when specified it disables managing Hive Metastore MySQL database schema.|
 |GLUE_PREFIX|No|Prefix added to Glue databases to handle database name collisions when synchronizing multiple Hive Metastores to the Glue catalog.|
 |HADOOP_HEAPSIZE|No|Hive Metastore Java process heapsize.|
