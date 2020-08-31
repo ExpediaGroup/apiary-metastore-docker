@@ -14,6 +14,6 @@ jobs:
       uses: docker/build-push-action@v1.1.0
       with:
         path: "."
-        dockerfile: "{path}/Dockerfile"
+        dockerfile: "Dockerfile"
         always_pull: true
         push: false
