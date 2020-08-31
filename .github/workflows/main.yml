@@ -3,8 +3,8 @@ name: Docker CI
 on: [push, pull_request]
 
 jobs:
-  test:
-    name: Docker Checks
+  apiary-docker-image:
+    name: Apiary Docker Image Checks
     runs-on: ubuntu-18.04
     steps:
     - name: Check out code  
@@ -14,6 +14,21 @@ jobs:
       uses: docker/build-push-action@v1.1.0
       with:
         path: "."
+        dockerfile: "Dockerfile"
+        always_pull: true
+        push: false
+
+  apiary-init-docker-image:
+    name: Apiary Init Container Docker Checks
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Check out code  
+      uses: actions/checkout@v2
+      
+    - name: Ensure Apiary Init Docker Image Builds.
+      uses: docker/build-push-action@v1.1.0
+      with:
+        path: "initContainer"
         dockerfile: "Dockerfile"
         always_pull: true
         push: false
