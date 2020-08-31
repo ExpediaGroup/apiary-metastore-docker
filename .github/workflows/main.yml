@@ -13,7 +13,6 @@ jobs:
   #   - name: Ensure Apiary Docker Image Builds.
   #     uses: docker/build-push-action@v1.1.0
   #     with:
-  #       path: "."
   #       dockerfile: "Dockerfile"
   #       always_pull: true
   #       push: false
@@ -28,7 +27,7 @@ jobs:
     - name: Ensure Apiary Init Docker Image Builds.
       uses: docker/build-push-action@v1.1.0
       with:
-        path: "./initContainer"
-        dockerfile: "Dockerfile"
+        path: "initContainer"
+        dockerfile: "initContainer/Dockerfile"
         always_pull: true
         push: false
