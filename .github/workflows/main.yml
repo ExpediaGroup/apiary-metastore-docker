@@ -16,3 +16,4 @@ jobs:
         path: "."
         dockerfile: "{path}/Dockerfile"
         always_pull: true
+        push: false
