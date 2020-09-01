@@ -1,4 +1,4 @@
-name: Docker Test Build
+name: Docker Release
 
 on:
   push:
