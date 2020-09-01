@@ -1,10 +1,13 @@
 name: Docker Test Build
 
-on: [push, pull_request]
+on:
+  push:
+    tags: 
+      - v* 
 
 jobs:
   apiary-docker-image:
-    name: Apiary Docker Image Checks
+    name: Apiary Docker Release
     runs-on: ubuntu-18.04
     steps:
     - name: Check out code  
@@ -15,10 +18,14 @@ jobs:
       with:
         dockerfile: "Dockerfile"
         always_pull: true
-        push: false
+        tag_with_ref: true
+        repository: expediagroup/apiary-metastore-core
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
 
   apiary-init-docker-image:
-    name: Apiary Init Container Docker Checks
+    name: Apiary Init Container Docker Release
     runs-on: ubuntu-18.04
     steps:
     - name: Check out code  
@@ -30,4 +37,8 @@ jobs:
         path: "initContainer"
         dockerfile: "initContainer/Dockerfile"
         always_pull: true
-        push: false
+        tag_with_ref: true
+        repository: expediagroup/apiary-metastore-init-container
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
