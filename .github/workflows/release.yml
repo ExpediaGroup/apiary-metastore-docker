@@ -22,23 +22,4 @@ jobs:
         repository: expediagroup/apiary-metastore-core
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-        push: ${{ startsWith(github.ref, 'refs/tags/') }}
-
-  apiary-init-docker-image:
-    name: Apiary Init Container Docker Release
-    runs-on: ubuntu-18.04
-    steps:
-    - name: Check out code  
-      uses: actions/checkout@v2
-      
-    - name: Release Apiary Init Docker Image
-      uses: docker/build-push-action@v1.1.0
-      with:
-        path: "initContainer"
-        dockerfile: "initContainer/Dockerfile"
-        always_pull: true
-        tag_with_ref: true
-        repository: expediagroup/apiary-metastore-init-container
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-        push: ${{ startsWith(github.ref, 'refs/tags/') }}
+        push: ${{ startsWith(github.ref, 'refs/tags/') }
