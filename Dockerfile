@@ -80,4 +80,5 @@ COPY files/s3inventory.tpl /s3inventory.tpl
 COPY files/startup.sh /startup.sh
 COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
 COPY files/allow-grant.sh /allow-grant.sh
+COPY files/db-iam-user.sh /db-iam-user.sh
 CMD /startup.sh
