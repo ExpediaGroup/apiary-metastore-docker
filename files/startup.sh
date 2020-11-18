@@ -38,8 +38,8 @@ fi
 #enable ranger auditing
 if [[ -n $RANGER_AUDIT_SOLR_URL ]]; then
     update_property.py xasecure.audit.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.solr.is.enabled true /etc/hive/conf/ranger-hive-audit.xml
-    update_property.py xasecure.audit.solr.solr_url ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.destination.solr true /etc/hive/conf/ranger-hive-audit.xml
+    update_property.py xasecure.audit.destination.solr.urls ${RANGER_AUDIT_SOLR_URL} /etc/hive/conf/ranger-hive-audit.xml
     if [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
         update_property.py ranger.plugin.hive.policy.source.impl "org.apache.ranger.admin.client.RangerAdminRESTClient" /etc/hive/conf/ranger-hive-security.xml
     elif [ "$HIVE_METASTORE_ACCESS_MODE" = "readonly" ]; then
