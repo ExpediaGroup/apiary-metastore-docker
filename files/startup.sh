@@ -74,17 +74,6 @@ if [ -n "$ENABLE_METRICS" ]; then
     fi
 fi
 
-# If Atlas metastore plugin is being used, set Atlas config properties
-if [[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]]
-then
-    # Update Atlas kafka URL
-    sed "s/ATLAS_KAFKA_BOOTSTRAP_SERVERS/$ATLAS_KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/atlas-application.properties
-    # Update Atlas cluster name
-    # For backward compatability, if ATLAS_CLUSTER_NAME env var is not set, use INSTANCE_NAME
-    [[ -z ${ATLAS_CLUSTER_NAME} ]] && ATLAS_CLUSTER_NAME=${INSTANCE_NAME}
-    sed "s/ATLAS_CLUSTER_NAME/${ATLAS_CLUSTER_NAME}/g" -i /etc/hive/conf/atlas-application.properties
-fi
-
 #configure kafka metastore listener
 if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     sed "s/KAFKA_BOOTSTRAP_SERVERS/$KAFKA_BOOTSTRAP_SERVERS/" -i /etc/hive/conf/hive-site.xml
@@ -165,7 +154,7 @@ export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
 [[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar:/usr/lib/apiary/commons-codec-${COMMONS_CODEC_VERSION}.jar:/usr/lib/apiary/gethostname4j-${GETHOSTNAME4J_VERSION}.jar:/usr/lib/apiary/jna-${JNA_VERSION}.jar"
 [[ ! -z $HIVE_DB_WHITELIST ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
 [[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
-[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
+[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
 
 #configure container credentials provider when running in ECS
 if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
