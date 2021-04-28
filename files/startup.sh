@@ -20,7 +20,6 @@ if [[ -n ${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES} ]]; then
   update_property.py hive.metastore.disallow.incompatible.col.type.changes "${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES}" /etc/hive/conf/hive-site.xml
 fi
 
-
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
     update_property.py hadoop.security.group.mapping.ldap.bind.user "$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hadoop/conf/core-site.xml
@@ -101,3 +100,88 @@ fi
 
 APIARY_S3_INVENTORY_SCHEMA=s3_inventory
 APIARY_S3_LOGS_SCHEMA=s3_logs_hive
+
+#check if database is initialized, test only from rw instances and only if DB is managed by apiary
+if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]; then
+    MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
+    schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
+    if [ "$schema_version" != "2.3.0" ]; then
+        cd /usr/lib/hive/scripts/metastore/upgrade/mysql
+        cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
+        cd /
+    fi
+
+    #create hive databases
+    if [ ! -z $HIVE_DB_NAMES ]; then
+        if [ ! -z $ENABLE_S3_INVENTORY ]; then
+            HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES},${APIARY_S3_INVENTORY_SCHEMA}"
+        else
+            HIVE_APIARY_DB_NAMES="${HIVE_DB_NAMES}"
+        fi
+        if [ ! -z $ENABLE_S3_LOGS ]; then
+            HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_S3_LOGS_SCHEMA}"
+        fi
+
+        HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_SYSTEM_SCHEMA:-apiary_system}"
+
+        AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
+        for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
+        do
+            echo "creating hive database $HIVE_DB"
+            DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
+            BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
+            echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
+            #create glue database
+            if [ ! -z $ENABLE_GLUESYNC ]; then
+                echo "creating glue database $HIVE_DB"
+                aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
+                aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
+            fi
+        done
+    fi
+fi
+
+#pre event listener to restrict hive database access in read-only metastores
+[[ ! -z $HIVE_DB_WHITELIST ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.readonlyauth.listener.ApiaryReadOnlyAuthPreEventListener"
+
+[[ -z $HIVE_METASTORE_LOG_LEVEL ]] && HIVE_METASTORE_LOG_LEVEL="INFO"
+sed "s/HIVE_METASTORE_LOG_LEVEL/$HIVE_METASTORE_LOG_LEVEL/" -i /etc/hive/conf/hive-log4j2.properties
+
+[[ ! -z $SNS_ARN ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.listener.ApiarySnsListener"
+[[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.events.metastore.kafka.listener.KafkaMetaStoreEventListener"
+[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},org.apache.atlas.hive.hook.HiveMetastoreHookImpl"
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_LISTENERS="${METASTORE_LISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGlueSync"
+#remove leading , when external METASTORE_LISTENERS are not defined
+export METASTORE_LISTENERS=$(echo $METASTORE_LISTENERS|sed 's/^,//')
+sed "s/METASTORE_LISTENERS/${METASTORE_LISTENERS}/" -i /etc/hive/conf/hive-site.xml
+
+[[ ! -z $ENABLE_GLUESYNC ]] && export METASTORE_PRELISTENERS="${METASTORE_PRELISTENERS},com.expediagroup.apiary.extensions.gluesync.listener.ApiaryGluePreEventListener"
+export METASTORE_PRELISTENERS=$(echo $METASTORE_PRELISTENERS|sed 's/^,//')
+sed "s/METASTORE_PRELISTENERS/${METASTORE_PRELISTENERS}/" -i /etc/hive/conf/hive-site.xml
+
+#required to debug ranger plugin, todo: send apache common logs to cloudwatch
+#export HADOOP_OPTS="$HADOOP_OPTS -Dorg.apache.commons.logging.LogFactory=org.apache.commons.logging.impl.LogFactoryImpl -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"
+
+export AUX_CLASSPATH="/usr/share/java/mariadb-connector-java.jar"
+[[ ! -z $SNS_ARN ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar"
+[[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar"
+[[ ! -z $ENABLE_GLUESYNC ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
+[[ ! -z $RANGER_POLICY_MANAGER_URL ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar:/usr/lib/apiary/commons-codec-${COMMONS_CODEC_VERSION}.jar:/usr/lib/apiary/gethostname4j-${GETHOSTNAME4J_VERSION}.jar:/usr/lib/apiary/jna-${JNA_VERSION}.jar"
+[[ ! -z $HIVE_DB_WHITELIST ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
+[[ ! -z $ENABLE_METRICS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
+[[ ! -z $ATLAS_KAFKA_BOOTSTRAP_SERVERS ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/hive-bridge-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-notification-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-intg-${ATLAS_VERSION}.jar:/usr/lib/apiary/atlas-common-${ATLAS_VERSION}.jar:/usr/lib/apiary/kafka-clients-${KAFKA_VERSION}.jar"
+
+#configure container credentials provider when running in ECS
+if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
+    update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.ContainerCredentialsProvider /etc/hadoop/conf/core-site.xml
+fi
+
+#auto configure heapsize
+if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
+    export MEM_LIMIT=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .Limits.Memory)
+    export HADOOP_HEAPSIZE=$(expr $MEM_LIMIT \* 90 / 100)
+fi
+[[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
+
+export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
