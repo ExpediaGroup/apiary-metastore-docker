@@ -52,16 +52,6 @@ ENV MAVEN_VERSION 3.6.3
 RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
 
-COPY files/atlas-${ATLAS_VERSION}-hive-2.3.3.patch /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch
-RUN cd /tmp && \
-    wget -q https://www-us.apache.org/dist/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
-    tar xfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
-    cd apache-atlas-sources-${ATLAS_VERSION}/ && \
-    patch  -p1 < /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch && \
-    sed -s 's#http://repo1.maven.org#https://repo1.maven.org#' -i pom.xml && \
-    cd addons/hive-bridge && mvn package -Dhive.version=2.3.3 && cp -a target/hive-bridge-${ATLAS_VERSION}.jar /usr/lib/apiary/ && \
-    cd /tmp && rm -rf /root/.m2 && rm -rf /tmp/apache-atlas-sources-${ATLAS_VERSION}/ && rm -f /tmp/apache-atlas-${ATLAS_VERSION}-sources.tar.gz
-
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
 COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
 COPY files/hive-log4j2.properties /etc/hive/conf/hive-log4j2.properties
