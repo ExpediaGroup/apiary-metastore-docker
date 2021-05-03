@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2021-05-03
+### Changed
+- Remove Atlas MetaStore listener in favor of HiveAtlasShim.
+Note: This is a major version change because it's backwards-incompatible.
+
 ## [1.17.1] - 2020-11-18
 ### Changed
 - Enabled ranger audit log summarization.
