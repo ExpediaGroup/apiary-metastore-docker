@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [2.0.0] - 2021-05-03
 ### Changed
 - Remove Atlas MetaStore listener in favor of HiveAtlasShim.
-Note: This is a major version change because it's backwards-incompatible.
+Note: This release is a *BREAKING* change that removes all support for the Apache Atlas HMS listener.
 
 ## [1.17.1] - 2020-11-18
 ### Changed
