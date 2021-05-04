@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [2.0.0] - 2021-05-03
 ### Changed
-- Remove Atlas MetaStore listener in favor of HiveAtlasShim.
+- Remove Atlas MetaStore listener in favor of internal processes that subscribe to the Kafka HMS event listener and push changes to Ranger.
+
 Note: This release is a *BREAKING* change that removes all support for the Apache Atlas HMS listener.
 
 ## [1.17.1] - 2020-11-18
