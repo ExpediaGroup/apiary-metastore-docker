@@ -9,7 +9,6 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |APIARY_S3_INVENTORY_PREFIX|No (defaults to `EntireBucketDaily`)|Prefix used by S3 Inventory when creating data in the inventory bucket.|
 |APIARY_S3_INVENTORY_TABLE_FORMAT|No (defaults to `ORC`)|Format of S3 inventory data - `ORC`, `Parquet`, or `CSV`|
 |APIARY_SYSTEM_SCHEMA|No (defaults to `apiary_system`)|Name for internal system database.|
-|ATLAS_KAFKA_BOOTSTRAP_SERVERS|No|Atlas hive-bridge kafka bootstrap servers.|
 |AWS_REGION|Yes|AWS region to configure various AWS clients.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
