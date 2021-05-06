@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2021-05-03
+## [2.0.0] - 2021-05-06
 ### Changed
 - Remove Atlas MetaStore listener in favor of internal processes that subscribe to the Kafka HMS event listener and push changes to Ranger.
 
