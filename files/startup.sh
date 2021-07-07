@@ -16,6 +16,10 @@ if [[ -n ${HMS_MAX_THREADS} ]]; then
   update_property.py hive.metastore.server.max.threads "${HMS_MAX_THREADS}" /etc/hive/conf/hive-site.xml
 fi
 
+if [[ -n ${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES} ]]; then
+  update_property.py hive.metastore.disallow.incompatible.col.type.changes "${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES}" /etc/hive/conf/hive-site.xml
+fi
+
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
     update_property.py hadoop.security.group.mapping.ldap.bind.user "$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hadoop/conf/core-site.xml
