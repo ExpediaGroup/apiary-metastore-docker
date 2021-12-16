@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2021-12-16
+### Changed
+- Modified log4j2 security script to reduce container startup time.
+
 ## [2.0.2] - 2021-12-16
 ### Added
 - Added script to find and remove vulnerable log4j2 classes in order to mitigate security issue [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228).
