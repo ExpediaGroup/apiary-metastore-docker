@@ -25,6 +25,7 @@ RUN yum -y install java-1.8.0-openjdk \
   mariadb-connector-java \
   mysql \
   wget \
+  zip \
   unzip \
   jq \
   tar \
@@ -66,4 +67,5 @@ COPY files/startup.sh /startup.sh
 COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
 COPY files/allow-grant.sh /allow-grant.sh
 COPY files/db-iam-user.sh /db-iam-user.sh
+COPY files/log4j2-security.sh /tmp/log4j2-security.sh
 CMD /startup.sh
