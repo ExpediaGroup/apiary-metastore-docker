@@ -67,5 +67,8 @@ COPY files/startup.sh /startup.sh
 COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
 COPY files/allow-grant.sh /allow-grant.sh
 COPY files/db-iam-user.sh /db-iam-user.sh
-COPY files/log4j2-security.sh /tmp/log4j2-security.sh
+
+# Added script to find and remove vulnerable log4j2 classes in order to mitigate security issue (CVE-2021-44228).
+RUN chmod +x files/log4j2-security.sh && files/log4j2-security.sh
+
 CMD /startup.sh
