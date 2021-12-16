@@ -25,6 +25,7 @@ RUN yum -y install java-1.8.0-openjdk \
   mariadb-connector-java \
   mysql \
   wget \
+  zip \
   unzip \
   jq \
   tar \
@@ -48,7 +49,7 @@ wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_pr
 
 ENV MAVEN_VERSION 3.6.3
 
-RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
+RUN wget -q -O - https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
 
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
@@ -66,4 +67,5 @@ COPY files/startup.sh /startup.sh
 COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
 COPY files/allow-grant.sh /allow-grant.sh
 COPY files/db-iam-user.sh /db-iam-user.sh
+COPY files/log4j2-security.sh /tmp/log4j2-security.sh
 CMD /startup.sh
