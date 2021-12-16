@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [unreleased]
 ### Added
-- Added script to look up for log4j2 dangerous classes and remove them because of a security issue (CVE-2021-44228).
+- Added script to look up for log4j2 dangerous classes and remove them to mitigate security issue [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228).
 
 ## [2.0.1] - 2021-07-07
 ### Changed
