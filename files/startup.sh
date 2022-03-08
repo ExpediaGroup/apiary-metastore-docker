@@ -171,4 +171,4 @@ fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
-su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:postgresql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
