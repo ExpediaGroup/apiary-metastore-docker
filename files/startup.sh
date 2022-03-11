@@ -170,5 +170,20 @@ if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
 fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
 
+# Creating user with only SELECT permissions when is read_only hive metastore (credentials from Vault)
+if [ ! -z $MYSQL_USER_CREDS ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readonly" ]; then
+
+    # Get credentials from vault (HM_MYSQL_USER_READONLY_USERNAME & HM_MYSQL_USER_READONLY_PASSWORD)
+    if [[ -f /vault/secrets/secrets.txt ]]; then
+        source /vault/secrets/secrets.txt
+    fi
+
+    /allow-grant-rcp.sh
+
+    export MYSQL_DB_USERNAME = $(HM_MYSQL_USER_READONLY_USERNAME)
+    export MYSQL_DB_PASSWORD = $(HM_MYSQL_USER_READONLY_PASSWORD)
+    echo "Read-only Hive metastore using limited sql credentials under $MYSQL_DB_USERNAME"
+fi
+
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
