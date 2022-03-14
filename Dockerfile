@@ -66,7 +66,6 @@ COPY files/s3inventory.tpl /s3inventory.tpl
 COPY files/startup.sh /startup.sh
 COPY files/s3_inventory_repair.sh /s3_inventory_repair.sh
 COPY files/allow-grant.sh /allow-grant.sh
-COPY files/allow-grant-rcp.sh /allow-grant-rcp.sh
 COPY files/db-iam-user.sh /db-iam-user.sh
 COPY files/log4j2-security.sh /tmp/log4j2-security.sh
 
