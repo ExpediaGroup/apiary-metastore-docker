@@ -7,6 +7,15 @@ set -x
 [[ -z "$MYSQL_DB_USERNAME" ]] && export MYSQL_DB_USERNAME=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .username -r)
 [[ -z "$MYSQL_DB_PASSWORD" ]] && export MYSQL_DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${MYSQL_SECRET_ARN}|jq .SecretString -r|jq .password -r)
 
+# Setting custom credentials from a external file, useful for accounts with limited access.
+if [ -z $EXTERNAL_CREDENTIALS_FILE ]; then
+
+    source $EXTERNAL_CREDENTIALS_FILE
+    
+    export MYSQL_DB_USERNAME=$(echo ${!HM_CUSTOM_USERNAME_VAR_NAME})
+    export MYSQL_DB_PASSWORD=$(echo ${!HM_CUSTOM_PASSWORD_VAR_NAME})
+    echo "Read-only Hive metastore using custom credentials from external file under $MYSQL_DB_USERNAME"
+fi
 
 #config Hive min/max thread pool size.  Terraform will set the env var based on size of memory
 if [[ -n ${HMS_MIN_THREADS} ]]; then
@@ -75,6 +84,7 @@ if [ -n "$ENABLE_METRICS" ]; then
     #enable prometheus jmx agent when running on kubernetes
     if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
         export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
+
     fi
 fi
 
@@ -169,16 +179,6 @@ if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
     export HADOOP_HEAPSIZE=$(expr $MEM_LIMIT \* 90 / 100)
 fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
-
-# Setting custom credentials from a external file, useful for accounts with limited access.
-if [ ! -z $EXTERNAL_CREDENTIALS_FILE ]; then
-
-    source $EXTERNAL_CREDENTIALS_FILE
-    
-    export MYSQL_DB_USERNAME=$(echo ${!HM_CUSTOM_USERNAME_VAR_NAME})
-    export MYSQL_DB_PASSWORD=$(echo ${!HM_CUSTOM_PASSWORD_VAR_NAME})
-    echo "Read-only Hive metastore using custom credentials from external file under $MYSQL_DB_USERNAME"
-fi
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
