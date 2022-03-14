@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [unreleased]
 ### Added
-- Added script for creating a restricted sql account in read-only hms. The script will be only used in the RCP environment since secrets and dbs are handled differently (backward-compatible).
+- Modified startup.sh script to use custom credentials from an external file.
 
 ## [2.0.3] - 2021-12-16
 ### Changed

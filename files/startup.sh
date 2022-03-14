@@ -170,19 +170,14 @@ if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
 fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
 
-# Creating user with only SELECT permissions when is read_only hive metastore (credentials from Vault)
-if [ ! -z $MYSQL_USER_CREDS ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readonly" ]; then
+# Setting custom credentials from a external file, useful for accounts with limited access.
+if [ ! -z $EXTERNAL_CREDENTIALS_FILE ]; then
 
-    # Get credentials from vault (HM_MYSQL_USER_READONLY_USERNAME & HM_MYSQL_USER_READONLY_PASSWORD)
-    if [[ -f /vault/secrets/secrets.txt ]]; then
-        source /vault/secrets/secrets.txt
-    fi
-
-    /allow-grant-rcp.sh
-
-    export MYSQL_DB_USERNAME = $(HM_MYSQL_USER_READONLY_USERNAME)
-    export MYSQL_DB_PASSWORD = $(HM_MYSQL_USER_READONLY_PASSWORD)
-    echo "Read-only Hive metastore using limited sql credentials under $MYSQL_DB_USERNAME"
+    source $EXTERNAL_CREDENTIALS_FILE
+    
+    export MYSQL_DB_USERNAME=$(echo ${!HM_CUSTOM_USERNAME_VAR_NAME})
+    export MYSQL_DB_PASSWORD=$(echo ${!HM_CUSTOM_PASSWORD_VAR_NAME})
+    echo "Read-only Hive metastore using custom credentials from external file under $MYSQL_DB_USERNAME"
 fi
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
