@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2022-03-28
+### Changed
+- Enable authentication via `WebIdentityTokenCredentialsProvider`.
+
 ## [3.0.0] - 2022-03-25
 ### Changed
 - Upgrade EMR repository to version `5.30.2` (was `5.24.0`) so `AWS SDK for Java` library is upgraded to `1.11.759` and in that way support authentication using IAM role via an OIDC web identity token file (https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-minimum-sdk.html).
