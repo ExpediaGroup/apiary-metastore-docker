@@ -163,6 +163,11 @@ if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
     update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.ContainerCredentialsProvider /etc/hadoop/conf/core-site.xml
 fi
 
+#configure WebIdentityTokenCredentialsProvider when running with IRSA/OIDC
+if [ ! -z ${AWS_WEB_IDENTITY_TOKEN_FILE} ]; then
+    update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.WebIdentityTokenCredentialsProvider /etc/hadoop/conf/core-site.xml
+fi
+
 #auto configure heapsize
 if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
     export MEM_LIMIT=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .Limits.Memory)
