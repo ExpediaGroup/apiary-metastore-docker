@@ -38,6 +38,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |SNS_ARN|No|The SNS topic ARN to which metadata updates will be sent.|
 |TABLE_PARAM_FILTER|No|A regular expression for selecting necessary table parameters. If the value isn't set, then no table parameters are selected.|
 |DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES|No|`true`/`false` value for hive.metastore.disallow.incompatible.col.type.changes, default `true`.|
+|AWS_WEB_IDENTITY_TOKEN_FILE|No|Path of the AWS Web Identity Token File for IRSA/OIDC AWS authentication.|
 
 # Contact
 
