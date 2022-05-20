@@ -5,7 +5,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 
 ## Environment Variables
 |Environment Variable|Required|Description|
-|----|--|----|
+|----|----|----|
 |APIARY_S3_INVENTORY_PREFIX|No (defaults to `EntireBucketDaily`)|Prefix used by S3 Inventory when creating data in the inventory bucket.|
 |APIARY_S3_INVENTORY_TABLE_FORMAT|No (defaults to `ORC`)|Format of S3 inventory data - `ORC`, `Parquet`, or `CSV`|
 |APIARY_SYSTEM_SCHEMA|No (defaults to `apiary_system`)|Name for internal system database.|
