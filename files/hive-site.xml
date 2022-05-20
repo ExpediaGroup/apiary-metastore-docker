@@ -28,6 +28,11 @@
   <value>true</value>
 </property>
 
+  <property>
+    <name>datanucleus.connectionPool.maxPoolSize</name>
+    <value>10</value>
+  </property>
+
 <property>
   <name>hive.metastore.uris</name>
   <value>thrift://localhost:9083</value>

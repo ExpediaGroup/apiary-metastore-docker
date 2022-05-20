@@ -5,11 +5,13 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 
 ## Environment Variables
 |Environment Variable|Required|Description|
-|----|----|----|
+|----|--|----|
 |APIARY_S3_INVENTORY_PREFIX|No (defaults to `EntireBucketDaily`)|Prefix used by S3 Inventory when creating data in the inventory bucket.|
 |APIARY_S3_INVENTORY_TABLE_FORMAT|No (defaults to `ORC`)|Format of S3 inventory data - `ORC`, `Parquet`, or `CSV`|
 |APIARY_SYSTEM_SCHEMA|No (defaults to `apiary_system`)|Name for internal system database.|
 |AWS_REGION|Yes|AWS region to configure various AWS clients.|
+|AWS_WEB_IDENTITY_TOKEN_FILE|No|Path of the AWS Web Identity Token File for IRSA/OIDC AWS authentication.|
+|DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES|No|`true`/`false` value for hive.metastore.disallow.incompatible.col.type.changes, default `true`.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_S3_INVENTORY|No|Option to create Hive tables on top of S3 inventory data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
@@ -27,6 +29,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |LDAP_CA_CERT|Base64 encoded Certificate Authority Bundle to validate LDAP SSL connection.|
 |LDAP_SECRET_ARN|No|LDAP bind DN SecretsManager secret ARN.|
 |LDAP_URL|No|Active Directory URL to enable group mapping in metastore.|
+|MYSQL_CONNECTION_POOL_SIZE|No (defaults to `10`)|MySQL Connection pool size for Hive Metastore. See [here](https://github.com/apache/hive/blob/master/common/src/java/org/apache/hadoop/hive/conf/HiveConf.java#L1181) for more info.|
 |MYSQL_DB_HOST|Yes|Hive Metastore MySQL database hostname.|
 |MYSQL_DB_NAME|Yes|Hive Metastore MySQL database name.|
 |MYSQL_SECRET_ARN|Yes|Hive Metastore MySQL SecretsManager secret ARN.|
@@ -37,8 +40,6 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |RANGER_SERVICE_NAME|No|Ranger service name used to configure RangerAuth plugin.|
 |SNS_ARN|No|The SNS topic ARN to which metadata updates will be sent.|
 |TABLE_PARAM_FILTER|No|A regular expression for selecting necessary table parameters. If the value isn't set, then no table parameters are selected.|
-|DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES|No|`true`/`false` value for hive.metastore.disallow.incompatible.col.type.changes, default `true`.|
-|AWS_WEB_IDENTITY_TOKEN_FILE|No|Path of the AWS Web Identity Token File for IRSA/OIDC AWS authentication.|
 
 # Contact
 
