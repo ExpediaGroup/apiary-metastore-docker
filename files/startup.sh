@@ -16,8 +16,19 @@ if [[ -n ${HMS_MAX_THREADS} ]]; then
   update_property.py hive.metastore.server.max.threads "${HMS_MAX_THREADS}" /etc/hive/conf/hive-site.xml
 fi
 
+# config size of MySQL connection pool.
+# See https://github.com/apache/hive/blob/master/common/src/java/org/apache/hadoop/hive/conf/HiveConf.java#L1181
+# and also make sure 2 * MYSQL_CONNECTION_POOL_SIZE * numHmsContainers is less than max connections for your MySQL instance.
+if [[ -n ${MYSQL_CONNECTION_POOL_SIZE} ]]; then
+  update_property.py datanucleus.connectionPool.maxPoolSize "${MYSQL_CONNECTION_POOL_SIZE}" /etc/hive/conf/hive-site.xml
+fi
+
 if [[ -n ${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES} ]]; then
   update_property.py hive.metastore.disallow.incompatible.col.type.changes "${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES}" /etc/hive/conf/hive-site.xml
+fi
+
+if [[ -n ${HMS_AUTOGATHER_STATS} ]]; then
+  update_property.py hive.stats.autogather "${HMS_AUTOGATHER_STATS}" /etc/hive/conf/hive-site.xml
 fi
 
 #configure LDAP group mapping, required for ranger authorization
