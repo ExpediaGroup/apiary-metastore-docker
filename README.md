@@ -19,6 +19,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |EXTERNAL_DATABASE|No|Option to enable external database mode, when specified it disables managing Hive Metastore MySQL database schema.|
 |GLUE_PREFIX|No|Prefix added to Glue databases to handle database name collisions when synchronizing multiple Hive Metastores to the Glue catalog.|
 |HADOOP_HEAPSIZE|No|Hive Metastore Java process heapsize.|
+|HMS_AUTOGATHER_STATS|No (default is `true`)|Whether or not to create basic statistics on table/partition creation. Valid values are `true` or `false`.|
 |HIVE_METASTORE_ACCESS_MODE|No|Hive Metastore access mode, applicable values are: readwrite, readonly|
 |HIVE_DB_NAMES|No|comma separated list of Hive database names, when specified Hive databases will be created and mapped to corresponding S3 buckets.|
 |HIVE_METASTORE_LOG_LEVEL|No|Hive Metastore service Log4j log level.|

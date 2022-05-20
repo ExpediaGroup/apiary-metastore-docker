@@ -93,4 +93,9 @@
   <value>true</value>
 </property>
 
+<property>
+  <name>hive.stats.autogather</name>
+  <value>true</value>
+</property>
+
 </configuration>
