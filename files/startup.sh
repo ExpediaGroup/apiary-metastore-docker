@@ -33,8 +33,12 @@ fi
 
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
-    update_property.py hadoop.security.group.mapping.ldap.bind.user "$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)" /etc/hadoop/conf/core-site.xml
-    aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .password -r > /etc/hadoop/conf/ldap-password.txt
+    if [[ -n $LDAP_SECRET_ARN ]] ; then
+        LDAP_USERNAME="$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .username -r)"
+        LDAP_PASSWORD="$(aws secretsmanager get-secret-value --secret-id ${LDAP_SECRET_ARN}|jq .SecretString -r|jq .password -r)"
+    fi
+    update_property.py hadoop.security.group.mapping.ldap.bind.user "${LDAP_USERNAME}" /etc/hadoop/conf/core-site.xml
+    echo "${LDAP_PASSWORD}" > /etc/hadoop/conf/ldap-password.txt
     update_property.py hadoop.security.group.mapping org.apache.hadoop.security.LdapGroupsMapping /etc/hadoop/conf/core-site.xml
     update_property.py hadoop.security.group.mapping.ldap.url "${LDAP_URL}" /etc/hadoop/conf/core-site.xml
     update_property.py hadoop.security.group.mapping.ldap.base "${LDAP_BASE}" /etc/hadoop/conf/core-site.xml
