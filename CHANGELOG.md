@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [3.0.5] - 2022-05-25
+### Changed
+- LDAP Credentials now can be loaded directly using `LDAP_USERNAME` and `LDAP_PASSWORD`, this is useful to load them from Vault.
+
 ## [3.0.4] - 2022-05-24
 ### Changed
 - Upgrade `apiary-gluesync-listener` version to `7.3.0` (was `4.2.0`).
