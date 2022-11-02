@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.6] - 2022-11-02
 ### Changed
-- Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.4` (was `6.3.0`).
+- Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.4` (was `6.0.1`).
 - Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.4` (was `7.3.0`).
 
 ## [3.0.5] - 2022-05-25
