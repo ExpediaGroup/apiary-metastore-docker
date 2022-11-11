@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.7] - 2022-11-11
 ### Changed
-- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.5` (was `7.3.4`). It fixes a `Date` parsing bug when syncing up Iceberg tables.
+- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.5` (was `7.3.4`). It fixes a bug in parsing the table parameter - `lastAccessTime` when  syncing up Iceberg tables.
 
 ## [3.0.6] - 2022-11-02
 ### Changed
