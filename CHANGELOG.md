@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.0.8] - 2022-11-15
+### Changed
+- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.6` (was `7.3.5`). It fixes a bug in sortOrders when syncing up Iceberg tables.
+
+## [3.0.7] - 2022-11-11
+### Changed
+- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.5` (was `7.3.4`). It fixes a bug in parsing the table parameter - `lastAccessTime` when  syncing up Iceberg tables.
+
 ## [3.0.7] - 2022-11-11
 ### Changed
 - Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.5` (was `7.3.4`). It fixes a bug in parsing the table parameter - `lastAccessTime` when  syncing up Iceberg tables.
