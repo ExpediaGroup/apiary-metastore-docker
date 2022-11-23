@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.0.9] - 2022-11-23
+### Changed
+- Changed `startup.sh` to use a variable for username key when pulling aws credentials, for cases where the key is set to something other than `username`. 
+
 ## [3.0.8] - 2022-11-15
 ### Changed
 - Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.6` (was `7.3.5`). It fixes a bug in sortOrders when syncing up Iceberg tables.
