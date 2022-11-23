@@ -34,6 +34,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |MYSQL_DB_HOST|Yes|Hive Metastore MySQL database hostname.|
 |MYSQL_DB_NAME|Yes|Hive Metastore MySQL database name.|
 |MYSQL_SECRET_ARN|Yes|Hive Metastore MySQL SecretsManager secret ARN.|
+|MYSQL_SECRET_USERNAME_KEY|No (defaults to `username`)|Hive Metastore MySQL SecretsManager secret username key.|
 |RANGER_AUDIT_DB_URL|No|Ranger audit database JDBC URL.|
 |RANGER_AUDIT_SECRET_ARN|No|Ranger audit database secret ARN.|
 |RANGER_AUDIT_SOLR_URL|No|Ranger Solr audit URL.|
