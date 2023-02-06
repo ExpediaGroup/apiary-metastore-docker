@@ -57,7 +57,7 @@ RUN wget -q -O - https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binarie
 
 COPY files/atlas-${ATLAS_VERSION}-hive-2.3.3.patch /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch
 RUN cd /tmp && \
-    wget -q https://www-us.apache.org/dist/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
+    wget -q https://dlcdn.apache.org/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
     tar xfz apache-atlas-${ATLAS_VERSION}-sources.tar.gz && \
     cd apache-atlas-sources-${ATLAS_VERSION}/ && \
     patch  -p1 < /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch && \
