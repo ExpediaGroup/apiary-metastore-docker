@@ -52,7 +52,7 @@ wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_pr
 
 ENV MAVEN_VERSION 3.6.3
 
-RUN wget -q -O - http://www-us.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
+RUN wget -q -O - https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz|tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
 
 COPY files/atlas-${ATLAS_VERSION}-hive-2.3.3.patch /tmp/atlas-${ATLAS_VERSION}-hive-2.3.3.patch
