@@ -178,6 +178,25 @@ if [ ! -z ${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} ]; then
     update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.ContainerCredentialsProvider /etc/hadoop/conf/core-site.xml
 fi
 
+# Datadog agent
+log_header "Install DataDog agent"
+log_msg "Get Datadog API KEY from AWS Secret Manager"
+export DD_API_KEY=$(aws secretsmanager get-secret-value --secret-id dd-analytics-platform-starburst --region us-east-1 --query 'SecretString' --output text  | jq -r '.api_key')
+#export DD_API_KEY=${datadog_api_key} 2>&1 1>/dev/null
+log_msg "Set proper tags and install Datadog agent"
+export DD_AGENT_MAJOR_VERSION=7
+export DD_INSTALL_ONLY=true
+
+if [ -z "$DD_API_KEY" ]
+then
+    echo "\$DD_API_KEY is empty"
+else
+    bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
+    log_header "Installed DataDog Agent"
+    log_msg "Enable DataDog Agent for Hive Metastore"
+    #sudo -u dd-agent datadog-agent integration install -t datadog-trino==1.0.0
+fi
+
 #configure WebIdentityTokenCredentialsProvider when running with IRSA/OIDC
 if [ ! -z ${AWS_WEB_IDENTITY_TOKEN_FILE} ]; then
     update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.WebIdentityTokenCredentialsProvider /etc/hadoop/conf/core-site.xml
