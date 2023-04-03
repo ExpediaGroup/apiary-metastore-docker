@@ -14,16 +14,14 @@ ENV COMMONS_CODEC_VERSION 1.12
 ENV GETHOSTNAME4J_VERSION 0.0.3
 ENV JNA_VERSION 3.0.9
 ENV EXPORTER_VERSION 0.12.0
+#ENV DATADOG_SECRET_ID $(aws secretsmanager get-secret-value --secret-id dd-analytics-platform-starburst --region us-east-1 --query 'SecretString' --output text  | jq -r '.api_key')
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
 COPY files/emr-platform.repo /etc/yum.repos.d/emr-platform.repo
+COPY files/emr-puppet.repo /etc/yum.repos.d/emr-puppet.repo
 
-RUN yum -y install java-1.8.0-openjdk \
-  java-1.8.0-openjdk-devel.x86_64 \
-  hive-metastore \
-  mariadb-connector-java \
-  mysql \
+RUN yum -y install mariadb-connector-java \
   wget \
   zip \
   unzip \
@@ -69,6 +67,6 @@ COPY files/db-iam-user.sh /db-iam-user.sh
 COPY files/log4j2-security.sh /tmp/log4j2-security.sh
 
 # Added script to find and remove vulnerable log4j2 classes in order to mitigate security issue (CVE-2021-44228).
-RUN chmod +x /tmp/log4j2-security.sh && /tmp/log4j2-security.sh
+#RUN chmod +x /tmp/log4j2-security.sh && /tmp/log4j2-security.sh
 
 CMD /startup.sh
