@@ -181,8 +181,7 @@ fi
 # Datadog agent
 log_header "Install DataDog agent"
 log_msg "Get Datadog API KEY from AWS Secret Manager"
-export DD_API_KEY=$(aws secretsmanager get-secret-value --secret-id $(DATADOG_SECRET_ID) --region us-east-1 --query 'SecretString' --output text  | jq -r '.api_key')
-#export DD_API_KEY=${datadog_api_key} 2>&1 1>/dev/null
+export DD_API_KEY=$(aws secretsmanager get-secret-value --secret-id $(DATADOG_SECRET_ID) --region $(REGION) --query 'SecretString' --output text  | jq -r '.api_key')
 log_msg "Set proper tags and install Datadog agent"
 export DD_AGENT_MAJOR_VERSION=7
 export DD_INSTALL_ONLY=true
