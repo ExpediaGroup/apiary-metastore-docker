@@ -1,7 +1,8 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-from amazonlinux:latest
+# Libraries like openjdk, mysql are not provided in the latest amazonlinux repository, hence changing it to amazonlinux:2
+from amazonlinux:2
 
 ENV RANGER_VERSION 2.0.0
 ENV APIARY_EXTENSIONS_VERSION 7.3.4
@@ -21,7 +22,11 @@ COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
 COPY files/emr-platform.repo /etc/yum.repos.d/emr-platform.repo
 COPY files/emr-puppet.repo /etc/yum.repos.d/emr-puppet.repo
 
-RUN yum -y install mariadb-connector-java \
+RUN yum -y install java-1.8.0-openjdk \
+  java-1.8.0-openjdk-devel.x86_64 \
+  hive-metastore \
+  mariadb-connector-java \
+  mysql \
   wget \
   zip \
   unzip \
@@ -67,6 +72,6 @@ COPY files/db-iam-user.sh /db-iam-user.sh
 COPY files/log4j2-security.sh /tmp/log4j2-security.sh
 
 # Added script to find and remove vulnerable log4j2 classes in order to mitigate security issue (CVE-2021-44228).
-#RUN chmod +x /tmp/log4j2-security.sh && /tmp/log4j2-security.sh
+RUN chmod +x /tmp/log4j2-security.sh && /tmp/log4j2-security.sh
 
 CMD /startup.sh
