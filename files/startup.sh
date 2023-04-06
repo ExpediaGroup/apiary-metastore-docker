@@ -194,7 +194,7 @@ else
     bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
     log_header "Installed DataDog Agent"
     log_msg "Enable DataDog Agent for Hive Metastore"
-    #sudo -u dd-agent datadog-agent integration install -t datadog-trino==1.0.0
+    sudo -u dd-agent datadog-agent integration install -t datadog-trino==1.0.0
 fi
 
 
