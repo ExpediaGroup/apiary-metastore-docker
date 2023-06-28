@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 - Upgraded github actions ubuntu runner to `22.04` (was `18.04`).
 - Set `amazonlinux` version to `2` (was `latest`).
+- Upgraded mvn version to `3.9.3`(was `3.6.3`). 
 
 ## [3.0.9] - 2022-11-23
 ### Added
