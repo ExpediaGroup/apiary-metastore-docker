@@ -1,7 +1,7 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-from amazonlinux:latest
+from amazonlinux:2
 
 ENV RANGER_VERSION 2.0.0
 ENV APIARY_EXTENSIONS_VERSION 7.3.4

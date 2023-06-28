@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Added variable `LIMIT_PARTITION_REQUEST_NUMBER` to protect the cluster, this controls how many partitions can be scanned for each partitioned table. The default value "-1" means no limit. The limit on partitions does not affect metadata-only queries.
 ### Changed
 - Upgraded github actions ubuntu runner to `22.04` (was `18.04`).
+- Set `amazonlinux` version to `2` (was `latest`).
 
 ## [3.0.9] - 2022-11-23
 ### Added
