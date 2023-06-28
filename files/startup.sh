@@ -31,6 +31,10 @@ if [[ -n ${HMS_AUTOGATHER_STATS} ]]; then
   update_property.py hive.stats.autogather "${HMS_AUTOGATHER_STATS}" /etc/hive/conf/hive-site.xml
 fi
 
+if [[ -n ${LIMIT_PARTITION_REQUEST_NUMBER} ]]; then
+  update_property.py hive.metastore.limit.partition.request "${LIMIT_PARTITION_REQUEST_NUMBER}" /etc/hive/conf/hive-site.xml
+fi
+
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
     if [[ -n $LDAP_SECRET_ARN ]] ; then

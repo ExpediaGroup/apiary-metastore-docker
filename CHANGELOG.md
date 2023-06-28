@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.9] - 2022-11-23
 ### Added
+- Added variable `LIMIT_PARTITION_REQUEST_NUMBER` to protect the cluster, this controls how many partitions can be scanned for each partitioned table. The default value "-1" means no limit. The limit on partitions does not affect metadata-only queries.
+
+## [3.0.9] - 2022-11-23
+### Added
 - Variable `MYSQL_SECRET_USERNAME_KEY` for pulling aws credentials where the key is set to something other than `username`. Defaults to `username`.  
 
 ## [3.0.8] - 2022-11-15
