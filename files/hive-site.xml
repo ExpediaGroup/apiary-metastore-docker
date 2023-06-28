@@ -28,10 +28,10 @@
   <value>true</value>
 </property>
 
-  <property>
-    <name>datanucleus.connectionPool.maxPoolSize</name>
-    <value>10</value>
-  </property>
+<property>
+  <name>datanucleus.connectionPool.maxPoolSize</name>
+  <value>10</value>
+</property>
 
 <property>
   <name>hive.metastore.uris</name>
@@ -96,6 +96,11 @@
 <property>
   <name>hive.stats.autogather</name>
   <value>true</value>
+</property>
+
+<property>
+  <name>hive.metastore.limit.partition.request</name>
+  <value>-1</value>
 </property>
 
 </configuration>
