@@ -43,6 +43,9 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |RANGER_SERVICE_NAME|No|Ranger service name used to configure RangerAuth plugin.|
 |SNS_ARN|No|The SNS topic ARN to which metadata updates will be sent.|
 |TABLE_PARAM_FILTER|No|A regular expression for selecting necessary table parameters. If the value isn't set, then no table parameters are selected.|
+|KAFKA_BOOTSTRAP_SERVERS|No|Kafka Bootstrap Servers to enable Kafka Metastore listener and send Metastore events to Kafka.|
+|KAFKA_CLIENT_ID|No|Kafka label you define that names the Kafka producer.|
+|KAFKA_COMPRESSION_TYPE|No|Kafka Compression type, if none is specified there is no compression enabled. Values available are gzip, lz4 and snappy.|
 
 # Contact
 

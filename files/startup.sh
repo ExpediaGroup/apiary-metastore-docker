@@ -104,7 +104,7 @@ if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     [[ -n $ECS_CONTAINER_METADATA_URI ]] && export KAFKA_CLIENT_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
     [[ -n $KUBERNETES_SERVICE_HOST ]] && export KAFKA_CLIENT_ID="$HOSTNAME"
     [[ -n $KAFKA_CLIENT_ID ]] && sed "s/KAFKA_CLIENT_ID/$KAFKA_CLIENT_ID/" -i /etc/hive/conf/hive-site.xml
-    [[ -n $KAFKA_COMPRESSION_TYPE ]] && update_property.py com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.compression.type "gzip" /etc/hive/conf/hive-site.xml
+    [[ -n $KAFKA_COMPRESSION_TYPE ]] && update_property.py com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.compression.type "$KAFKA_COMPRESSION_TYPE" /etc/hive/conf/hive-site.xml
 fi
 
 APIARY_S3_INVENTORY_SCHEMA=s3_inventory
