@@ -89,6 +89,11 @@
 </property>
 
 <property>
+  <name>com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.compression.type</name>
+  <value>none</value>
+</property>
+
+<property>
   <name>hive.metastore.disallow.incompatible.col.type.changes</name>
   <value>true</value>
 </property>
