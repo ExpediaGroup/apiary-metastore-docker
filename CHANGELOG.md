@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [3.0.11] - 2023-07-25
 ### Added
 - Added variable `KAFKA_COMPRESSION_TYPE` to optionally add compression type when sending Metastore events to Kafka through apiary-metastore-listener library.
+- Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.7` (was `7.3.4`).
+- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.7` (was `7.3.6`).
 
 ## [3.0.10] - 2023-06-28
 ### Added
