@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.0.11] - 2023-07-25
+### Added
+- Added variable `KAFKA_COMPRESSION_TYPE` to optionally add compression type when sending Metastore events to Kafka through apiary-metastore-listener library.
+
 ## [3.0.10] - 2023-06-28
 ### Added
 - Added variable `LIMIT_PARTITION_REQUEST_NUMBER` to protect the cluster, this controls how many partitions can be scanned for each partitioned table. The default value "-1" means no limit. The limit on partitions does not affect metadata-only queries.
