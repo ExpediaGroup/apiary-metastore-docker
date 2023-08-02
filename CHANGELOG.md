@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.12] - 2023-08-02
 ### Added
-- Added variable `MAX_REQUEST_SIZE` to optionally add compression type when sending Metastore events to Kafka through apiary-metastore-listener library.
+- Added variable `MAX_REQUEST_SIZE` to optionally increase the request size when sending records to Kafka.
 - Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.8` (was `7.3.7`).
 - Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.8` (was `7.3.7`).
 
