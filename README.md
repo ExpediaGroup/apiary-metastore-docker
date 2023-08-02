@@ -29,7 +29,8 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |INSTANCE_NAME|Yes|Apiary instance name, will be used as prefix on most AWS resources to allow multiple Apiary instance deployments.|
 |KAFKA_BOOTSTRAP_SERVERS|No|Kafka Bootstrap Servers to enable Kafka Metastore listener and send Metastore events to Kafka.|
 |KAFKA_CLIENT_ID|No|Kafka label you define that names the Kafka producer.|
-|KAFKA_COMPRESSION_TYPE|No|Kafka Compression type, if none is specified there is no compression enabled. Values available are gzip, lz4 and snappy.|
+|KAFKA_COMPRESSION_TYPE|No (defaults to `1048576`)|The maximum size of a request in bytes. This setting will limit the number of record batches the producer will send in a single request to avoid sending huge requests. This is also effectively a cap on the maximum uncompressed record batch size.|
+|KAFKA_MAX_REQUEST_SIZE|No|Kafka Compression type, if none is specified there is no compression enabled. Values available are gzip, lz4 and snappy.|
 |LDAP_BASE|No|LDAP base DN used to search for user groups.|
 |LDAP_CA_CERT|Base64 encoded Certificate Authority Bundle to validate LDAP SSL connection.|
 |LDAP_SECRET_ARN|No|LDAP bind DN SecretsManager secret ARN.|
