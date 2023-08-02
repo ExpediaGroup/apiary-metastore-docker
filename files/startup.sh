@@ -105,6 +105,7 @@ if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     [[ -n $KUBERNETES_SERVICE_HOST ]] && export KAFKA_CLIENT_ID="$HOSTNAME"
     [[ -n $KAFKA_CLIENT_ID ]] && sed "s/KAFKA_CLIENT_ID/$KAFKA_CLIENT_ID/" -i /etc/hive/conf/hive-site.xml
     [[ -n $KAFKA_COMPRESSION_TYPE ]] && update_property.py com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.compression.type "$KAFKA_COMPRESSION_TYPE" /etc/hive/conf/hive-site.xml
+    [[ -n $KAFKA_MAX_REQUEST_SIZE ]] && update_property.py com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.max.request.size "$KAFKA_MAX_REQUEST_SIZE" /etc/hive/conf/hive-site.xml
 fi
 
 APIARY_S3_INVENTORY_SCHEMA=s3_inventory

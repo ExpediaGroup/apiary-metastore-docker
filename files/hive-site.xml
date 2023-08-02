@@ -94,6 +94,11 @@
 </property>
 
 <property>
+  <name>com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.max.request.size</name>
+  <value>1048576</value>
+</property>
+
+<property>
   <name>hive.metastore.disallow.incompatible.col.type.changes</name>
   <value>true</value>
 </property>
