@@ -27,17 +27,24 @@ from xml.parsers.expat import ExpatError
 
 def write_properties_to_xml(xml_path, property_name='', property_value=''):
 	if(os.path.isfile(xml_path)):
-		try:
+		try:			
 			xml = ET.parse(xml_path)
 		except ExpatError:
-			print "Error while parsing file:"+xml_path
+			print "Error while parsing file:" + xml_path
 			return -1
+		property_exists = False
 		root = xml.getroot()
 		for child in root.findall('property'):
 			name = child.find("name").text.strip()
 			if name == property_name:
+				property_exists = True
 				child.find("value").text = property_value
 				break
+		if not property_exists:
+			new_property = ET.SubElement(root, 'property')
+			ET.SubElement(new_property,'name').text = property_name 	
+			ET.SubElement(new_property,'value').text = property_value 
+
 		xml.write(xml_path)
 		return 0
 	else:

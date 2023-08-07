@@ -13,6 +13,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |AWS_WEB_IDENTITY_TOKEN_FILE|No|Path of the AWS Web Identity Token File for IRSA/OIDC AWS authentication.|
 |DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES|No|`true`/`false` value for hive.metastore.disallow.incompatible.col.type.changes, default `true`.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
+|ENABLE_HIVE_LOCK_HOUSE_KEEPER|No|Option to turn on Hive Metastore Hive Lock House Keeper.|
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_S3_INVENTORY|No|Option to create Hive tables on top of S3 inventory data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
 |ENABLE_S3_LOGS|No|Option to create Hive tables on top of S3 access logs data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
