@@ -194,10 +194,8 @@ if [ ! -z ${ENABLE_HIVE_LOCK_HOUSE_KEEPER} ]; then
     update_property.py hive.txn.manager org.apache.hadoop.hive.ql.lockmgr.DbTxnManager /etc/hive/conf/hive-site.xml
     update_property.py hive.support.concurrency true /etc/hive/conf/hive-site.xml
     update_property.py hive.compactor.initiator.on true /etc/hive/conf/hive-site.xml
-    update_property.py hive.compactor.cleaner.on true /etc/hive/conf/hive-site.xml 
     update_property.py hive.compactor.worker.threads 1 /etc/hive/conf/hive-site.xml
-    update_property.py hive.txn.strict.locking.mode false /etc/hive/conf/hive-site.xml
-    update_property.py hive.exec.dynamic.partition.mode nonstrict /etc/hive/conf/hive-site.xml 
+    update_property.py hive.txn.strict.locking.mode false /etc/hive/conf/hive-site.xml 
 fi
 #auto configure heapsize
 if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
