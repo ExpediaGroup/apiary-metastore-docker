@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.0.14] - 2023-08-11
+### Changed
+- Upgrade Maven version from `3.9.3` to `3.9.4` as the older version no longer supported.(https://dlcdn.apache.org/maven/maven-3/)
+
 ## [3.0.13] - 2023-08-09
 ### Added
 - [issue-118](https://github.com/ExpediaGroup/apiary-metastore-docker/issues/118) Added variable `ENABLE_HIVE_LOCK_HOUSE_KEEPER` to support hive lock house keeper. See more details here: apache/iceberg#2301
