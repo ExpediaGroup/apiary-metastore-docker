@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.0.15] - 2023-10-03
+### Fixed
+- Safeguard AWS account id call to prevent incorrect DB locations.
+
 ## [3.0.14] - 2023-08-11
 ### Changed
 - Upgrade Maven version from `3.9.3` to `3.9.4` as the older version no longer supported.(https://dlcdn.apache.org/maven/maven-3/)

@@ -135,19 +135,23 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
         HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_SYSTEM_SCHEMA:-apiary_system}"
 
         AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
-        for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
-        do
-            echo "creating hive database $HIVE_DB"
-            DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
-            BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
-            echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
-            #create glue database
-            if [ ! -z $ENABLE_GLUESYNC ]; then
-                echo "creating glue database $HIVE_DB"
-                aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
-                aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
-            fi
-        done
+        if [[ -n $AWS_ACCOUNT ]]; then
+          for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
+          do
+              echo "creating hive database $HIVE_DB"
+              DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
+              BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
+              echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
+              #create glue database
+              if [ ! -z $ENABLE_GLUESYNC ]; then
+                  echo "creating glue database $HIVE_DB"
+                  aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
+                  aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
+              fi
+          done
+        else
+          echo "WARN: Could not get AWS_ACCOUNT, skipping update of DB entries."
+        fi
     fi
 fi
 
