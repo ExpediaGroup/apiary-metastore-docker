@@ -150,7 +150,7 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
               fi
           done
         else
-          echo "Could not get AWS_ACCOUNT, skipping update of DB entries."
+          echo "WARN: Could not get AWS_ACCOUNT, skipping update of DB entries."
         fi
     fi
 fi
