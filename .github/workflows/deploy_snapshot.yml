@@ -1,18 +1,23 @@
-name: Docker Test Build
+name: Docker Snapshot Release
 
-on: [pull_request]
+on:
+  workflow_dispatch:
 
 jobs:
   apiary-docker-image:
     name: Apiary Docker Image Checks
     runs-on: ubuntu-22.04
     steps:
-    - name: Check out code  
-      uses: actions/checkout@v2
+      - name: Check out code
+        uses: actions/checkout@v2
 
-    - name: Ensure Apiary Docker Image Builds.
-      uses: docker/build-push-action@v1.1.0
-      with:
-        dockerfile: "Dockerfile"
-        always_pull: true
-        push: false
+      - name: Ensure Apiary Docker Image Builds.
+        uses: docker/build-push-action@v1.1.0
+        with:
+          dockerfile: "Dockerfile"
+          always_pull: true
+          tag_with_sha: true
+          repository: expediagroup/apiary-metastore
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          push: true
