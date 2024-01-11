@@ -15,4 +15,4 @@ jobs:
       with:
         dockerfile: "Dockerfile"
         always_pull: true
-        push: true
+        push: false
