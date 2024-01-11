@@ -31,6 +31,10 @@ if [[ -n ${HMS_AUTOGATHER_STATS} ]]; then
   update_property.py hive.stats.autogather "${HMS_AUTOGATHER_STATS}" /etc/hive/conf/hive-site.xml
 fi
 
+if [[ -n ${LIMIT_PARTITION_REQUEST_NUMBER} ]]; then
+  update_property.py hive.metastore.limit.partition.request "${LIMIT_PARTITION_REQUEST_NUMBER}" /etc/hive/conf/hive-site.xml
+fi
+
 #configure LDAP group mapping, required for ranger authorization
 if [[ -n $LDAP_URL ]] ; then
     if [[ -n $LDAP_SECRET_ARN ]] ; then
@@ -107,6 +111,8 @@ if [[ ! -z $KAFKA_BOOTSTRAP_SERVERS ]]; then
     [[ -n $ECS_CONTAINER_METADATA_URI ]] && export KAFKA_CLIENT_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
     [[ -n $KUBERNETES_SERVICE_HOST ]] && export KAFKA_CLIENT_ID="$HOSTNAME"
     [[ -n $KAFKA_CLIENT_ID ]] && sed "s/KAFKA_CLIENT_ID/$KAFKA_CLIENT_ID/" -i /etc/hive/conf/hive-site.xml
+    [[ -n $KAFKA_COMPRESSION_TYPE ]] && update_property.py com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.compression.type "$KAFKA_COMPRESSION_TYPE" /etc/hive/conf/hive-site.xml
+    [[ -n $KAFKA_MAX_REQUEST_SIZE ]] && update_property.py com.expediagroup.apiary.extensions.events.metastore.kafka.messaging.max.request.size "$KAFKA_MAX_REQUEST_SIZE" /etc/hive/conf/hive-site.xml
 fi
 
 APIARY_S3_INVENTORY_SCHEMA=s3_inventory
@@ -136,19 +142,23 @@ if [ -z $EXTERNAL_DATABASE ] && [ "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ];
         HIVE_APIARY_DB_NAMES="${HIVE_APIARY_DB_NAMES},${APIARY_SYSTEM_SCHEMA:-apiary_system}"
 
         AWS_ACCOUNT=`aws sts get-caller-identity|jq -r .Account`
-        for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
-        do
-            echo "creating hive database $HIVE_DB"
-            DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
-            BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
-            echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
-            #create glue database
-            if [ ! -z $ENABLE_GLUESYNC ]; then
-                echo "creating glue database $HIVE_DB"
-                aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
-                aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
-            fi
-        done
+        if [[ -n $AWS_ACCOUNT ]]; then
+          for HIVE_DB in `echo ${HIVE_APIARY_DB_NAMES}|tr "," "\n"`
+          do
+              echo "creating hive database $HIVE_DB"
+              DB_ID=`echo "select MAX(DB_ID)+1 from DBS"|mysql $MYSQL_OPTIONS`
+              BUCKET_NAME=$(echo "${INSTANCE_NAME}-${AWS_ACCOUNT}-${AWS_REGION}-${HIVE_DB}"|tr "_" "-")
+              echo "insert into DBS(DB_ID,DB_LOCATION_URI,NAME,OWNER_NAME,OWNER_TYPE) values(\"$DB_ID\",\"s3://${BUCKET_NAME}/\",\"${HIVE_DB}\",\"root\",\"USER\") on duplicate key update DB_LOCATION_URI=\"s3://${BUCKET_NAME}/\";"|mysql $MYSQL_OPTIONS
+              #create glue database
+              if [ ! -z $ENABLE_GLUESYNC ]; then
+                  echo "creating glue database $HIVE_DB"
+                  aws --region=${AWS_REGION} glue create-database --database-input Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/ &> /dev/null
+                  aws --region=${AWS_REGION} glue update-database --name=${GLUE_PREFIX}${HIVE_DB} --database-input "Name=${GLUE_PREFIX}${HIVE_DB},LocationUri=s3://${BUCKET_NAME}/,Description=Managed by ${INSTANCE_NAME} datalake."
+              fi
+          done
+        else
+          echo "WARN: Could not get AWS_ACCOUNT, skipping update of DB entries."
+        fi
     fi
 fi
 
@@ -194,6 +204,14 @@ if [ ! -z ${AWS_WEB_IDENTITY_TOKEN_FILE} ]; then
     update_property.py fs.s3a.aws.credentials.provider com.amazonaws.auth.WebIdentityTokenCredentialsProvider /etc/hadoop/conf/core-site.xml
 fi
 
+# Enable Hive lock housekeeper
+if [ ! -z ${ENABLE_HIVE_LOCK_HOUSE_KEEPER} ]; then
+    update_property.py hive.txn.manager org.apache.hadoop.hive.ql.lockmgr.DbTxnManager /etc/hive/conf/hive-site.xml
+    update_property.py hive.support.concurrency true /etc/hive/conf/hive-site.xml
+    update_property.py hive.compactor.initiator.on true /etc/hive/conf/hive-site.xml
+    update_property.py hive.compactor.worker.threads 1 /etc/hive/conf/hive-site.xml
+    update_property.py hive.txn.strict.locking.mode false /etc/hive/conf/hive-site.xml 
+fi
 #auto configure heapsize
 if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
     export MEM_LIMIT=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .Limits.Memory)

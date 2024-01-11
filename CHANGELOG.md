@@ -3,6 +3,42 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.0.16] - 2024-01-11
+### Added
+- Added snapshot.yaml for pushing docker image from feature branch.
+
+## [3.0.15] - 2023-10-03
+### Fixed
+- Safeguard AWS account id call to prevent incorrect DB locations.
+
+## [3.0.14] - 2023-08-11
+### Changed
+- Upgrade Maven version from `3.9.3` to `3.9.4` as the older version no longer supported.(https://dlcdn.apache.org/maven/maven-3/)
+
+## [3.0.13] - 2023-08-09
+### Added
+- [issue-118](https://github.com/ExpediaGroup/apiary-metastore-docker/issues/118) Added variable `ENABLE_HIVE_LOCK_HOUSE_KEEPER` to support hive lock house keeper. See more details here: apache/iceberg#2301
+
+## [3.0.12] - 2023-08-02
+### Added
+- Added variable `MAX_REQUEST_SIZE` to optionally increase the request size when sending records to Kafka.
+- Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.8` (was `7.3.7`).
+- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.8` (was `7.3.7`).
+
+## [3.0.11] - 2023-07-25
+### Added
+- Added variable `KAFKA_COMPRESSION_TYPE` to optionally add compression type when sending Metastore events to Kafka through apiary-metastore-listener library.
+- Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.7` (was `7.3.4`).
+- Upgraded `APIARY_GLUESYNC_LISTENER_VERSION` to `7.3.7` (was `7.3.6`).
+
+## [3.0.10] - 2023-06-28
+### Added
+- Added variable `LIMIT_PARTITION_REQUEST_NUMBER` to protect the cluster, this controls how many partitions can be scanned for each partitioned table. The default value "-1" means no limit. The limit on partitions does not affect metadata-only queries.
+### Changed
+- Upgraded github actions ubuntu runner to `22.04` (was `18.04`).
+- Set `amazonlinux` version to `2` (was `latest`).
+- Upgraded mvn version to `3.9.3`(was `3.6.3`). 
+
 ## [3.0.9] - 2022-11-23
 ### Added
 - Variable `MYSQL_SECRET_USERNAME_KEY` for pulling aws credentials where the key is set to something other than `username`. Defaults to `username`.  

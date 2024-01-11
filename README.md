@@ -13,6 +13,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |AWS_WEB_IDENTITY_TOKEN_FILE|No|Path of the AWS Web Identity Token File for IRSA/OIDC AWS authentication.|
 |DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES|No|`true`/`false` value for hive.metastore.disallow.incompatible.col.type.changes, default `true`.|
 |ENABLE_GLUESYNC|No|Option to turn on GlueSync Hive Metastore listener.|
+|ENABLE_HIVE_LOCK_HOUSE_KEEPER|No|Option to turn on Hive Metastore Hive Lock House Keeper.|
 |ENABLE_METRICS|No|Option to enable sending Hive Metastore metrics to CloudWatch.|
 |ENABLE_S3_INVENTORY|No|Option to create Hive tables on top of S3 inventory data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
 |ENABLE_S3_LOGS|No|Option to create Hive tables on top of S3 access logs data if enabled in `apiary-data-lake`. Enabled if value is not null/empty.|
@@ -20,12 +21,17 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 |GLUE_PREFIX|No|Prefix added to Glue databases to handle database name collisions when synchronizing multiple Hive Metastores to the Glue catalog.|
 |HADOOP_HEAPSIZE|No|Hive Metastore Java process heapsize.|
 |HMS_AUTOGATHER_STATS|No (default is `true`)|Whether or not to create basic statistics on table/partition creation. Valid values are `true` or `false`.|
+|LIMIT_PARTITION_REQUEST_NUMBER|No (default is `-1`)|To protect the cluster, this controls how many partitions can be scanned for each partitioned table. The default value "-1" means no limit. The limit on partitions does not affect metadata-only queries.|
 |HIVE_METASTORE_ACCESS_MODE|No|Hive Metastore access mode, applicable values are: readwrite, readonly|
 |HIVE_DB_NAMES|No|comma separated list of Hive database names, when specified Hive databases will be created and mapped to corresponding S3 buckets.|
 |HIVE_METASTORE_LOG_LEVEL|No|Hive Metastore service Log4j log level.|
 |HMS_MIN_THREADS|No (defaults to `200`)|Minimum size of the Hive metastore thread pool.|
 |HMS_MAX_THREADS|No (defaults to `1000`)|Maximum size of the Hive metastore thread pool.|
 |INSTANCE_NAME|Yes|Apiary instance name, will be used as prefix on most AWS resources to allow multiple Apiary instance deployments.|
+|KAFKA_BOOTSTRAP_SERVERS|No|Kafka Bootstrap Servers to enable Kafka Metastore listener and send Metastore events to Kafka.|
+|KAFKA_CLIENT_ID|No|Kafka label you define that names the Kafka producer.|
+|KAFKA_COMPRESSION_TYPE|No (defaults to `1048576`)|The maximum size of a request in bytes. This setting will limit the number of record batches the producer will send in a single request to avoid sending huge requests. This is also effectively a cap on the maximum uncompressed record batch size.|
+|KAFKA_MAX_REQUEST_SIZE|No|Kafka Compression type, if none is specified there is no compression enabled. Values available are gzip, lz4 and snappy.|
 |LDAP_BASE|No|LDAP base DN used to search for user groups.|
 |LDAP_CA_CERT|Base64 encoded Certificate Authority Bundle to validate LDAP SSL connection.|
 |LDAP_SECRET_ARN|No|LDAP bind DN SecretsManager secret ARN.|

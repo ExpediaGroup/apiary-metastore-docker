@@ -1,11 +1,11 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-from amazonlinux:latest
+from amazonlinux:2
 
 ENV RANGER_VERSION 2.0.0
-ENV APIARY_EXTENSIONS_VERSION 7.3.4
-ENV APIARY_GLUESYNC_LISTENER_VERSION 7.3.6
+ENV APIARY_EXTENSIONS_VERSION 7.3.8
+ENV APIARY_GLUESYNC_LISTENER_VERSION 7.3.8
 ENV APIARY_RANGER_PLUGIN_VERSION 5.0.1
 ENV APIARY_METASTORE_METRICS_VERSION 4.2.0
 ENV APIARY_METASTORE_AUTH_VERSION 4.2.0
@@ -46,7 +46,7 @@ wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4
 wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_prometheus_javaagent/${EXPORTER_VERSION}/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar -O jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar
 
-ENV MAVEN_VERSION 3.6.3
+ENV MAVEN_VERSION 3.9.4
 
 RUN wget -q -O - https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
