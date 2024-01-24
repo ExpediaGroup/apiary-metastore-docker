@@ -103,6 +103,11 @@ if [ -n "$ENABLE_METRICS" ]; then
         export HIVE_METASTORE_HADOOP_OPTS="$HIVE_METASTORE_HADOOP_OPTS -Djava.net.preferIPv4Stack=true -javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
         export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
 
+        echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
+        echo $HIVE_METASTORE_HADOOP_OPTS
+        echo $EXPORTER_OPTS
+        echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
+
         export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
         export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
         update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
