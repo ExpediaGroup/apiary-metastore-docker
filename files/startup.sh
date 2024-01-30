@@ -103,11 +103,11 @@ if [ -n "$ENABLE_METRICS" ]; then
         #export HIVE_METASTORE_HADOOP_OPTS="$HIVE_METASTORE_HADOOP_OPTS -Djava.net.preferIPv4Stack=true -javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
         #export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
 
-        echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
-        echo $HIVE_METASTORE_HADOOP_OPTS
-        echo $EXPORTER_OPTS
-        echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
-        #export HADOOP_OPTS="$HADOOP_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9025 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -javaagent:/opt/java_metrics/jmx_prometheus_javaagent-0.3.0.jar=8080:/opt/java_metrics/config.yml -Dcom.sun.management.jmxremote.ssl=false  $HEAP_OPTS"
+        #echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
+        #echo $HIVE_METASTORE_HADOOP_OPTS
+        #echo $EXPORTER_OPTS
+        #echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
+        export HADOOP_OPTS="$HADOOP_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9025 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml -Dcom.sun.management.jmxremote.ssl=false  $HEAP_OPTS"
 
         export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
         export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
