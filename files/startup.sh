@@ -101,7 +101,7 @@ if [ -n "$ENABLE_METRICS" ]; then
         echo "INSIDE - ECS_CONTAINER_METADATA_URI"
 
         #export HIVE_METASTORE_HADOOP_OPTS="$HIVE_METASTORE_HADOOP_OPTS -Djava.net.preferIPv4Stack=true -javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
-        export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
+        #export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
 
         echo "HIVE_METASTORE_HADOOP_OPTS and EXPORTER_OPTS set"
         echo $HIVE_METASTORE_HADOOP_OPTS
