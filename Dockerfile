@@ -29,7 +29,6 @@ RUN yum -y install java-1.8.0-openjdk \
   unzip \
   jq \
   tar \
-  curl \
   net-tools \
   && yum clean all \
   && rm -rf /var/cache/yum
@@ -73,5 +72,3 @@ COPY files/log4j2-security.sh /tmp/log4j2-security.sh
 RUN chmod +x /tmp/log4j2-security.sh && /tmp/log4j2-security.sh
 
 CMD /startup.sh
-
-CMD ["curl", "-v", "localhost:8080/actuator/prometheus"]
