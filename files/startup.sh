@@ -83,22 +83,11 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     fi
 fi
 
-echo "HELLO NEW WORLD"
-echo $ENABLE_METRICS
 
 if [ -n "$ENABLE_METRICS" ]; then
-    echo "INSIDE HELLO NEW WORLD"
-
-    echo $ENABLE_METRICS
-
-    echo "ECS_CONTAINER_METADATA_URI"
-    echo $ECS_CONTAINER_METADATA_URI
-    echo "ECS_CONTAINER_METADATA_URI_V4"
-    echo $ECS_CONTAINER_METADATA_URI_V4
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
     #configure to send metrics to cloudwatch when running on ECS
     if [ -n "$ECS_CONTAINER_METADATA_URI" ]; then
-        echo "INSIDE - ECS_CONTAINER_METADATA_URI"
 
         export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
 

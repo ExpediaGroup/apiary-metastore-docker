@@ -65,7 +65,7 @@
 
 <property>
   <name>hive.service.metrics.class</name>
-  <value>com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics</value>
+  <value>org.apache.hadoop.hive.common.metrics.metrics2.CodahaleMetrics</value>
 </property>
 
 <property>
