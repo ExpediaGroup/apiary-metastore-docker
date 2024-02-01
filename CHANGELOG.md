@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.17] - 2024-01-31
 ### Added
--Enable prometheus jmx agent when running on ECS by exporting `EXPORTER_OPTS`
+- Enable prometheus jmx agent when running on ECS by exporting `EXPORTER_OPTS`
 
 ## [3.0.16] - 2024-01-11
 ### Added
