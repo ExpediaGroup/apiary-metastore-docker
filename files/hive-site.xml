@@ -50,7 +50,7 @@
 
 <property>
   <name>hive.metastore.metrics.enabled</name>
-  <value>false</value>
+  <value>true</value>
 </property>
 
 <property>
