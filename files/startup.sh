@@ -94,6 +94,7 @@ if [ -n "$ENABLE_METRICS" ]; then
         export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
         export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
         #update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
+
     fi
     #enable prometheus jmx agent when running on kubernetes
     if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
