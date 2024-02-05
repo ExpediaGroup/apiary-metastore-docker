@@ -27,7 +27,6 @@ RUN yum -y install java-1.8.0-openjdk \
   wget \
   zip \
   unzip \
-  curl \
   jq \
   tar \
   net-tools \
