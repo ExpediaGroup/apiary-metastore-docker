@@ -89,6 +89,8 @@ if [ -n "$ENABLE_METRICS" ]; then
     #configure to send metrics to cloudwatch when running on ECS
     if [ -n "$ECS_CONTAINER_METADATA_URI" ]; then
 
+        export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=8088"
+
         # enable prometheus jmx agent when running on ECS
         export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
         export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
