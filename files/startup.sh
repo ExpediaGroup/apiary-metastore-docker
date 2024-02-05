@@ -99,7 +99,10 @@ if [ -n "$ENABLE_METRICS" ]; then
         #this is populating something in 8080
         update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
         echo "This is the curl command"
-        curl -v localhost:8080/metrics
+        curl -v localhost:8080/metrics 2>&1 > curl_output.txt
+        cat curl_output.txt
+        echo "cat curl_output.txt"
+
     fi
     #enable prometheus jmx agent when running on kubernetes
     if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
