@@ -93,6 +93,8 @@ if [ -n "$ENABLE_METRICS" ]; then
         export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
         export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
         export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
+
+        #this is populating something in 8080
         update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
 
     fi
@@ -215,3 +217,8 @@ fi
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
+
+
+curl -v localhost:8080/metrics
+
+
