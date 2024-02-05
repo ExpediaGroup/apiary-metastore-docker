@@ -97,7 +97,7 @@ if [ -n "$ENABLE_METRICS" ]; then
         export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
 
         #this is populating something in 8080
-        update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
+        #update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
         echo "This is the curl command"
         curl -v localhost:8080/metrics 2>&1 > curl_output.txt
         cat curl_output.txt
