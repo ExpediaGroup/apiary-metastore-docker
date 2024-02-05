@@ -96,7 +96,8 @@ if [ -n "$ENABLE_METRICS" ]; then
 
         #this is populating something in 8080
         update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
-
+        echo "This is the curl command"
+        curl -v localhost:8080/metrics
     fi
     #enable prometheus jmx agent when running on kubernetes
     if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
@@ -217,8 +218,5 @@ fi
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
 su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
-
-echo "This is the curl command"
-curl -v localhost:8080/metrics
 
 
