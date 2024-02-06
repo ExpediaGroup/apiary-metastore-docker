@@ -142,6 +142,10 @@ This is pre-work to prepare for Ranger access-log Hive tables in a future versio
   inventory tables in the inventory database (if S3 inventory is enabled). The intent is to run the image this way on a
   scheduled basis in Kubernetes after AWS creates new inventory partition files in S3 each day.
 
+## [1.11.0] - 2024-02-06
+### Added
+- Enable Prometheus exporter when running on ECS instead of sending metrics to CloudWatch.
+
 ## [1.10.0] - 2020-03-16
 ### Changed
 - Updated `apiary-metastore-listener` and `kafka-metastore-listener` versions to `6.0.0` (was `5.0.2`).
