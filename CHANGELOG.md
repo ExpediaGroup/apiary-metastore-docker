@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [3.1.0] - 2024-02-06
+### Added
+- Enables JMX (Java Management Extensions) on Hadoop clients, allowing for remote monitoring and management of JVM-related metrics 
+- Stop sending metrics to CloudWatch.
+
 ## [3.0.17] - 2024-01-31
 ### Added
 - Enable prometheus jmx agent when running on ECS by exporting `EXPORTER_OPTS`
@@ -141,10 +146,6 @@ This is pre-work to prepare for Ranger access-log Hive tables in a future versio
 - Add script `/s3_inventory_repair.sh` which can be used as the entrypoint of this Docker image to create and repair S3
   inventory tables in the inventory database (if S3 inventory is enabled). The intent is to run the image this way on a
   scheduled basis in Kubernetes after AWS creates new inventory partition files in S3 each day.
-
-## [1.11.0] - 2024-02-06
-### Added
-- Enable Prometheus exporter when running on ECS instead of sending metrics to CloudWatch.
 
 ## [1.10.0] - 2020-03-16
 ### Changed
