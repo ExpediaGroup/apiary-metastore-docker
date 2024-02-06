@@ -83,17 +83,16 @@ if [[ -n $RANGER_AUDIT_DB_URL ]]; then
     fi
 fi
 
-
+# Enables metrics for Hive Metastore and configures Prometheus JMX exporter for monitoring in ECS and Kubernetes environments.
 if [ -n "$ENABLE_METRICS" ]; then
     update_property.py hive.metastore.metrics.enabled true /etc/hive/conf/hive-site.xml
-    #configure to send metrics to cloudwatch when running on ECS
     if [ -n "$ECS_CONTAINER_METADATA_URI" ]; then
+        # This line enables JMX (Java Management Extensions) on Hadoop clients, allowing for remote monitoring and management of JVM-related metrics and operations.
+        # source: https://docs.datadoghq.com/integrations/hive/?tab=containerized
+        export HADOOP_CLIENT_OPTS="$HADOOP_CLIENT_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=8088"
 
-        # enable prometheus jmx agent when running on ECS
+        # This line configures the JMX Prometheus exporter, enabling the collection of JMX metrics from the JVM and their exposure in Prometheus format for integration with monitoring systems.
         export EXPORTER_OPTS="-javaagent:/usr/lib/apiary/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar=8080:/etc/hive/conf/jmx-exporter.yaml"
-        export CLOUDWATCH_NAMESPACE="${INSTANCE_NAME}-metastore"
-        export ECS_TASK_ID=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .TaskARN|awk -F/ '{ print $NF }')
-        update_property.py hive.service.metrics.class com.expediagroup.apiary.extensions.metastore.metrics.CodahaleMetrics /etc/hive/conf/hive-site.xml
     fi
     #enable prometheus jmx agent when running on kubernetes
     if [ -n "$KUBERNETES_SERVICE_HOST" ]; then
