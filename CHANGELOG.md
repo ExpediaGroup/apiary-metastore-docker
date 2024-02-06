@@ -3,10 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
-## [3.1.0] - 2024-02-06
+## [4.0.0] - 2024-02-06
 ### Added
-- Enables JMX (Java Management Extensions) on Hadoop clients, allowing for remote monitoring and management of JVM-related metrics 
-- Stop sending metrics to CloudWatch.
+- Enables JMX (Java Management Extensions) on Hadoop clients, allowing for remote monitoring and management of JVM-related metrics
+### Removed
+- CloudWatch metrics in favour of JMX Prometheus Exporter.
 
 ## [3.0.17] - 2024-01-31
 ### Added
