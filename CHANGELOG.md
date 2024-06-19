@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [5.0.1] - 2024-06-19
 ### Fixed
-- Added `MYSQL_DRIVER_JAR` to add the driver connector JAR to the system classpath. By default it is now using `mysql-connector-java`.
+- Added `MYSQL_DRIVER_JAR` to add the driver connector JAR to the system classpath. By default it is now using `/usr/share/java/mysql-connector-java.jar`.
 
 ## [5.0.0] - 2024-06-19 [YANKED]
 ### Changed
