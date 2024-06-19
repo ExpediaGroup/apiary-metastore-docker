@@ -16,6 +16,10 @@ if [[ -n ${HMS_MAX_THREADS} ]]; then
   update_property.py hive.metastore.server.max.threads "${HMS_MAX_THREADS}" /etc/hive/conf/hive-site.xml
 fi
 
+# configure ConnectionDriverName
+if [[ -n ${MYSQL_CONNECTION_DRIVER_NAME} ]]; then
+  update_property.py javax.jdo.option.ConnectionDriverName "${MYSQL_CONNECTION_DRIVER_NAME}" /etc/hive/conf/hive-site.xml
+fi
 # config size of MySQL connection pool.
 # See https://github.com/apache/hive/blob/master/common/src/java/org/apache/hadoop/hive/conf/HiveConf.java#L1181
 # and also make sure 2 * MYSQL_CONNECTION_POOL_SIZE * numHmsContainers is less than max connections for your MySQL instance.
@@ -212,4 +216,4 @@ fi
 [[ -z $HADOOP_HEAPSIZE ]] && export HADOOP_HEAPSIZE=1024
 
 export HADOOP_OPTS="-XshowSettings:vm -Xms${HADOOP_HEAPSIZE}m $EXPORTER_OPTS"
-su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:mysql://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"
+su hive -s/bin/bash -c "/usr/lib/hive/bin/hive --service metastore --hiveconf javax.jdo.option.ConnectionURL=jdbc:${MYSQL_TYPE:-mysql}://${MYSQL_DB_HOST}:3306/${MYSQL_DB_NAME} --hiveconf javax.jdo.option.ConnectionUserName='${MYSQL_DB_USERNAME}' --hiveconf javax.jdo.option.ConnectionPassword='${MYSQL_DB_PASSWORD}'"

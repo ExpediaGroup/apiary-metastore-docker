@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [5.0.0] - 2024-06-19
+### Changed
+- Switch from mariadb driver to default mysql driver. (Override settings to keep using mariadb driver).
+### Added
+- Added `MYSQL_CONNECTION_DRIVER_NAME` to support use different connection driver, defaults: `com.mysql.jdbc.Driver`.
+- Added `MYSQL_TYPE` to support use different type of MySQL, defaults: `mysql`.
+- Added `mysql-connector-java` to support to use driver `com.mysql.jdbc.Driver`.
+
 ## [4.0.1] - 2024-06-03
 ### Changed
 - Upgraded `APIARY_EXTENSIONS_VERSION` to `7.3.9` (was `7.3.8`).
