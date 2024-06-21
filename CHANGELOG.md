@@ -3,11 +3,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
-## [5.0.2] - 2024-06-21
+## [5.1.0] - 2024-06-2x
 ### Added
 - Added `datanucleus.connectionPoolingType` to hive-site.xml, defaults: `BoneCP`
-- Added `DATANUCLEUS_CONNECTION_POOLING_HIKARICP` to support using HikariCP for database connection pooling.
-- Added `DATANUCLEUS_CONNECTION_POOLING_MAXLIFETIME` to support configuring the max life time of a connection in the pool before it's recycled.  The value is in miliseconds, defaults: `180000`.
+- Added `DATANUCLEUS_CONNECTION_POOLING_TYPE` to support changing the database connection pooling. Valid options are `BoneCP`, `DBCP`, `DBCP2`, `C3P0`, `HikariCP`.
+- Added `DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE` - Maximum pool size for the connection pool.
+- Added `DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE` - Minimum pool size for the connection pool.
+- Added `DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE` - Initial pool size for the connection pool (C3P0 only).
+- Added `DATANUCLEUS_CONNECTION_POOL_MAX_IDLE` - Maximum idle connections for the connection pool.
+- Added `DATANUCLEUS_CONNECTION_POOL_MIN_IDLE` - Minimum idle connections for the connection pool.
+- Added `DATANUCLEUS_CONNECTION_POOL_MIN_ACTIVE` - Maximum active connections for the connection pool (DBCP/DBCP2 only).
+- Added `DATANUCLEUS_CONNECTION_POOL_MAX_WAIT` - Maximum wait time for the connection pool (DBCP/DBCP2 only).
+- Added `DATANUCLEUS_CONNECTION_POOL_VALIDATION_TIMEOUT` - Validation timeout for the connection pool (DBCP/DBCP2/HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_LEAK_DETECTION_THRESHOLD` - Leak detection threshold for the connection pool (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_LEAK_MAX_LIFETIME` - Maximum lifetime for the connection pool (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_AUTO_COMMIT` - Auto commit for the connection pool (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_IDLE_TIMEOUT` - Idle timeout for the connection pool (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_CONNECTION_WAIT_TIMEOUT` - Connection wait timeout for the connection pool (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_READ_ONLY` - Read only mode for the connection pool (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_NAME` - Connection pool name (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_CATALOG` - Connection pool catalog (HikariCP only).
+- Added `DATANUCLEUS_CONNECTION_POOL_REGISTER_MBEANS` - Register MBeans for the connection pool (HikariCP only).
 
 ## [5.0.1] - 2024-06-19
 ### Fixed
