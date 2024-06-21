@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [5.0.2] - 2024-06-21
+### Fixed
+- Set default `AUX_CLASSPATH` based on `MYSQL_TYPE`.
+  - When `mysql`, then set to `/usr/share/java/mysql-connector-java.jar`.
+  - When `mariadb` then set to `/usr/share/java/mariadb-connector-java.jar`.
+  - Else set to `MYSQL_DRIVER_JAR`.
+
 ## [5.0.1] - 2024-06-19
 ### Fixed
 - Added `MYSQL_DRIVER_JAR` to add the driver connector JAR to the system classpath. By default it is now using `/usr/share/java/mysql-connector-java.jar`.
