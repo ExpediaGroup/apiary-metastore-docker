@@ -29,6 +29,11 @@
 </property>
 
 <property>
+  <name>datanucleus.connectionPoolingType</name>
+  <value>BoneCP</value>
+</property>
+
+<property>
   <name>datanucleus.connectionPool.maxPoolSize</name>
   <value>10</value>
 </property>

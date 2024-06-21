@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [5.0.2] - 2024-06-21
+### Added
+- Added `datanucleus.connectionPoolingType` to hive-site.xml, defaults: `BoneCP`
+- Added `DATANUCLEUS_CONNECTION_POOLING_HIKARICP` to support using HikariCP for database connection pooling.
+- Added `DATANUCLEUS_CONNECTION_POOLING_MAXLIFETIME` to support configuring the max life time of a connection in the pool before it's recycled.  The value is in miliseconds, defaults: `180000`.
+
 ## [5.0.1] - 2024-06-19
 ### Fixed
 - Added `MYSQL_DRIVER_JAR` to add the driver connector JAR to the system classpath. By default it is now using `/usr/share/java/mysql-connector-java.jar`.
