@@ -49,12 +49,12 @@ if [ ! -z ${DATANUCLEUS_CONNECTION_POOLING_TYPE} ]; then
     if [[ ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'c3p0' ]]; then
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.maxPoolSize "${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE}" /etc/hive/conf/hive-site.xml
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.minPoolSize "${DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE}" /etc/hive/conf/hive-site.xml
-       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.initialPoolSize "${DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE}" /etc/hive/conf/hive-site.xml        
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.initialPoolSize "${DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE}" /etc/hive/conf/hive-site.xml
     fi
 
     if [[ ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'hikaricp' ]]; then
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.maxPoolSize "${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE}" /etc/hive/conf/hive-site.xml
-       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE} ]] && update_property.py datanucleus.connectionPool.minIdle "${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE}" /etc/hive/conf/hive-site.xml       
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE} ]] && update_property.py datanucleus.connectionPool.minIdle "${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE}" /etc/hive/conf/hive-site.xml
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_LEAK_DETECTION_THRESHOLD} ]] && update_property.py datanucleus.connectionPool.leakThreshold "${DATANUCLEUS_CONNECTION_POOL_LEAK_DETECTION_THRESHOLD}" /etc/hive/conf/hive-site.xml
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_LEAK_MAX_LIFETIME} ]] && update_property.py datanucleus.connectionPool.maxLifetime "${DATANUCLEUS_CONNECTION_POOL_LEAK_MAX_LIFETIME}" /etc/hive/conf/hive-site.xml
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_AUTO_COMMIT} ]] && update_property.py datanucleus.connectionPool.autoCommit "${DATANUCLEUS_CONNECTION_POOL_AUTO_COMMIT}" /etc/hive/conf/hive-site.xml
