@@ -3,7 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
-## [5.1.0] - 2024-06-2x
+
+## [5.1.1] - 2024-06-21
+### Fixed
+- Set default `AUX_CLASSPATH` based on `MYSQL_TYPE`.
+  - When `mysql`, then set to `/usr/share/java/mysql-connector-java.jar`.
+  - When `mariadb` then set to `/usr/share/java/mariadb-connector-java.jar`.
+  - Else set to `MYSQL_DRIVER_JAR`.
+
+## [5.1.0] - 2024-06-21
 ### Added
 - Added `datanucleus.connectionPoolingType` to hive-site.xml, defaults: `BoneCP`
 - Added `DATANUCLEUS_CONNECTION_POOLING_TYPE` to support changing the database connection pooling. Valid options are `BoneCP`, `DBCP`, `DBCP2`, `C3P0`, `HikariCP`.
