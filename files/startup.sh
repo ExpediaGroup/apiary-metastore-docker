@@ -27,6 +27,47 @@ if [[ -n ${MYSQL_CONNECTION_POOL_SIZE} ]]; then
   update_property.py datanucleus.connectionPool.maxPoolSize "${MYSQL_CONNECTION_POOL_SIZE}" /etc/hive/conf/hive-site.xml
 fi
 
+# configure Connection Pooling
+# valid options are BoneCP, DBCP, DBCP2, C3P0, HikariCP
+if [ ! -z ${DATANUCLEUS_CONNECTION_POOLING_TYPE} ]; then
+    update_property.py datanucleus.connectionPoolingType "${DATANUCLEUS_CONNECTION_POOLING_TYPE}" /etc/hive/conf/hive-site.xml
+
+    if [[ ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'bonecp' ]]; then
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.maxPoolSize "${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.minPoolSize "${DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_IDLE} ]] && update_property.py datanucleus.connectionPool.maxIdle "${DATANUCLEUS_CONNECTION_POOL_MAX_IDLE}" /etc/hive/conf/hive-site.xml
+    fi
+
+    if [[ ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'dbcp' || ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'dbcp2' ]]; then
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_IDLE} ]] && update_property.py datanucleus.connectionPool.maxIdle "${DATANUCLEUS_CONNECTION_POOL_MAX_IDLE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE} ]] && update_property.py datanucleus.connectionPool.minIdle "${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_ACTIVE} ]] && update_property.py datanucleus.connectionPool.maxActive "${DATANUCLEUS_CONNECTION_POOL_MIN_ACTIVE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_WAIT} ]] && update_property.py datanucleus.connectionPool.maxWait "${DATANUCLEUS_CONNECTION_POOL_MAX_WAIT}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_VALIDATION_TIMEOUT} ]] && update_property.py datanucleus.connectionPool.validationTimeout "${DATANUCLEUS_CONNECTION_POOL_VALIDATION_TIMEOUT}" /etc/hive/conf/hive-site.xml
+    fi
+
+    if [[ ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'c3p0' ]]; then
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.maxPoolSize "${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.minPoolSize "${DATANUCLEUS_CONNECTION_POOL_MIN_POOLSIZE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.initialPoolSize "${DATANUCLEUS_CONNECTION_POOL_INITIAL_POOLSIZE}" /etc/hive/conf/hive-site.xml
+    fi
+
+    if [[ ${DATANUCLEUS_CONNECTION_POOLING_TYPE,,} == 'hikaricp' ]]; then
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE} ]] && update_property.py datanucleus.connectionPool.maxPoolSize "${DATANUCLEUS_CONNECTION_POOL_MAX_POOLSIZE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE} ]] && update_property.py datanucleus.connectionPool.minIdle "${DATANUCLEUS_CONNECTION_POOL_MIN_IDLE}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_LEAK_DETECTION_THRESHOLD} ]] && update_property.py datanucleus.connectionPool.leakThreshold "${DATANUCLEUS_CONNECTION_POOL_LEAK_DETECTION_THRESHOLD}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_LEAK_MAX_LIFETIME} ]] && update_property.py datanucleus.connectionPool.maxLifetime "${DATANUCLEUS_CONNECTION_POOL_LEAK_MAX_LIFETIME}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_AUTO_COMMIT} ]] && update_property.py datanucleus.connectionPool.autoCommit "${DATANUCLEUS_CONNECTION_POOL_AUTO_COMMIT}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_IDLE_TIMEOUT} ]] && update_property.py datanucleus.connectionPool.idleTimeout "${DATANUCLEUS_CONNECTION_POOL_IDLE_TIMEOUT}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_CONNECTION_WAIT_TIMEOUT} ]] && update_property.py datanucleus.connectionPool.connectionWaitTimeout "${DATANUCLEUS_CONNECTION_POOL_CONNECTION_WAIT_TIMEOUT}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_VALIDATION_TIMEOUT} ]] && update_property.py datanucleus.connectionPool.validationTimeout "${DATANUCLEUS_CONNECTION_POOL_VALIDATION_TIMEOUT}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_READ_ONLY} ]] && update_property.py datanucleus.connectionPool.readOnly "${DATANUCLEUS_CONNECTION_POOL_READ_ONLY}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_NAME} ]] && update_property.py datanucleus.connectionPool.name "${DATANUCLEUS_CONNECTION_POOL_NAME}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_CATALOG} ]] && update_property.py datanucleus.connectionPool.catalog "${DATANUCLEUS_CONNECTION_POOL_CATALOG}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_REGISTER_MBEANS} ]] && update_property.py datanucleus.connectionPool.registerMbeans "${DATANUCLEUS_CONNECTION_POOL_REGISTER_MBEANS}" /etc/hive/conf/hive-site.xml
+    fi
+fi
+
 if [[ -n ${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES} ]]; then
   update_property.py hive.metastore.disallow.incompatible.col.type.changes "${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES}" /etc/hive/conf/hive-site.xml
 fi
@@ -219,6 +260,7 @@ if [ ! -z ${ENABLE_HIVE_LOCK_HOUSE_KEEPER} ]; then
     update_property.py hive.compactor.worker.threads 1 /etc/hive/conf/hive-site.xml
     update_property.py hive.txn.strict.locking.mode false /etc/hive/conf/hive-site.xml 
 fi
+
 #auto configure heapsize
 if [ ! -z ${ECS_CONTAINER_METADATA_URI} ]; then
     export MEM_LIMIT=$(wget -q -O - ${ECS_CONTAINER_METADATA_URI}/task|jq -r .Limits.Memory)
