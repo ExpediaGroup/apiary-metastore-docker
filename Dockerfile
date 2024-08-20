@@ -18,6 +18,7 @@ ENV EXPORTER_VERSION 0.12.0
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
 COPY files/emr-platform.repo /etc/yum.repos.d/emr-platform.repo
+COPY files/emr-puppet.repo /etc/yum.repos.d/emr-puppet.repo
 
 RUN yum -y install java-1.8.0-openjdk \
   java-1.8.0-openjdk-devel.x86_64 \
