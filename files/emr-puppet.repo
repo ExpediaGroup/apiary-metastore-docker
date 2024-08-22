@@ -1,0 +1,9 @@
+[emr-puppet]
+name = Amazon Extras repo for emr-puppet
+report_instanceid = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-emr
+enabled = 1
+skip_if_unavailable = 1
+priority = 10
+mirrorlist = http://amazonlinux.$awsregion.$awsdomain/$releasever/extras/emr-puppet/latest/$basearch/mirror.list
+gpgcheck = 1
