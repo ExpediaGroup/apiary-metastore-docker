@@ -20,6 +20,7 @@ COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
 COPY files/emr-platform.repo /etc/yum.repos.d/emr-platform.repo
 COPY files/emr-puppet.repo /etc/yum.repos.d/emr-puppet.repo
 
+RUN useradd -r hadoop 
 RUN yum -y install java-1.8.0-openjdk \
   java-1.8.0-openjdk-devel.x86_64 \
   hive-metastore \
