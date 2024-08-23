@@ -2,6 +2,6 @@
 name = EMR Applications Repository
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-emr
 enabled = 1
-baseurl = https://s3.amazonaws.com/repo.us-east-1.emr.amazonaws.com/apps-repository/emr-5.36.1/537bc564-6e04-4aae-b93e-5f9efb9d8879
+baseurl = https://s3.amazonaws.com/repo.us-east-1.emr.amazonaws.com/apps-repository/emr-5.36.2/800a23aa-8170-401d-b799-73caed213b0d
 priority = 5
 gpgcheck = 1
