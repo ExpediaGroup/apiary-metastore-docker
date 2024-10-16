@@ -40,7 +40,15 @@ def write_properties_to_xml(xml_path, property_name='', property_value='', appen
             name = child.find("name").text.strip()
             if name == property_name:
                 property_exists = True
-                current_value = child.find("value").text.strip()
+                value_element = child.find("value")
+
+                if value_element is None:
+                    # If <value> does not exist, create it
+                    value_element = ET.SubElement(child, "value")
+                    current_value = ''
+                else:
+                    current_value = value_element.text if value_element.text else ''
+                    current_value = current_value.strip()
                 
                 if append:
                     # Append the new value to the existing one, separated by commas
@@ -51,7 +59,7 @@ def write_properties_to_xml(xml_path, property_name='', property_value='', appen
                 else:
                     new_value = property_value
 
-                child.find("value").text = new_value
+                value_element.text = new_value
                 break
         
         if not property_exists:
@@ -61,8 +69,9 @@ def write_properties_to_xml(xml_path, property_name='', property_value='', appen
         
         xml.write(xml_path)
         return 0
-    else:
+    else:    
         return -1
+
 
 
 if __name__ == '__main__':
