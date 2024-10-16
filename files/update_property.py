@@ -62,7 +62,6 @@ def write_properties_to_xml(xml_path, property_name='', property_value='', appen
         xml.write(xml_path)
         return 0
     else:
-        print(f"File not found: {xml_path}")
         return -1
 
 
