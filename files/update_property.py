@@ -74,7 +74,7 @@ if __name__ == '__main__':
         if len(sys.argv) > 3:
             parameter_name = sys.argv[1] if len(sys.argv) > 1 else None
             parameter_value = sys.argv[2] if len(sys.argv) > 2 else None
-            ranger_admin_site_xml_path = sys.argv[3] if len(sys.argv) > 3 else None
+            file_xml_path = sys.argv[3] if len(sys.argv) > 3 else None
         else:
             if len(sys.argv) > 2:
                 parameter_name = sys.argv[1] if len(sys.argv) > 1 else None
