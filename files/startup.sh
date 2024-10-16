@@ -68,6 +68,14 @@ if [ ! -z ${DATANUCLEUS_CONNECTION_POOLING_TYPE} ]; then
     fi
 fi
 
+if [[ -n ${DISABLE_TRANSACTIONS_SUPPORT} ]]; then
+  update_property.py hive.txn.manager org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager /etc/hive/conf/hive-site.xml
+  update_property.py hive.support.concurrency false /etc/hive/conf/hive-site.xml
+  update_property.py hive.compactor.initiator.on false /etc/hive/conf/hive-site.xml
+  update_property.py hive.compactor.worker.threads 0 /etc/hive/conf/hive-site.xml
+  update_property.py --append hive.conf.restricted.list hive.txn.manager,hive.support.concurrency,hive.compactor.initiator.on,hive.compactor.worker.threads /etc/hive/conf/hive-site.xml
+fi
+
 if [[ -n ${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES} ]]; then
   update_property.py hive.metastore.disallow.incompatible.col.type.changes "${DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES}" /etc/hive/conf/hive-site.xml
 fi

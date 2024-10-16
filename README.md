@@ -29,6 +29,7 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | DATANUCLEUS_CONNECTION_POOL_NAME               | No       | Connection pool name (HikariCP only).                                                                                                                                                                                                                 |
 | DATANUCLEUS_CONNECTION_POOL_CATALOG            | No       | Connection pool catalog (HikariCP only).                                                                                                                                                                                                              |
 | DATANUCLEUS_CONNECTION_POOL_REGISTER_MBEANS    | No       | Register MBeans for the connection pool (HikariCP only).                                                                                                                                                                                              |
+| DISABLE_TRANSACTIONS_SUPPORT         | No       | Option to turn disable transactional support in the Hive Metastore.  |
 | DISALLOW_INCOMPATIBLE_COL_TYPE_CHANGES         | No       | `true`/`false` value for hive.metastore.disallow.incompatible.col.type.changes, default `true`.                                                                                                                                                       |
 | ENABLE_GLUESYNC                                | No       | Option to turn on GlueSync Hive Metastore listener.                                                                                                                                                                                                   |
 | ENABLE_HIVE_LOCK_HOUSE_KEEPER                  | No       | Option to turn on Hive Metastore Hive Lock House Keeper.                                                                                                                                                                                              |
@@ -68,7 +69,6 @@ For more information please refer to the main [Apiary](https://github.com/Expedi
 | RANGER_POLICY_MANAGER_URL                      | No       | Ranger admin URL from where policies will be downloaded.                                                                                                                                                                                              |
 | RANGER_SERVICE_NAME                            | No       | Ranger service name used to configure RangerAuth plugin.                                                                                                                                                                                              |
 | SNS_ARN                                        | No       | The SNS topic ARN to which metadata updates will be
-                                                                                                                     |
 
 # Contact
 
