@@ -1,7 +1,7 @@
 # Copyright (C) 2018 Expedia Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 
-from amazonlinux:2
+FROM amazoncorretto:8
 
 ENV RANGER_VERSION 2.0.0
 ENV APIARY_EXTENSIONS_VERSION 8.0.2
@@ -15,16 +15,14 @@ ENV GETHOSTNAME4J_VERSION 0.0.3
 ENV JNA_VERSION 3.0.9
 ENV EXPORTER_VERSION 0.12.0
 
-COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
+COPY files/repoPublicKey.txt /var/aws/emr/repoPublicKey.txt
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
 COPY files/emr-platform.repo /etc/yum.repos.d/emr-platform.repo
 COPY files/emr-puppet.repo /etc/yum.repos.d/emr-puppet.repo
 
 RUN yum -y install shadow-utils && \
     useradd -r hadoop
-RUN yum -y install java-1.8.0-openjdk \
-  java-1.8.0-openjdk-devel.x86_64 \
-  hive-metastore \
+RUN yum -y install hive-metastore \
   mariadb-connector-java \
   mysql-connector-java \
   mysql \
