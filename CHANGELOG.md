@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [5.2.3] - 2025-02-25
+### Added
+- Option to start gluesync listener without intializing glue databases.
+
 ## [5.2.2] - 2024-09-24
 ### Added
 - Upgrade Apiary extensions to 8.0.2 (was 7.3.9). (Glue Listener fix)
