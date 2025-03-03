@@ -162,13 +162,13 @@ APIARY_S3_LOGS_SCHEMA=s3_logs_hive
 
 #check if database is initialized, test only from rw instances and only if DB is managed by apiary
 if [[ -z "$EXTERNAL_DATABASE" && "$HIVE_METASTORE_ACCESS_MODE" = "readwrite" ]]; then
-    MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
-    schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
-    if [ "$schema_version" != "2.3.0" ]; then
-        cd /usr/lib/hive/scripts/metastore/upgrade/mysql
-        cat hive-schema-2.3.0.mysql.sql|mysql $MYSQL_OPTIONS
-        cd /
-    fi
+    #MYSQL_OPTIONS="-h$MYSQL_DB_HOST -u$MYSQL_DB_USERNAME -p$MYSQL_DB_PASSWORD $MYSQL_DB_NAME -N"
+    #schema_version=`echo "select SCHEMA_VERSION from VERSION"|mysql $MYSQL_OPTIONS`
+    #if [ "$schema_version" != "3.1.0" ]; then
+    #    cd /usr/lib/hive/scripts/metastore/upgrade/mysql
+    #    cat hive-schema-3.1.0.mysql.sql|mysql $MYSQL_OPTIONS
+    #    cd /
+    #fi
 
     #create hive databases
     if [[ -n "$HIVE_DB_NAMES" ]]; then
