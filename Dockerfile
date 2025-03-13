@@ -6,7 +6,6 @@ FROM amazoncorretto:8
 ENV APIARY_EXTENSIONS_VERSION 9.0.0-SNAPSHOT
 ENV APIARY_GLUESYNC_LISTENER_VERSION 9.0.0-SNAPSHOT
 ENV APIARY_RANGER_PLUGIN_VERSION 9.0.0-SNAPSHOT
-ENV APIARY_METASTORE_METRICS_VERSION 9.0.0-SNAPSHOT
 ENV APIARY_METASTORE_AUTH_VERSION 9.0.0-SNAPSHOT
 ENV KAFKA_VERSION 2.3.1
 ENV COMMONS_CODEC_VERSION 1.12
@@ -39,7 +38,6 @@ wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup
 wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/kafka-metastore-listener/${APIARY_EXTENSIONS_VERSION}/kafka-metastore-listener-9.0.0-20250312.135705-2-all.jar -O kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
 wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-9.0.0-20250312.135705-2-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
 wget -q https://oss.sonatype.org/content/repositories/snapshots/om/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-9.0.0-20250312.135705-2-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
-wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-9.0.0-20250312.135705-2-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar && \
 wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-9.0.0-20250312.135705-2.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-codec/${COMMONS_CODEC_VERSION}/commons-codec-${COMMONS_CODEC_VERSION}.jar -O commons-codec-${COMMONS_CODEC_VERSION}.jar && \
