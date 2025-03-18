@@ -56,6 +56,8 @@ COPY files/hive-site.xml /etc/hive/conf/hive-site.xml
 COPY files/hive-log4j2.properties /etc/hive/conf/hive-log4j2.properties
 COPY files/ranger-hive-security.xml /etc/hive/conf/ranger-hive-security.xml
 COPY files/ranger-hive-audit.xml /etc/hive/conf/ranger-hive-audit.xml
+COPY files/jmx-exporter.yaml /etc/hive/conf/jmx-exporter.yaml
+
 
 EXPOSE 9083
 COPY files/update_property.py /bin/update_property.py
