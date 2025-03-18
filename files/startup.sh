@@ -230,7 +230,6 @@ export AUX_CLASSPATH="${MYSQL_DRIVER_JAR:-/usr/share/java/mysql-connector-java.j
 [[ -n "$ENABLE_GLUESYNC" ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar"
 [[ -n "$RANGER_POLICY_MANAGER_URL" ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar:/usr/lib/apiary/commons-codec-${COMMONS_CODEC_VERSION}.jar:/usr/lib/apiary/gethostname4j-${GETHOSTNAME4J_VERSION}.jar:/usr/lib/apiary/jna-${JNA_VERSION}.jar"
 [[ -n "$HIVE_DB_WHITELIST" ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar"
-[[ -n "$ENABLE_METRICS" ]] && export AUX_CLASSPATH="$AUX_CLASSPATH:/usr/lib/apiary/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar"
 
 #configure container credentials provider when running in ECS
 if [ -n "${AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}" ]; then
