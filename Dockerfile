@@ -11,7 +11,7 @@ ENV KAFKA_VERSION 2.3.1
 ENV COMMONS_CODEC_VERSION 1.12
 ENV GETHOSTNAME4J_VERSION 0.0.3
 ENV JNA_VERSION 3.0.9
-ENV EXPORTER_VERSION 1.2.0
+ENV EXPORTER_VERSION 1.0.1
 
 COPY files/repoPublicKey.txt /var/aws/emr/repoPublicKey.txt
 COPY files/emr-apps.repo /etc/yum.repos.d/emr-apps.repo
