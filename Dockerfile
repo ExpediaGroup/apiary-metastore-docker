@@ -33,17 +33,17 @@ RUN yum -y install hive-metastore \
   && yum clean all \
   && rm -rf /var/cache/yum
 
-RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary
-RUN wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-listener/${APIARY_EXTENSIONS_VERSION}/apiary-metastore-listener-9.0.0-20250312.135705-2-all.jar -O apiary-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar
-RUN wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/kafka-metastore-listener/${APIARY_EXTENSIONS_VERSION}/kafka-metastore-listener-9.0.0-20250312.135705-2-all.jar -O kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar
-RUN wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-9.0.0-20250312.135705-2-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar
-RUN wget -q https://oss.sonatype.org/content/repositories/snapshots/om/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-9.0.0-20250312.135705-2-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar &
-RUN wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-9.0.0-20250312.135705-2.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar
-RUN wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar
-RUN wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-codec/${COMMONS_CODEC_VERSION}/commons-codec-${COMMONS_CODEC_VERSION}.jar -O commons-codec-${COMMONS_CODEC_VERSION}.jar
-RUN wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar
-RUN wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar
-RUN wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_prometheus_javaagent/${EXPORTER_VERSION}/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar -O jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar
+RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-listener/${APIARY_EXTENSIONS_VERSION}/apiary-metastore-listener-9.0.0-20250312.135705-2-all.jar -O apiary-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/kafka-metastore-listener/${APIARY_EXTENSIONS_VERSION}/kafka-metastore-listener-9.0.0-20250312.135705-2-all.jar -O kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-9.0.0-20250312.135705-2-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/om/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-9.0.0-20250312.135705-2-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-9.0.0-20250312.135705-2.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-codec/${COMMONS_CODEC_VERSION}/commons-codec-${COMMONS_CODEC_VERSION}.jar -O commons-codec-${COMMONS_CODEC_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_prometheus_javaagent/${EXPORTER_VERSION}/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar -O jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar
 
 
 ENV MAVEN_VERSION 3.9.4
