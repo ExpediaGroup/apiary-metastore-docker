@@ -45,6 +45,9 @@ wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4
 wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_prometheus_javaagent/${EXPORTER_VERSION}/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar -O jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar
 
+# Hive/Hadoop needs AWS SDK V2 bundle.
+RUN  cd /usr/lib/hive/lib \
+     ln -s  /usr/share/aws/aws-java-sdk-v2/aws-sdk-java-bundle-*.jar \
 
 ENV MAVEN_VERSION 3.9.4
 
