@@ -47,7 +47,7 @@ wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_pr
 
 # Hive/Hadoop needs AWS SDK V2 bundle.
 RUN  cd /usr/lib/hive/lib \
-     ln -s  /usr/share/aws/aws-java-sdk-v2/aws-sdk-java-bundle-*.jar \
+     ln -s  /usr/share/aws/aws-java-sdk-v2/aws-sdk-java-bundle-*.jar
 
 ENV MAVEN_VERSION 3.9.4
 
