@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [5.2.6] - 2025-04-22
 ### Added
-- Updating `APIARY_EXTENSIONS_VERSION` to `8.1.3` (was `8.1.2`). Added RENAME support in Glue listener. 
+- Updating all `APIARY_EXTENSIONS` modules to `8.1.3` (was `8.1.2`). Added RENAME support in Glue listener. 
 
 ## [5.2.5] - 2025-04-08
 ### Added
