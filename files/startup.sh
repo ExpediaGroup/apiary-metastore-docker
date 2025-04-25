@@ -65,6 +65,7 @@ if [ ! -z ${DATANUCLEUS_CONNECTION_POOLING_TYPE} ]; then
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_NAME} ]] && update_property.py datanucleus.connectionPool.name "${DATANUCLEUS_CONNECTION_POOL_NAME}" /etc/hive/conf/hive-site.xml
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_CATALOG} ]] && update_property.py datanucleus.connectionPool.catalog "${DATANUCLEUS_CONNECTION_POOL_CATALOG}" /etc/hive/conf/hive-site.xml
        [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_REGISTER_MBEANS} ]] && update_property.py datanucleus.connectionPool.registerMbeans "${DATANUCLEUS_CONNECTION_POOL_REGISTER_MBEANS}" /etc/hive/conf/hive-site.xml
+       [[ ! -z ${DATANUCLEUS_CONNECTION_POOL_EXCEPTIONOVERRIDECLASSNAME} ]] && update_property.py datanucleus.connectionPool.exceptionOverrideClassName "${DATANUCLEUS_CONNECTION_POOL_EXCEPTIONOVERRIDECLASSNAME}" /etc/hive/conf/hive-site.xml
     fi
 fi
 
