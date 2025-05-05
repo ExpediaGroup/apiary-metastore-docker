@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [5.2.7] - 2025-05-05
+### Added
+- Updating all `APIARY_EXTENSIONS` modules to `8.1.4` (was `8.1.3`). Improved RENAME support in Glue listener. 
+
 ## [5.2.6] - 2025-04-22
 ### Added
 - Updating all `APIARY_EXTENSIONS` modules to `8.1.3` (was `8.1.2`). Added RENAME support in Glue listener. 
