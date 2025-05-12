@@ -1,7 +1,7 @@
 [emr-platform]
 name = EMR Platform Repository
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-emr
+gpgkey = file:///var/aws/emr/repoPublicKey.txt
 enabled = 1
-baseurl = https://s3.amazonaws.com/repo.us-east-1.emr.amazonaws.com/platform-repository/1.30.2/e35a2136-da13-4653-a19c-858dd5b29e72
+baseurl = https://s3.amazonaws.com/repo.us-east-1.emr.amazonaws.com/platform-repository/2.17.0/7d648907-33bf-4dc6-9693-50b688cb0959
 priority = 5
 gpgcheck = 1
