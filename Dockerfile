@@ -4,11 +4,11 @@
 from amazonlinux:2
 
 ENV RANGER_VERSION 2.0.0
-ENV APIARY_EXTENSIONS_VERSION 8.1.4
-ENV APIARY_GLUESYNC_LISTENER_VERSION 8.1.4
-ENV APIARY_RANGER_PLUGIN_VERSION 8.1.4
-ENV APIARY_METASTORE_METRICS_VERSION 8.1.4
-ENV APIARY_METASTORE_AUTH_VERSION 8.1.4
+ENV APIARY_EXTENSIONS_VERSION '8.1.5-SNAPSHOT'
+ENV APIARY_GLUESYNC_LISTENER_VERSION '8.1.5-SNAPSHOT'
+ENV APIARY_RANGER_PLUGIN_VERSION '8.1.5-SNAPSHOT'
+ENV APIARY_METASTORE_METRICS_VERSION '8.1.5-SNAPSHOT'
+ENV APIARY_METASTORE_AUTH_VERSION '8.1.5-SNAPSHOT'
 ENV KAFKA_VERSION 2.3.1
 ENV COMMONS_CODEC_VERSION 1.12
 ENV GETHOSTNAME4J_VERSION 0.0.3
@@ -38,12 +38,11 @@ RUN yum -y install java-1.8.0-openjdk \
   && rm -rf /var/cache/yum
 
 RUN mkdir -p /usr/lib/apiary && cd /usr/lib/apiary && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-listener/${APIARY_EXTENSIONS_VERSION}/apiary-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar -O apiary-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/kafka-metastore-listener/${APIARY_EXTENSIONS_VERSION}/kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar -O kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-metrics/${APIARY_METASTORE_METRICS_VERSION}/apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar -O apiary-metastore-metrics-${APIARY_METASTORE_METRICS_VERSION}-all.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-listener/${APIARY_EXTENSIONS_VERSION}/apiary-metastore-listener-8.1.5-20250513.125137-1-all.jar -O apiary-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/kafka-metastore-listener/${APIARY_EXTENSIONS_VERSION}/kafka-metastore-listener-8.1.5-20250513.125137-1-all.jar -O kafka-metastore-listener-${APIARY_EXTENSIONS_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-gluesync-listener/${APIARY_GLUESYNC_LISTENER_VERSION}/apiary-gluesync-listener-8.1.5-20250513.125137-1-all.jar -O apiary-gluesync-listener-${APIARY_GLUESYNC_LISTENER_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-ranger-metastore-plugin/${APIARY_RANGER_PLUGIN_VERSION}/apiary-ranger-metastore-plugin-8.1.5-20250513.125137-1-all.jar -O apiary-ranger-metastore-plugin-${APIARY_RANGER_PLUGIN_VERSION}-all.jar && \
+wget -q https://oss.sonatype.org/content/repositories/snapshots/com/expediagroup/apiary/apiary-metastore-auth/${APIARY_METASTORE_AUTH_VERSION}/apiary-metastore-auth-8.1.5-20250513.125137-1.jar -O apiary-metastore-auth-${APIARY_METASTORE_AUTH_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-codec/${COMMONS_CODEC_VERSION}/commons-codec-${COMMONS_CODEC_VERSION}.jar -O commons-codec-${COMMONS_CODEC_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar && \
