@@ -5,7 +5,7 @@ on:
 
 jobs:
   apiary-docker-image:
-    name: Apiary Docker Image Checks
+    name: Apiary Docker Image Snapshots
     runs-on: ubuntu-22.04
     steps:
       - name: Check out code
