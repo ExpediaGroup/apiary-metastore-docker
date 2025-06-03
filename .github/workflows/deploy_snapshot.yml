@@ -25,6 +25,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/expediagroup/apiary-metastore-core:${{ github.sha }}
+          tags: expediagroup/apiary-metastore-core:${{ github.sha }}
           platforms: linux/amd64,linux/arm64
           
