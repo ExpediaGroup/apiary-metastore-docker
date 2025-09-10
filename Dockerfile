@@ -50,9 +50,9 @@ wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4
 wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_prometheus_javaagent/${EXPORTER_VERSION}/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar -O jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar
 
-ENV MAVEN_VERSION 3.9.4
+ENV MAVEN_VERSION 3.9.11
 
-RUN wget -q -O - https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -C /opt -xzf - && \
+RUN wget -q -O - https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -C /opt -xzf - && \
     ln -sf /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /bin/mvn
 
 COPY files/core-site.xml /etc/hadoop/conf/core-site.xml
