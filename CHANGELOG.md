@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ## [5.2.9] - 2025-09-10
 ### Added
 - Updating all `APIARY_EXTENSIONS` modules to `8.1.11` (was `8.1.7`). Improved glue listener.
+- Fix Maven download repository and upgrade Maven to `3.9.11` (was `3.9.4`).
 
 ## [5.2.8] - 2025-05-21
 ### Added
