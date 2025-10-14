@@ -12,7 +12,7 @@ ENV APIARY_METASTORE_AUTH_VERSION 8.1.11
 ENV KAFKA_VERSION 3.9.0
 ENV COMMONS_CODEC_VERSION 1.12
 ENV GETHOSTNAME4J_VERSION 0.0.3
-ENV JNA_VERSION 3.0.9
+ENV JNA_VERSION 5.13.0
 ENV EXPORTER_VERSION 0.12.0
 
 COPY files/RPM-GPG-KEY-emr /etc/pki/rpm-gpg/RPM-GPG-KEY-emr
@@ -47,7 +47,7 @@ wget -q https://search.maven.org/remotecontent?filepath=com/expediagroup/apiary/
 wget -q https://search.maven.org/remotecontent?filepath=org/apache/kafka/kafka-clients/${KAFKA_VERSION}/kafka-clients-${KAFKA_VERSION}.jar -O kafka-clients-${KAFKA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=commons-codec/commons-codec/${COMMONS_CODEC_VERSION}/commons-codec-${COMMONS_CODEC_VERSION}.jar -O commons-codec-${COMMONS_CODEC_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=com/kstruct/gethostname4j/${GETHOSTNAME4J_VERSION}/gethostname4j-${GETHOSTNAME4J_VERSION}.jar -O gethostname4j-${GETHOSTNAME4J_VERSION}.jar && \
-wget -q https://search.maven.org/remotecontent?filepath=com/sun/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar && \
+wget -q https://search.maven.org/remotecontent?filepath=net/java/dev/jna/jna/${JNA_VERSION}/jna-${JNA_VERSION}.jar -O jna-${JNA_VERSION}.jar && \
 wget -q https://search.maven.org/remotecontent?filepath=io/prometheus/jmx/jmx_prometheus_javaagent/${EXPORTER_VERSION}/jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar -O jmx_prometheus_javaagent-${EXPORTER_VERSION}.jar
 
 ENV MAVEN_VERSION 3.9.11
