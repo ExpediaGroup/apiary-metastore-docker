@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html). 
 
+## [5.2.12] - 2025-10-26
+### Added
+- Updating all `APIARY_EXTENSIONS` modules to `8.1.15` (was `8.1.13`). Improved glue listener.
+
 ## [5.2.11] - 2025-10-26
 ### Added
 - Updating all `APIARY_EXTENSIONS` modules to `8.1.13` (was `8.1.12`). Improved glue listener.
